@@ -6,6 +6,7 @@
 // @match        https://pixlr.com/x/*
 // @grant        none
 // @namespace    HKR
+// @supportURL   https://github.com/Hakorr/Userscripts/issues
 // ==/UserScript==
  
 (function() { try{
