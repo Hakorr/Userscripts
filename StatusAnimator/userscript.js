@@ -83,6 +83,7 @@ Timeouts are in milliseconds! You can type "random" on the emoji section to rand
 // @match        https://discord.com/channels/*
 // @match        https://discord.com/app
 // @grant        none
+// @supportURL   https://github.com/Hakorr/Userscripts/issues
 // ==/UserScript==
  
 ///////////////////////////////////////////////////
