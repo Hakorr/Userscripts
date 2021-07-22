@@ -30,7 +30,7 @@ await blink("🥳","I'm using Discord Status Animator!",2000,1);
  
 if(await skip(10,"u")) return;
  
-await settext("Get it here! Github.com/Hakor");
+await settext("Get it here! Github.com/Hakorr");
 await wait(5000);
  
  
