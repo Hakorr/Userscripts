@@ -70,7 +70,7 @@ Timeouts are in milliseconds! You can type "random" on the emoji section to rand
  
 // ==UserScript==
 // @name         [Discord] Status Animator (Manual edit/Non-UI)
-// @namespace    https://github.com/Hakorr/discord-status-animator
+// @namespace    HKR
 // @run-at       document-start
 // @version      1.9
 // @description  Automatically changes your Discord status
