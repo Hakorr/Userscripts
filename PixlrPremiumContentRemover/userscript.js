@@ -5,7 +5,7 @@
 // @author       HKR
 // @match        https://pixlr.com/x/*
 // @grant        none
-// @namespace    https://greasyfork.org/users/733211
+// @namespace    HKR
 // ==/UserScript==
  
 (function() { try{
