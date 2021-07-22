@@ -24,7 +24,7 @@ If using [HTTP Request Blocker](https://chrome.google.com/webstore/detail/http-r
 1. Login with the account you want to receive points for.
 2. Find **big** playlists and add them to the queue so you have a lot of songs there.
     * If you're using autoqueue, keep the playlist you want autoqueue to **open**. The bot will use the *"add all tracks to queue"* button.
-3. Go to as a DJ.
+3. Go as a DJ.
 4. Paste the script to your console and run it. This browser's account will now start skipping songs.
 
 ### Setting up a voter
