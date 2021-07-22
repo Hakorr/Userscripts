@@ -50,7 +50,7 @@ function addInfo(){
 
 	var userDetails = document.createElement('div');
 	userDetails.innerHTML = '<div class="InfoBar__age">'
-	+ '<h1 style="color: #1a1a1b; font-size: 18px; margin-bottom: 10px;">u/' + user.data.name + '\'s info</h1>'
+	+ '<h1 style="color: #1a1a1b; font-size: 18px; margin-bottom: 10px;">' + user.data.subreddit.display_name_prefixed + '</h1>'
 	
 	+ '<h1 style="color: #2c2c2c; font-size: 15px; margin-bottom: 3px; margin-top: 5px;">Icon</h1>'
 	+ '<img style="margin-bottom: 10px; padding-left: 10px;" src="' + user.data.icon_img + '" width="50">'
@@ -60,6 +60,7 @@ function addInfo(){
 	+ '<h1 style="color: '+ dataColor +'; font-size: 13px; padding-left: 10px;">UserID: ' + user.data.id + '</h1>'
 	+ '<h1 style="color: '+ dataColor +'; font-size: 13px; padding-left: 10px;">Verified: ' + user.data.verified + '</h1>'
 	+ '<h1 style="color: '+ dataColor +'; font-size: 13px; padding-left: 10px;">Employee: ' + user.data.is_employee + '</h1>'
+	+ '<h1 style="color: '+ dataColor +'; font-size: 13px; padding-left: 10px;">NSFW Profile: ' + user.data.subreddit.over_18 + '</h1>'
 	
 	+ '<h1 style="color: #2c2c2c; font-size: 15px; margin-top: 5px; margin-bottom: 3px;">Karma</h1>'
 	+ '<h1 style="color: '+ dataColor +'; font-size: 13px; padding-left: 10px;">Post: ' + user.data.link_karma + '</h1>'
