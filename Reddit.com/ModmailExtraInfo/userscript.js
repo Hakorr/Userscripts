@@ -20,17 +20,22 @@ function Get(url) {
     return xmlHttp.responseText;
 }
 
-function timeConverter(UNIX_timestamp){
+function time(UNIX_timestamp){
   var a = new Date(UNIX_timestamp * 1000);
   var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   var year = a.getFullYear();
-  var month = months[a.getMonth()];
-  var date = a.getDate();
-  var hour = a.getHours();
-  var min = a.getMinutes();
-  var sec = a.getSeconds();
-  var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+  var month = fixnumber(a.getMonth());
+  var date = fixnumber(a.getDate());
+  var hour = fixnumber(a.getHours());
+  var min = fixnumber(a.getMinutes());
+  var sec = fixnumber(a.getSeconds());
+  var time = date + '/' + month + '/' + year + ' ' + hour + ':' + min + ':' + sec ;
   return time;
+}
+
+function fixnumber(number) {
+    if(number < 10) return "0" + number;
+    else return number;
 }
 
 function addInfo(){
@@ -51,7 +56,7 @@ function addInfo(){
 	+ '<img style="margin-bottom: 10px; padding-left: 10px;" src="' + user.data.icon_img + '" width="50">'
 	
 	+ '<h1 style="color: #2c2c2c; font-size: 15px; margin-bottom: 3px; margin-top: 5px;">Main</h1>'
-	+ '<h1 style="color: '+ dataColor +'; font-size: 13px; padding-left: 10px;">Created: ' + timeConverter(user.data.created) + '</h1>'
+	+ '<h1 style="color: '+ dataColor +'; font-size: 13px; padding-left: 10px;">Created: ' + time(user.data.created) + '</h1>'
 	+ '<h1 style="color: '+ dataColor +'; font-size: 13px; padding-left: 10px;">UserID: ' + user.data.id + '</h1>'
 	+ '<h1 style="color: '+ dataColor +'; font-size: 13px; padding-left: 10px;">Verified: ' + user.data.verified + '</h1>'
 	+ '<h1 style="color: '+ dataColor +'; font-size: 13px; padding-left: 10px;">Employee: ' + user.data.is_employee + '</h1>'
