@@ -3,7 +3,7 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     1.1
+// @version     1.2
 // @author      HKR
 // @description Shows additional user information on the sidebar of modmail
 // @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
@@ -11,7 +11,8 @@
 // @supportURL  https://github.com/Hakorr/Userscripts/issues
 // ==/UserScript==
 
-var dataColor = "#6e6e6e";
+var textColor = "#6e6e6e";
+var dataColor = "#0079d3";
 
 function Get(url) {
     var xmlHttp = new XMLHttpRequest();
@@ -38,6 +39,32 @@ function fixnumber(number) {
     else return number;
 }
 
+function addCSS(cssCode) {
+var styleElement = document.createElement("style");
+  styleElement.type = "text/css";
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = cssCode;
+  } else {
+    styleElement.appendChild(document.createTextNode(cssCode));
+  }
+  document.getElementsByTagName("head")[0].appendChild(styleElement);
+}
+
+function sanitize(evilstring) {
+    const decoder = document.createElement('div')
+    decoder.innerHTML = evilstring;
+    return decoder.textContent;
+}
+  
+addCSS(".profileIcon:hover {-ms-transform: scale(6); -webkit-transform: scale(6); transform: scale(6);}");
+addCSS(".profileIcon {position: relative; bottom: 4px;}");
+addCSS(".InfoBar__recentsNone {color: #6e6e6e;}");
+addCSS(".InfoBar__metadata, .InfoBar__recents { margin: 6px 0; margin-left: 10px;}");
+addCSS(".value {color:"+ dataColor +";}");
+addCSS(".InfoBar__banText {padding-bottom: 15px;}");
+addCSS(".InfoBar__username, .InfoBar__username:visited {padding-left: 10px;}");
+addCSS(".ThreadViewer__infobarContainer {display: table;}");
+
 function addInfo(){
 	var username = document.getElementsByClassName("InfoBar__username")[0].innerText;
 	var about = "https://www.reddit.com/user/" + username +"/about.json";
@@ -45,41 +72,50 @@ function addInfo(){
 	var user = JSON.parse(Get(about));
 
 	var seperator = document.createElement('div');
-	seperator.innerHTML = '<div class="InfoBar__modActions">'	
+	seperator.innerHTML = '<div class="InfoBar__modActions">'
 	 + '</div>';
 
 	var userDetails = document.createElement('div');
 	userDetails.innerHTML = '<div class="InfoBar__age">'
-	+ '<h1 style="color: #1a1a1b; font-size: 18px; margin-bottom: 10px;">' + user.data.subreddit.display_name_prefixed + '</h1>'
+	+ '<img class="profileIcon" style="margin-bottom: 10px; float: left; border-radius: 50%; transition: transform .2s;" src="' + user.data.icon_img + '" width="25">'
+	+ '<a class="InfoBar__username" href="https://www.reddit.com/user/'+ user.data.name +'">' + user.data.subreddit.display_name_prefixed + '</a>'
 	
-	+ '<h1 style="color: #2c2c2c; font-size: 15px; margin-bottom: 3px; margin-top: 5px;">Icon</h1>'
-	+ '<img style="margin-bottom: 10px; padding-left: 10px;" src="' + user.data.icon_img + '" width="50">'
+	+ '<h1 style="color: '+ textColor +'; font-size: 11px; margin-top: 17px; margin-bottom: 10px;">' + sanitize(user.data.subreddit.public_description) + '</h1>'
 	
 	+ '<h1 style="color: #2c2c2c; font-size: 15px; margin-bottom: 3px; margin-top: 5px;">Main</h1>'
-	+ '<h1 style="color: '+ dataColor +'; font-size: 13px; padding-left: 10px;">Created: ' + time(user.data.created) + '</h1>'
-	+ '<h1 style="color: '+ dataColor +'; font-size: 13px; padding-left: 10px;">UserID: ' + user.data.id + '</h1>'
-	+ '<h1 style="color: '+ dataColor +'; font-size: 13px; padding-left: 10px;">Verified: ' + user.data.verified + '</h1>'
-	+ '<h1 style="color: '+ dataColor +'; font-size: 13px; padding-left: 10px;">Employee: ' + user.data.is_employee + '</h1>'
-	+ '<h1 style="color: '+ dataColor +'; font-size: 13px; padding-left: 10px;">NSFW Profile: ' + user.data.subreddit.over_18 + '</h1>'
+	+ '<p style="color: '+ textColor +'; font-size: 13px; padding-left: 10px;">Created: <span class="value">' + time(user.data.created) + '</span></p>'
+	+ '<p style="color: '+ textColor +'; font-size: 13px; padding-left: 10px;">UserID: <span class="value">' + user.data.id + '</span></p>'
+	+ '<p style="color: '+ textColor +'; font-size: 13px; padding-left: 10px;">Verified: <span class="value">' + user.data.verified + '</span></p>'
+	+ '<p style="color: '+ textColor +'; font-size: 13px; padding-left: 10px;">Employee: <span class="value">' + user.data.is_employee + '</span></p>'
+	+ '<p style="color: '+ textColor +'; font-size: 13px; padding-left: 10px;">NSFW Profile: <span class="value">' + user.data.subreddit.over_18 + '</span></p>'
 	
 	+ '<h1 style="color: #2c2c2c; font-size: 15px; margin-top: 5px; margin-bottom: 3px;">Karma</h1>'
-	+ '<h1 style="color: '+ dataColor +'; font-size: 13px; padding-left: 10px;">Post: ' + user.data.link_karma + '</h1>'
-	+ '<h1 style="color: '+ dataColor +'; font-size: 13px; padding-left: 10px;">Comment: ' + user.data.comment_karma + '</h1>'
-	+ '<h1 style="color: '+ dataColor +'; font-size: 13px; padding-left: 10px;">Total: ' + user.data.total_karma + '</h1>'
-	+ '<h1 style="color: '+ dataColor +'; font-size: 13px; padding-left: 10px;">Awardee: ' + user.data.awardee_karma + '</h1>'
-	+ '<h1 style="color: '+ dataColor +'; font-size: 13px; padding-left: 10px;">Awarder: ' + user.data.awarder_karma + '</h1>'
-  
+	+ '<p style="color: '+ textColor +'; font-size: 13px; padding-left: 10px;">Post: <span class="value">' + user.data.link_karma + '</span></p>'
+	+ '<p style="color: '+ textColor +'; font-size: 13px; padding-left: 10px;">Comment: <span class="value">' + user.data.comment_karma + '</span></p>'
+	+ '<p style="color: '+ textColor +'; font-size: 13px; padding-left: 10px;">Total: <span class="value">' + user.data.total_karma + '</span></p>'
+	+ '<p style="color: '+ textColor +'; font-size: 13px; padding-left: 10px;">Awardee: <span class="value">' + user.data.awardee_karma + '</span></p>'
+	+ '<p style="color: '+ textColor +'; font-size: 13px; padding-left: 10px;">Awarder: <span class="value">' + user.data.awarder_karma + '</span></p>'
+
 	+ '<h1 style="color: #2c2c2c; font-size: 15px; margin-bottom: 3px; margin-top: 5px;">Links</h1>'
 	+ '<a style="padding-left: 10px;" class="InfoBar__recent" href="https://redditmetis.com/user/' + user.data.name + '" target="_blank">Redditmetis</a>'
 	+ '<a style="padding-left: 10px;" class="InfoBar__recent" href="https://www.reddit.com/search?q=' + user.data.name + '" target="_blank">Reddit Search</a>'
 	+ '<a style="padding-left: 10px;" class="InfoBar__recent" href="https://www.google.com/search?q=%22' + user.data.name + '%22" target="_blank">Google Search</a>'
-	+ '<a style="padding-left: 10px;" class="InfoBar__recent" href="https://www.google.com/search?q=%22' + user.data.name + '%22%20site%3Areddit.com%20OR%20site%3Aredditgifts.com" target="_blank">Google Reddit Search</a>'
-	+ '<a style="padding-bottom: 20px; padding-left: 10px;" class="InfoBar__recent" href="https://github.com/Hakorr/Userscripts/tree/main/Reddit.com/ModmailExtraInfo">Github</a>'
 	
 	+ '</div>';
-	 
+	
+	
 	document.getElementsByClassName("ThreadViewer__infobar")[0].appendChild(seperator);
 	document.getElementsByClassName("ThreadViewer__infobar")[0].appendChild(userDetails);
+	document.getElementsByClassName("ThreadViewer__infobar")[0].appendChild(document.getElementsByClassName("ThreadViewer__infobar")[0].firstChild);
+	document.getElementsByClassName("InfoBar")[0].appendChild(document.getElementsByClassName("InfoBar__modActions")[0]);
+	
+	document.getElementsByClassName("InfoBar")[0].insertBefore(document.getElementsByClassName("InfoBar__modActions")[0],document.getElementsByClassName("InfoBar")[0].firstChild);
+	
+	if(document.getElementsByClassName("InfoBar__banText")[0])
+	document.getElementsByClassName("ThreadViewer__infobar")[0].insertBefore(document.getElementsByClassName("InfoBar__banText")[0],document.getElementsByClassName("ThreadViewer__infobar")[0].firstChild);
+	
+	document.getElementsByClassName("InfoBar__username")[1].outerHTML = "";
+	document.getElementsByClassName("InfoBar__age")[1].outerHTML = "";
 }
 
 const elementToWatch = 'a[class="InfoBar__username"]';
