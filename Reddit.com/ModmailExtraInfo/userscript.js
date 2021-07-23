@@ -24,12 +24,12 @@ function time(UNIX_timestamp){
   var a = new Date(UNIX_timestamp * 1000);
   var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   var year = a.getFullYear();
-  var month = fixnumber(a.getMonth());
-  var date = fixnumber(a.getDate());
+  var month = months[a.getMonth()];
+  var date = a.getDate();
   var hour = fixnumber(a.getHours());
   var min = fixnumber(a.getMinutes());
   var sec = fixnumber(a.getSeconds());
-  var time = date + '/' + month + '/' + year + ' ' + hour + ':' + min + ':' + sec ;
+  var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
   return time;
 }
 
