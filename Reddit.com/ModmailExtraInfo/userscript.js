@@ -116,6 +116,8 @@ function addInfo(){
 	
 	document.getElementsByClassName("InfoBar__username")[1].outerHTML = "";
 	document.getElementsByClassName("InfoBar__age")[1].outerHTML = "";
+	document.getElementsByClassName("InfoBar__modActions")[1].outerHTML = "";
+  	//document.getElementsByClassName("InfoBar__modActions")[0].outerHTML = document.getElementsByClassName("InfoBar__modActions")[0].outerHTML + "<div class=\"InfoBar__modActions\"></div>";
 }
 
 const elementToWatch = 'a[class="InfoBar__username"]';
