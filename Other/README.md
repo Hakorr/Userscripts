@@ -1,4 +1,4 @@
-## Functions and other stuff taken from the internet
+## Functions & other stuff taken from the internet
 
 ###### Find an element by text
 ```js
