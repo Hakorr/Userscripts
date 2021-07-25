@@ -1,6 +1,6 @@
 ## Functions and other stuff taken from the internet
 
-Find an element by text
+###### Find an element by text
 ```js
 function contains(selector, text) {
   var elements = document.querySelectorAll(selector);
