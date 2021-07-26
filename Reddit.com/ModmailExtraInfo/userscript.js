@@ -50,6 +50,12 @@ var styleElement = document.createElement("style");
   document.getElementsByTagName("head")[0].appendChild(styleElement);
 }
 
+function sanitize(evilstring) {
+    const decoder = document.createElement('div')
+    decoder.innerHTML = evilstring;
+    return decoder.textContent;
+}
+  
 addCSS(".profileIcon:hover {-ms-transform: scale(6); -webkit-transform: scale(6); transform: scale(6);}");
 addCSS(".profileIcon {position: relative; bottom: 4px;}");
 addCSS(".InfoBar__recentsNone {color: #6e6e6e;}");
@@ -74,7 +80,7 @@ function addInfo(){
 	+ '<img class="profileIcon" style="margin-bottom: 10px; float: left; border-radius: 50%; transition: transform .2s;" src="' + user.data.icon_img + '" width="25">'
 	+ '<a class="InfoBar__username" href="https://www.reddit.com/user/'+ user.data.name +'">' + user.data.subreddit.display_name_prefixed + '</a>'
 	
-	+ '<h1 style="color: '+ textColor +'; font-size: 11px; margin-top: 17px; margin-bottom: 10px;">' + user.data.subreddit.public_description + '</h1>'
+	+ '<h1 style="color: '+ textColor +'; font-size: 11px; margin-top: 17px; margin-bottom: 10px;">' + sanitize(user.data.subreddit.public_description) + '</h1>'
 	
 	+ '<h1 style="color: #2c2c2c; font-size: 15px; margin-bottom: 3px; margin-top: 5px;">Main</h1>'
 	+ '<p style="color: '+ textColor +'; font-size: 13px; padding-left: 10px;">Created: <span class="value">' + time(user.data.created) + '</span></p>'
