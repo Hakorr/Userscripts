@@ -42,3 +42,10 @@ function Get(url) {
     return xmlHttp.responseText;
 }
 ```
+
+###### Multiline variable
+```
+var name = `
+
+`;
+```
