@@ -149,6 +149,8 @@ getTime()
 
 #### Examples
 
+##### Do remember that Discord doesn't update your status as fast for others
+
 <details open>
 <summary>Animations</summary><br>
 
@@ -174,7 +176,7 @@ await wait(1000);
 
 if(await skip(10,"unique")) return;
   
-await typewriter("","github.com/Hakorr/discord-status-animator",50);
+await typewriter("","github.com/Hakorr",50);
 await wait(3000);
 
 await activity("","Am I currently on the Discord tab: Yes","","","Am I currently on the Discord tab: No","");
