@@ -64,6 +64,7 @@ addCSS(".value {color:"+ dataColor +";}");
 addCSS(".InfoBar__banText {padding-bottom: 15px;}");
 addCSS(".InfoBar__username, .InfoBar__username:visited {padding-left: 10px;}");
 addCSS(".ThreadViewer__infobarContainer {display: table;}");
+addCSS(".ThreadViewer__threadContainer.m-has-infobar {right: 340px;}");
 
 function addInfo(){
 	var username = document.getElementsByClassName("InfoBar__username")[0].innerText;
