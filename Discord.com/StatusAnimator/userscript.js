@@ -5,7 +5,7 @@
 //Settings//////////////////////////
  
 var name = "Status Animator";
-var version = "V1.9";
+var version = "V1.9.1";
 var run = true;
  
 //This cookie will contain your Token
@@ -71,7 +71,6 @@ Timeouts are in milliseconds! You can type "random" on the emoji section to rand
 // ==UserScript==
 // @name         [Discord] Status Animator (Manual edit/Non-UI)
 // @namespace    HKR
-// @run-at       document-start
 // @version      1.9
 // @description  Automatically changes your Discord status
 // @author       HKR
