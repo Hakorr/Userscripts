@@ -3,7 +3,7 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     1.3
+// @version     1.4
 // @author      HKR
 // @description Shows additional user information on the sidebar of modmail
 // @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
@@ -12,25 +12,42 @@
 // ==/UserScript==
 
 /* SETTINGS */
-var textColor = "#6e6e6e";
+var textColor = null;
+var lightModeTextColor = "#6e6e6e";
+var darkModeTextColor = "#757575";
+
+var titleColor = null;
+var lightModeTitleColor = "#2c2c2c";
+var darkModeTitleColor = "#a7a7a7";
+
+var listBoxColor = null;
+var lightModeListColor = "#fff";
+var darkModeListColor = "#242424";
+
 var dataColor = "#0079d3";
-var titleColor = "#2c2c2c";
 
 var enableCustomResponses = true;
+//Feel free to edit and add more responses suitable for you! Replace means if to replace all text or just to add the text.
 var responses = [
 	{
 		"name":"Select a template",
+		"replace":true,
 		"content":``
 	},
 	{
-		"name":"Approved!",
+		"name":"Approved",
+		"replace":true,
 		"content":`Hey, approved the post!`
 	},
 	{
 		"name":"Rule broken",
-		"content":`Your post broke our rules. 
-		
-The action will not be reverted.`
+		"replace":true,
+		"content":`Your post broke our rules.\n\nThe action will not be reverted.`
+	},
+	{
+		"name":"Thanks",
+		"replace":false,
+		"content":`\n\Thank you!`
 	}
 ];
 
@@ -84,9 +101,7 @@ function addInfo(){
 	userDetails.innerHTML = `
 	<img class="profileIcon" src="${user.data.icon_img}" width="25">
 	<a class="InfoBar__username" href="https://www.reddit.com/user/${user.data.name}">${user.data.subreddit.display_name_prefixed}</a>
-
 	<h1 style="color: ${textColor} ; font-size: 11px; margin-top: 17px; margin-bottom: 10px;">${sanitize(user.data.subreddit.public_description)}</h1>
-
 	<h1 class="dataTitle">Main</h1>
 	<div class="dataText">
 		<p>Created: <span class="value">${time(user.data.created)}</span></p>
@@ -95,7 +110,6 @@ function addInfo(){
 		<p>Employee: <span class="value">${user.data.is_employee}</span></p>
 		<p>NSFW Profile: <span class="value">${user.data.subreddit.over_18}</span></p>
 	</div>
-
 	<h1 class="dataTitle">Karma</h1>
 	<div class="dataText">
 		<p>Post: <span class="value">${user.data.link_karma}</span></p>
@@ -104,7 +118,6 @@ function addInfo(){
 		<p>Awardee: <span class="value">${user.data.awardee_karma}</span></p>
 		<p>Awarder: <span class="value">${user.data.awarder_karma}</span></p>
 	</div>
-
 	<h1 class="dataTitle">Links</h1>
 		<div style="padding-left: 10px;">
 		<a class="InfoBar__recent" href="https://redditmetis.com/user/${user.data.name}" target="_blank">Redditmetis</a>
@@ -131,6 +144,7 @@ function addResponseBox() {
 	var responseBox = document.createElement('div');
 	responseBox.classList.add("select");
 	responseBox.innerHTML = `
+	<h2 class="dataTitle">Response templates</h2>
 	<select id="responseListbox" onchange="listBoxChanged(this.value);" onfocus="this.selectedIndex = -1;"/>
 	<span class="focus"></span>
 	`;
@@ -138,12 +152,13 @@ function addResponseBox() {
 	//Script element to head
 	var headJS = document.createElement('script');
 	headJS.innerHTML = `
-		function listBoxChanged(message) {
-			var messageBox = document.getElementsByClassName("Textarea ThreadViewerReplyForm__replyText")[0];
-			//messageBox.focus();
-			messageBox.value = message;
-			console.log("Set message to: " + message);
-		}
+	function listBoxChanged(message) {
+		var messageBox = document.getElementsByClassName("Textarea ThreadViewerReplyForm__replyText")[0];
+		var responses = ${JSON.stringify(responses)};
+		var response = responses.find(x => x.content == message);
+		response.replace ? messageBox.value = message : messageBox.value += message;
+		console.log("Set message to: " + message);
+	}
 	`;
 
 	function populate() {
@@ -160,15 +175,32 @@ function addResponseBox() {
 	populate();
 }
 
+function themeColors() {
+	var darkTheme = document.getElementsByClassName("theme-dark").length ? true : false;
+	if(darkTheme) {
+		console.log("Dark mode detected!");
+		textColor = darkModeTextColor;
+		titleColor = darkModeTitleColor;
+		listBoxColor = darkModeListColor;
+	} else {
+		console.log("Light mode detected!");
+		textColor = lightModeTextColor;
+		titleColor = lightModeTitleColor;
+		listBoxColor = lightModeListColor;
+	}
+}
+
 //When Modmail conversation has been opened, load the HTML elements with the correct data
 const elementToWatch = 'a[class="InfoBar__username"]';
 document.arrive(elementToWatch, function () {
+	themeColors();
 	addInfo();
 	if(enableCustomResponses) addResponseBox();
 });
 
 if(document.getElementsByClassName("InfoBar__username")[0]) { 
-	addInfo(); 
+	themeColors();
+	addInfo();
 	if(enableCustomResponses) addResponseBox(); 
 }
 
@@ -221,9 +253,8 @@ var css = `
 .responseListbox {
 	width: 50%;
 }
-
 :root {
-	--select-border: #777;
+	--select-border: #0079d3;
 	--select-focus: blue;
 	--select-arrow: var(--select-border);
 }
@@ -233,10 +264,9 @@ var css = `
   box-sizing: border-box;
 }
 select {
-	// A reset of styles, including removing the default dropdown arrow
 	appearance: none;
-	// Additional resets for further consistency
-	background-color: transparent;
+	background-color: ${listBoxColor};
+	color: ${textColor};
 	border: none;
 	padding: 0 1em 0 0;
 	margin: 0;
@@ -255,19 +285,16 @@ select {
 	border: 1px solid var(--select-border);
 	border-radius: 0.25em;
 	padding: 0.25em 0.5em;
-	font-size: 1rem;
+	font-size: 0.9rem;
 	cursor: pointer;
 	line-height: 1.1;
-	background-color: #fff;
-	background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
+	background-color: ${listBoxColor};
 }
 select::-ms-expand {
 	display: none;
 }
 option {
     white-space: normal;
-
-    // Only affects Chrome
     outline-color: var(--select-focus);
 }
 select:focus + .focus {
