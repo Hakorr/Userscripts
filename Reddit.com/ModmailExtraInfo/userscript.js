@@ -3,7 +3,7 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     1.2
+// @version     1.3
 // @author      HKR
 // @description Shows additional user information on the sidebar of modmail
 // @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
@@ -11,8 +11,30 @@
 // @supportURL  https://github.com/Hakorr/Userscripts/issues
 // ==/UserScript==
 
+/* SETTINGS */
 var textColor = "#6e6e6e";
 var dataColor = "#0079d3";
+var titleColor = "#2c2c2c";
+
+var enableCustomResponses = true;
+var responses = [
+	{
+		"name":"Select a template",
+		"content":``
+	},
+	{
+		"name":"Approved!",
+		"content":`Hey, approved the post!`
+	},
+	{
+		"name":"Rule broken",
+		"content":`Your post broke our rules. 
+		
+The action will not be reverted.`
+	}
+];
+
+/* --------- */
 
 function Get(url) {
     var xmlHttp = new XMLHttpRequest();
@@ -39,91 +61,228 @@ function fixnumber(number) {
     else return number;
 }
 
-function addCSS(cssCode) {
-var styleElement = document.createElement("style");
-  styleElement.type = "text/css";
-  if (styleElement.styleSheet) {
-    styleElement.styleSheet.cssText = cssCode;
-  } else {
-    styleElement.appendChild(document.createTextNode(cssCode));
-  }
-  document.getElementsByTagName("head")[0].appendChild(styleElement);
-}
-
 function sanitize(evilstring) {
     const decoder = document.createElement('div')
     decoder.innerHTML = evilstring;
     return decoder.textContent;
 }
-  
-addCSS(".profileIcon:hover {-ms-transform: scale(6); -webkit-transform: scale(6); transform: scale(6);}");
-addCSS(".profileIcon {position: relative; bottom: 4px;}");
-addCSS(".InfoBar__recentsNone {color: #6e6e6e;}");
-addCSS(".InfoBar__metadata, .InfoBar__recents { margin: 6px 0; margin-left: 10px;}");
-addCSS(".value {color:"+ dataColor +";}");
-addCSS(".InfoBar__banText {padding-bottom: 15px;}");
-addCSS(".InfoBar__username, .InfoBar__username:visited {padding-left: 10px;}");
-addCSS(".ThreadViewer__infobarContainer {display: table;}");
-addCSS(".ThreadViewer__threadContainer.m-has-infobar {right: 340px;}");
 
+//Function that appends HTML into the Modmail page
 function addInfo(){
+	//Load and parse username
 	var username = document.getElementsByClassName("InfoBar__username")[0].innerText;
-	var about = "https://www.reddit.com/user/" + username +"/about.json";
-
+	var about = "https://www.reddit.com/user/" + username + "/about.json";
 	var user = JSON.parse(Get(about));
 
+	//Separator HTML element
 	var seperator = document.createElement('div');
-	seperator.innerHTML = '<div class="InfoBar__modActions">'
-	 + '</div>';
+	seperator.innerHTML = '<div class="InfoBar__modActions"></div>';
 
+	//HTML element that contains all the data
 	var userDetails = document.createElement('div');
-	userDetails.innerHTML = '<div class="InfoBar__age">'
-	+ '<img class="profileIcon" style="margin-bottom: 10px; float: left; border-radius: 50%; transition: transform .2s;" src="' + user.data.icon_img + '" width="25">'
-	+ '<a class="InfoBar__username" href="https://www.reddit.com/user/'+ user.data.name +'">' + user.data.subreddit.display_name_prefixed + '</a>'
-	
-	+ '<h1 style="color: '+ textColor +'; font-size: 11px; margin-top: 17px; margin-bottom: 10px;">' + sanitize(user.data.subreddit.public_description) + '</h1>'
-	
-	+ '<h1 style="color: #2c2c2c; font-size: 15px; margin-bottom: 3px; margin-top: 5px;">Main</h1>'
-	+ '<p style="color: '+ textColor +'; font-size: 13px; padding-left: 10px;">Created: <span class="value">' + time(user.data.created) + '</span></p>'
-	+ '<p style="color: '+ textColor +'; font-size: 13px; padding-left: 10px;">UserID: <span class="value">' + user.data.id + '</span></p>'
-	+ '<p style="color: '+ textColor +'; font-size: 13px; padding-left: 10px;">Verified: <span class="value">' + user.data.verified + '</span></p>'
-	+ '<p style="color: '+ textColor +'; font-size: 13px; padding-left: 10px;">Employee: <span class="value">' + user.data.is_employee + '</span></p>'
-	+ '<p style="color: '+ textColor +'; font-size: 13px; padding-left: 10px;">NSFW Profile: <span class="value">' + user.data.subreddit.over_18 + '</span></p>'
-	
-	+ '<h1 style="color: #2c2c2c; font-size: 15px; margin-top: 5px; margin-bottom: 3px;">Karma</h1>'
-	+ '<p style="color: '+ textColor +'; font-size: 13px; padding-left: 10px;">Post: <span class="value">' + user.data.link_karma + '</span></p>'
-	+ '<p style="color: '+ textColor +'; font-size: 13px; padding-left: 10px;">Comment: <span class="value">' + user.data.comment_karma + '</span></p>'
-	+ '<p style="color: '+ textColor +'; font-size: 13px; padding-left: 10px;">Total: <span class="value">' + user.data.total_karma + '</span></p>'
-	+ '<p style="color: '+ textColor +'; font-size: 13px; padding-left: 10px;">Awardee: <span class="value">' + user.data.awardee_karma + '</span></p>'
-	+ '<p style="color: '+ textColor +'; font-size: 13px; padding-left: 10px;">Awarder: <span class="value">' + user.data.awarder_karma + '</span></p>'
+	userDetails.classList.add("InfoBar__age");
+	userDetails.innerHTML = `
+	<img class="profileIcon" src="${user.data.icon_img}" width="25">
+	<a class="InfoBar__username" href="https://www.reddit.com/user/${user.data.name}">${user.data.subreddit.display_name_prefixed}</a>
 
-	+ '<h1 style="color: #2c2c2c; font-size: 15px; margin-bottom: 3px; margin-top: 5px;">Links</h1>'
-	+ '<a style="padding-left: 10px;" class="InfoBar__recent" href="https://redditmetis.com/user/' + user.data.name + '" target="_blank">Redditmetis</a>'
-	+ '<a style="padding-left: 10px;" class="InfoBar__recent" href="https://www.reddit.com/search?q=' + user.data.name + '" target="_blank">Reddit Search</a>'
-	+ '<a style="padding-left: 10px;" class="InfoBar__recent" href="https://www.google.com/search?q=%22' + user.data.name + '%22" target="_blank">Google Search</a>'
+	<h1 style="color: ${textColor} ; font-size: 11px; margin-top: 17px; margin-bottom: 10px;">${sanitize(user.data.subreddit.public_description)}</h1>
+
+	<h1 class="dataTitle">Main</h1>
+	<div class="dataText">
+		<p>Created: <span class="value">${time(user.data.created)}</span></p>
+		<p>UserID: <span class="value">${user.data.id}</span></p>
+		<p>Verified: <span class="value">${user.data.verified}</span></p>
+		<p>Employee: <span class="value">${user.data.is_employee}</span></p>
+		<p>NSFW Profile: <span class="value">${user.data.subreddit.over_18}</span></p>
+	</div>
+
+	<h1 class="dataTitle">Karma</h1>
+	<div class="dataText">
+		<p>Post: <span class="value">${user.data.link_karma}</span></p>
+		<p>Comment: <span class="value">${user.data.comment_karma}</span></p>
+		<p>Total: <span class="value">${user.data.total_karma}</span></p>
+		<p>Awardee: <span class="value">${user.data.awardee_karma}</span></p>
+		<p>Awarder: <span class="value">${user.data.awarder_karma}</span></p>
+	</div>
+
+	<h1 class="dataTitle">Links</h1>
+		<div style="padding-left: 10px;">
+		<a class="InfoBar__recent" href="https://redditmetis.com/user/${user.data.name}" target="_blank">Redditmetis</a>
+		<a class="InfoBar__recent" href="https://www.reddit.com/search?q=${user.data.name}" target="_blank">Reddit Search</a>
+		<a class="InfoBar__recent" href="https://www.google.com/search?q=%22${user.data.name}%22" target="_blank">Google Search</a>
+	</div>
+	`;
 	
-	+ '</div>';
-	
-	
+	//Arrange items and append
 	document.getElementsByClassName("ThreadViewer__infobar")[0].appendChild(seperator);
 	document.getElementsByClassName("ThreadViewer__infobar")[0].appendChild(userDetails);
 	document.getElementsByClassName("ThreadViewer__infobar")[0].appendChild(document.getElementsByClassName("ThreadViewer__infobar")[0].firstChild);
 	document.getElementsByClassName("InfoBar")[0].appendChild(document.getElementsByClassName("InfoBar__modActions")[0]);
-	
 	document.getElementsByClassName("InfoBar")[0].insertBefore(document.getElementsByClassName("InfoBar__modActions")[0],document.getElementsByClassName("InfoBar")[0].firstChild);
-	
 	if(document.getElementsByClassName("InfoBar__banText")[0])
-	document.getElementsByClassName("ThreadViewer__infobar")[0].insertBefore(document.getElementsByClassName("InfoBar__banText")[0],document.getElementsByClassName("ThreadViewer__infobar")[0].firstChild);
-	
+		document.getElementsByClassName("ThreadViewer__infobar")[0].insertBefore(document.getElementsByClassName("InfoBar__banText")[0],document.getElementsByClassName("ThreadViewer__infobar")[0].firstChild);
 	document.getElementsByClassName("InfoBar__username")[1].outerHTML = "";
 	document.getElementsByClassName("InfoBar__age")[1].outerHTML = "";
 	document.getElementsByClassName("InfoBar__modActions")[1].outerHTML = "";
-  	//document.getElementsByClassName("InfoBar__modActions")[0].outerHTML = document.getElementsByClassName("InfoBar__modActions")[0].outerHTML + "<div class=\"InfoBar__modActions\"></div>";
 }
 
+function addResponseBox() {
+	//Listbox element
+	var responseBox = document.createElement('div');
+	responseBox.classList.add("select");
+	responseBox.innerHTML = `
+	<select id="responseListbox" onchange="listBoxChanged(this.value);" onfocus="this.selectedIndex = -1;"/>
+	<span class="focus"></span>
+	`;
+
+	//Script element to head
+	var headJS = document.createElement('script');
+	headJS.innerHTML = `
+		function listBoxChanged(message) {
+			var messageBox = document.getElementsByClassName("Textarea ThreadViewerReplyForm__replyText")[0];
+			//messageBox.focus();
+			messageBox.value = message;
+			console.log("Set message to: " + message);
+		}
+	`;
+
+	function populate() {
+		var select = document.getElementById("responseListbox");
+		for(var i = 0; i < responses.length; i++) {
+			select.options[select.options.length] = new Option(responses[i].name, responses[i].content);
+		}
+	}
+
+	document.getElementsByClassName("ThreadViewer__replyContainer")[0].prepend(responseBox);
+	var head = document.getElementsByTagName('head')[0];
+	head.appendChild(headJS);
+
+	populate();
+}
+
+//When Modmail conversation has been opened, load the HTML elements with the correct data
 const elementToWatch = 'a[class="InfoBar__username"]';
 document.arrive(elementToWatch, function () {
 	addInfo();
+	if(enableCustomResponses) addResponseBox();
 });
 
-if(document.getElementsByClassName("InfoBar__username")[0]) addInfo();
+if(document.getElementsByClassName("InfoBar__username")[0]) { 
+	addInfo(); 
+	if(enableCustomResponses) addResponseBox(); 
+}
+
+var css = `
+.profileIcon:hover {
+	-ms-transform: scale(6);
+	-webkit-transform: scale(6);
+	transform: scale(6);
+}
+.profileIcon {
+	position: relative;
+	bottom: 4px;
+	margin-bottom: 10px;
+	float: left; border-radius: 50%;
+	transition: transform .2s;
+}
+.InfoBar__recentsNone {
+	color: #6e6e6e;
+}
+.InfoBar__metadata, .InfoBar__recents {
+	margin: 6px 0; 
+	margin-left: 10px;
+}
+.value {
+	color: ${dataColor};
+}
+.InfoBar__banText {
+	padding-bottom: 15px;
+}
+.InfoBar__username, .InfoBar__username:visited {
+	padding-left: 10px;
+}
+.ThreadViewer__infobarContainer {
+	display: table;
+}
+.ThreadViewer__threadContainer.m-has-infobar {
+	right: 340px;
+}
+.dataText {
+	color: ${textColor}; 
+	font-size: 13px;
+	padding-left: 10px;
+}
+.dataTitle {
+	color: ${titleColor};
+	font-size: 15px; 
+	margin-bottom: 3px; 
+	margin-top: 5px;
+}
+.responseListbox {
+	width: 50%;
+}
+
+:root {
+	--select-border: #777;
+	--select-focus: blue;
+	--select-arrow: var(--select-border);
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+select {
+	// A reset of styles, including removing the default dropdown arrow
+	appearance: none;
+	// Additional resets for further consistency
+	background-color: transparent;
+	border: none;
+	padding: 0 1em 0 0;
+	margin: 0;
+	width: 100%;
+	font-family: inherit;
+	font-size: inherit;
+	cursor: inherit;
+	line-height: inherit;
+	outline: none;
+	position: relative;
+}
+.select {
+	width: 100%;
+	min-width: 15ch;
+	max-width: 30ch;
+	border: 1px solid var(--select-border);
+	border-radius: 0.25em;
+	padding: 0.25em 0.5em;
+	font-size: 1rem;
+	cursor: pointer;
+	line-height: 1.1;
+	background-color: #fff;
+	background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
+}
+select::-ms-expand {
+	display: none;
+}
+option {
+    white-space: normal;
+
+    // Only affects Chrome
+    outline-color: var(--select-focus);
+}
+select:focus + .focus {
+	position: absolute;
+	top: -1px;
+	left: -1px;
+	right: -1px;
+	bottom: -1px;
+	border: 2px solid var(--select-focus);
+	border-radius: inherit;
+}
+`;
+
+//Apply the custom css
+var styleSheet = document.createElement("style");
+styleSheet.type = "text/css";
+styleSheet.innerText = css;
+document.head.appendChild(styleSheet);
