@@ -3,7 +3,7 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     1.6
+// @version     1.7
 // @author      HKR
 // @description Shows additional user information on the sidebar of modmail
 // @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
@@ -15,26 +15,30 @@
 If you block "https://oauth.reddit.com/api/mod/conversations/*****?markRead=false&redditWebClient=modmail", the added text will stay. Thanks for understanding.*/
 
 /* VARIABLES FOR RESPONSES */
-var subTag = document.getElementsByClassName("ThreadTitle__community")[0].href.slice(23);
-var userTag = "u/" + document.getElementsByClassName("InfoBar__username")[0].innerText;
-var modmail = `[modmail](https://www.reddit.com/message/compose?to=/${subTag})`;
+var subTag, userTag, modmail;
+function setRespondVariables() {
+	subTag = document.getElementsByClassName("ThreadTitle__community")[0].href.slice(23);
+	userTag = "u/" + document.getElementsByClassName("InfoBar__username")[0].innerText;
+	modmail = `[modmail](https://www.reddit.com/message/compose?to=/${subTag})`;
+}
 
 /* SETTINGS */
-var textColor = null;
-var lightModeTextColor = "#6e6e6e";
-var darkModeTextColor = "#757575";
 
-var titleColor = null;
-var lightModeTitleColor = "#2c2c2c";
-var darkModeTitleColor = "#a7a7a7";
+//Text color settings
+var textColor = null, lightModeTextColor = "#6e6e6e", darkModeTextColor = "#757575";
 
-var listBoxColor = null;
-var lightModeListColor = "#fff";
-var darkModeListColor = "#242424";
+//Title color settings
+var titleColor = null, lightModeTitleColor = "#2c2c2c", darkModeTitleColor = "#a7a7a7";
 
+//Listbox color settings
+var listBoxColor = null, lightModeListColor = "#fff", darkModeListColor = "#242424";
+
+//Data (Such as numbers) color settings
 var dataColor = "#0079d3";
 
+//If false, no response list is created
 var enableCustomResponses = true;
+
 //Feel free to edit and add more responses suitable for you! Replace means if to replace all text or just to add the text.
 var responses = [
 	{
@@ -233,12 +237,14 @@ const elementToWatch = 'a[class="InfoBar__username"]';
 document.arrive(elementToWatch, function () {
 	themeColors();
 	addInfo();
+	setRespondVariables();
 	if(enableCustomResponses) addResponseBox();
 });
 
 if(document.getElementsByClassName("InfoBar__username")[0]) { 
 	themeColors();
 	addInfo();
+	setRespondVariables();
 	if(enableCustomResponses) addResponseBox(); 
 }
 
@@ -323,7 +329,7 @@ select {
 	max-width: 30ch;
 	border: 1px solid var(--select-border);
 	border-radius: 0.25em;
-	padding: 0.25em 0.5em;
+	padding: 0.3em 0.4em;
 	font-size: 0.9rem;
 	cursor: pointer;
 	line-height: 1.1;
