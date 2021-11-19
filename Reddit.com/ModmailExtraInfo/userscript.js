@@ -3,7 +3,7 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     1.5
+// @version     1.6
 // @author      HKR
 // @description Shows additional user information on the sidebar of modmail
 // @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
@@ -11,8 +11,13 @@
 // @supportURL  https://github.com/Hakorr/Userscripts/issues
 // ==/UserScript==
 
-/* NOTE: Use your browser's "Network Request Blocking" to block "https://oauth.reddit.com/api/mod/conversations/*****?markRead=false&redditWebClient=modmail"
-	(If you want to use the Custom Responses) Thanks! */
+/* NOTE: (If you want to use the Custom Responses) Reddit's sync feature removes the script's added text. This is a bug in my script and can be fixed with time.
+If you block "https://oauth.reddit.com/api/mod/conversations/*****?markRead=false&redditWebClient=modmail", the added text will stay. Thanks for understanding.*/
+
+/* VARIABLES FOR RESPONSES */
+var subTag = document.getElementsByClassName("ThreadTitle__community")[0].href.slice(23);
+var userTag = "u/" + document.getElementsByClassName("InfoBar__username")[0].innerText;
+var modmail = `[modmail](https://www.reddit.com/message/compose?to=/${subTag})`;
 
 /* SETTINGS */
 var textColor = null;
@@ -38,23 +43,53 @@ var responses = [
 		"content":``
 	},
 	{
-		"name":"Approved",
+		"name":"Default approved",
 		"replace":true,
 		"content":`Hey, approved the post!`
 	},
 	{
-		"name":"Rule broken",
+		"name":"Default rule broken",
 		"replace":true,
 		"content":`Your post broke our rules.\n\nThe action will not be reverted.`
 	},
 	{
-		"name":"Thanks",
+		"name":"Add thanks",
 		"replace":false,
 		"content":`\n\nThank you!`
+	},
+	{
+		"name":"Add subreddit mention",
+		"replace":false,
+		"content":`${subTag}`
+	},
+	{
+		"name":"Add user mention",
+		"replace":false,
+		"content":`${userTag}`
+	},
+	{
+		"name":"Add Modmail link",
+		"replace":false,
+		"content":`${modmail}`
+	},
+	{
+		"name":"Add Content Policy",
+		"replace":false,
+		"content":`[Content Policy](https://www.redditinc.com/policies/content-policy)`
+	},
+	{
+		"name":"Add User Agreement",
+		"replace":false,
+		"content":`[User Agreement](https://www.redditinc.com/policies/user-agreement)`
+	},
+	{
+		"name":"Add Rickroll",
+		"replace":false,
+		"content":`[link](https://www.youtube.com/watch?v=dQw4w9WgXcQ)`
 	}
 ];
 
-/* --------- */
+/* ---------- JS & HTML ---------- */
 
 function Get(url) {
     var xmlHttp = new XMLHttpRequest();
@@ -207,6 +242,7 @@ if(document.getElementsByClassName("InfoBar__username")[0]) {
 	if(enableCustomResponses) addResponseBox(); 
 }
 
+//Took advice for the listbox CSS from moderncss.dev/custom-select-styles-with-pure-css, thanks!
 var css = `
 .profileIcon:hover {
 	-ms-transform: scale(6);
