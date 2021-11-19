@@ -31,7 +31,7 @@ var pageURLCheckTimer       = setInterval (
 );
 
 function ModmailExtraInfo() {
-    	console.log ('[ModmailExtraInfo] New page detected!');
+	console.log ('[ModmailExtraInfo] New page detected!');
 
 	/* VARIABLES FOR RESPONSES */
 	var subTag = document.getElementsByClassName("ThreadTitle__community")[0].href.slice(23);
