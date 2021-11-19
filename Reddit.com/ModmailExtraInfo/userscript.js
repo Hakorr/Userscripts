@@ -3,13 +3,16 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     1.4
+// @version     1.5
 // @author      HKR
 // @description Shows additional user information on the sidebar of modmail
 // @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
 // @icon        https://www.redditstatic.com/modmail/favicon/favicon-32x32.png
 // @supportURL  https://github.com/Hakorr/Userscripts/issues
 // ==/UserScript==
+
+/* NOTE: Use your browser's "Network Request Blocking" to block "https://oauth.reddit.com/api/mod/conversations/*****?markRead=false&redditWebClient=modmail"
+	(If you want to use the Custom Responses) Thanks! */
 
 /* SETTINGS */
 var textColor = null;
