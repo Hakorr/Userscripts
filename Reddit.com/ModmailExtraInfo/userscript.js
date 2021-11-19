@@ -3,9 +3,10 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     1.8
+// @version     1.9
 // @author      HKR
 // @description Shows additional user information on the sidebar of modmail
+// @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
 // @icon        https://www.redditstatic.com/modmail/favicon/favicon-32x32.png
 // @supportURL  https://github.com/Hakorr/Userscripts/issues
 // ==/UserScript==
@@ -13,30 +14,17 @@
 /* NOTE: (If you want to use the Custom Responses) Reddit's sync feature removes the script's added text. This is a bug in my script and can be fixed with time.
 If you block "https://oauth.reddit.com/api/mod/conversations/*****?markRead=false&redditWebClient=modmail", the added text will stay. Thanks for understanding.*/
 
-//New window detect from https://stackoverflow.com/a/18997637
-var fireOnHashChangesToo    = true;
-var pageURLCheckTimer       = setInterval (
-    function () {
-        if (   this.lastPathStr  !== location.pathname
-            || this.lastQueryStr !== location.search
-            || (fireOnHashChangesToo && this.lastHashStr !== location.hash)
-        ) {
-            this.lastPathStr  = location.pathname;
-            this.lastQueryStr = location.search;
-            this.lastHashStr  = location.hash;
-            ModmailExtraInfo();
-        }
-    }
-    , 111
-);
+console.log("[ModmailExtraInfo] %cScript started!", "color: green");
+var running = false;
 
-function ModmailExtraInfo() {
-	console.log ('[ModmailExtraInfo] New page detected!');
+function main() {
+	running = true;
 
-	/* VARIABLES FOR RESPONSES */
+	console.log("[ModmailExtraInfo] Main function ran!");
 	var subTag = document.getElementsByClassName("ThreadTitle__community")[0].href.slice(23);
 	var userTag = "u/" + document.getElementsByClassName("InfoBar__username")[0].innerText;
 	var modmail = `[modmail](https://www.reddit.com/message/compose?to=/${subTag})`;
+	var rules = `https://www.reddit.com/${subTag}/about/rules`;
 
 	/* SETTINGS */
 
@@ -70,7 +58,7 @@ function ModmailExtraInfo() {
 		{
 			"name":"Default rule broken",
 			"replace":true,
-			"content":`Your post broke our rules.\n\nThe action will not be reverted.`
+			"content":`Your post broke our [rules](${rules}).\n\nThe action will not be reverted.`
 		},
 		{
 			"name":"Add thanks",
@@ -110,7 +98,7 @@ function ModmailExtraInfo() {
 	];
 
 	/* ---------- JS & HTML ---------- */
-
+	
 	function time(UNIX_timestamp){
 	var a = new Date(UNIX_timestamp * 1000);
 	var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -123,31 +111,31 @@ function ModmailExtraInfo() {
 	var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
 	return time;
 	}
-
+	
 	function fixnumber(number) {
 		if(number < 10) return "0" + number;
 		else return number;
 	}
-
+	
 	function sanitize(evilstring) {
 		const decoder = document.createElement('div')
 		decoder.innerHTML = evilstring;
 		return decoder.textContent;
 	}
-
+	
 	//Function that appends HTML into the Modmail page
 	function addInfo(){
 		//Load and parse username
 		var username = document.getElementsByClassName("InfoBar__username")[0].innerText;
 		var about = "https://www.reddit.com/user/" + username + "/about.json";
 		const xhr = new XMLHttpRequest();
-
+	
 		xhr.onload = () => {
 			var user = JSON.parse(xhr.responseText);
 			//Separator HTML element
 			var seperator = document.createElement('div');
 			seperator.innerHTML = '<div class="InfoBar__modActions"></div>';
-
+	
 			//HTML element that contains all the data
 			var userDetails = document.createElement('div');
 			userDetails.classList.add("InfoBar__age");
@@ -195,7 +183,7 @@ function ModmailExtraInfo() {
 		xhr.open('GET', about);
 		xhr.send();
 	}
-
+	
 	function addResponseBox() {
 		//Listbox element
 		var responseBox = document.createElement('div');
@@ -205,7 +193,7 @@ function ModmailExtraInfo() {
 		<select id="responseListbox" onchange="listBoxChanged(this.value);" onfocus="this.selectedIndex = -1;"/>
 		<span class="focus"></span>
 		`;
-
+	
 		//Script element to head
 		var headJS = document.createElement('script');
 		headJS.innerHTML = `
@@ -214,21 +202,21 @@ function ModmailExtraInfo() {
 			var responses = ${JSON.stringify(responses)};
 			var response = responses.find(x => x.content == message);
 			response.replace ? messageBox.value = message : messageBox.value += message;
-			console.log("[ModmailExtraInfo] New messageBox value: " + messageBox.value);
+			console.log("[ModmailExtraInfo] %cNew messageBox value: " + messageBox.value,"color: orange");
 		}
 		`;
-
+	
 		function populate() {
 			var select = document.getElementById("responseListbox");
 			for(var i = 0; i < responses.length; i++) {
 				select.options[select.options.length] = new Option(responses[i].name, responses[i].content);
 			}
 		}
-
+	
 		document.getElementsByClassName("ThreadViewer__replyContainer")[0].prepend(responseBox);
 		var head = document.getElementsByTagName('head')[0];
 		head.appendChild(headJS);
-
+	
 		populate();
 	}
 
@@ -247,13 +235,7 @@ function ModmailExtraInfo() {
 		}
 	}
 
-	if(document.getElementsByClassName("InfoBar__username")[0]) {
-		console.log("[ModmailExtraInfo] Element InfoBar found!");
-		themeColors();
-		addInfo();
-		if(enableCustomResponses) addResponseBox(); 
-		console.log("[ModmailExtraInfo] Loaded successfully! (hopefully)");
-	}
+	themeColors();
 
 	//Took advice for the listbox CSS from moderncss.dev/custom-select-styles-with-pure-css, thanks!
 	var css = `
@@ -287,9 +269,6 @@ function ModmailExtraInfo() {
 	}
 	.ThreadViewer__infobarContainer {
 		display: table;
-	}
-	.ThreadViewer__threadContainer.m-has-infobar {
-		right: 340px;
 	}
 	.dataText {
 		color: ${textColor}; 
@@ -358,6 +337,19 @@ function ModmailExtraInfo() {
 		border: 2px solid var(--select-focus);
 		border-radius: inherit;
 	}
+	base: [
+		"color: #fff",
+		"background-color: #444",
+		"padding: 2px 4px",
+		"border-radius: 2px"
+	  ],
+	  warning: [
+		"color: #eee",
+		"background-color: red"
+	  ],
+	  success: [
+		"background-color: green"
+	  ]
 	`;
 
 	//Apply the custom css
@@ -365,4 +357,35 @@ function ModmailExtraInfo() {
 	styleSheet.type = "text/css";
 	styleSheet.innerText = css;
 	document.head.appendChild(styleSheet);
+
+	addInfo();
+	if(enableCustomResponses && document.getElementById("responseListbox") == null) addResponseBox();
+	console.log("[ModmailExtraInfo] %cLoaded!", "color: lime");
+	running = true;
 }
+
+var fireOnHashChangesToo    = true;
+var pageURLCheckTimer       = setInterval (
+    function () {
+        if (   this.lastPathStr  !== location.pathname
+            || this.lastQueryStr !== location.search
+            || (fireOnHashChangesToo && this.lastHashStr !== location.hash)
+        ) {
+            this.lastPathStr  = location.pathname;
+            this.lastQueryStr = location.search;
+            this.lastHashStr  = location.hash;
+            running = false;
+			console.log("[ModmailExtraInfo] %cURL changed!", "color: grey");
+        }
+    }
+    , 111
+);
+
+if(document.getElementsByClassName("InfoBar__username")[0]) {
+	if(!running) main();
+}
+
+const elementToWatch = 'a[class="InfoBar__username"]';
+document.arrive(elementToWatch, function () {
+	if(!running) main();
+});
