@@ -47,7 +47,7 @@ var responses = [
 	{
 		"name":"Thanks",
 		"replace":false,
-		"content":`\n\Thank you!`
+		"content":`\n\nThank you!`
 	}
 ];
 
