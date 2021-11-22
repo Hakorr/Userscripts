@@ -49,3 +49,8 @@ var name = `
 
 `;
 ```
+
+###### Wildcard pattern matching
+```
+const wildcardMatching = (str,item) => new RegExp('^' + str.replace(/\*/g, '.*') + '$').test(item);
+```
