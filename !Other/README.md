@@ -44,13 +44,13 @@ function Get(url) {
 ```
 
 ###### Multiline variable
-```
+```js
 var name = `
 
 `;
 ```
 
 ###### Wildcard pattern matching
-```
+```js
 const wildcardMatching = (str,item) => new RegExp('^' + str.replace(/\*/g, '.*') + '$').test(item);
 ```
