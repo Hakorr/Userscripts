@@ -52,5 +52,5 @@ var name = `
 
 ###### Wildcard pattern matching
 ```js
-const wildcardMatching = (str,item) => new RegExp('^' + str.replace(/\*/g, '.*') + '$').test(item);
+const wildMatch = (str,item) => new RegExp('^' + str.replace(/\*/g, '.*') + '$').test(item);
 ```
