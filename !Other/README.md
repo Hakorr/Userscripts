@@ -33,7 +33,7 @@ function sanitize(string) {
 }
 ```
 
-###### Get HTTP response text
+###### Get HTTP response text (outdated)
 ```js
 function Get(url) {
     var xmlHttp = new XMLHttpRequest();
