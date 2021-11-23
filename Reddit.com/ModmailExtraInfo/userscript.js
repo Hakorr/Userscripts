@@ -119,7 +119,7 @@ function main() {
 
 		//Get year, month, date, hour, min & sec variables
 		var year = d.getFullYear(), 
-		monthNum = d.getMonth(),
+		monthNum = d.getMonth() + 1,
 		month = months[d.getMonth()],
 		date = d.getDate(), 
 		hour = fixnumber(d.getHours()), 
