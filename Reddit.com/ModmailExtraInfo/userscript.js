@@ -1,32 +1,37 @@
 // ==UserScript==
-// @name        [Reddit] ModmailExtraInfo
+// @name        [Reddit] Modmail++
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     1.9
+// @version     2.0
 // @author      HKR
-// @description Shows additional user information on the sidebar of modmail
-// @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
+// @description Additional tools and information to Reddit's Modmail
 // @icon        https://www.redditstatic.com/modmail/favicon/favicon-32x32.png
 // @supportURL  https://github.com/Hakorr/Userscripts/issues
 // ==/UserScript==
 
-/* NOTE: (If you want to use the Custom Responses) Reddit's sync feature removes the script's added text. This is a bug in my script and can be fixed with time.
-If you block "https://oauth.reddit.com/api/mod/conversations/*****?markRead=false&redditWebClient=modmail", the added text will stay. Thanks for understanding.*/
-
 console.log("[ModmailExtraInfo] %cScript started!", "color: green");
-var running = false;
+
+/* Do not touch */
+const $ = document.querySelector.bind(document);
+const $$ = document.querySelectorAll.bind(document);
+var first = false;
+/* Do not touch */
 
 function main() {
-	running = true;
-
-	console.log("[ModmailExtraInfo] Main function ran!");
-	var subTag = document.getElementsByClassName("ThreadTitle__community")[0].href.slice(23);
-	var userTag = "u/" + document.getElementsByClassName("InfoBar__username")[0].innerText;
-	var modmail = `[modmail](https://www.reddit.com/message/compose?to=/${subTag})`;
-	var rules = `https://www.reddit.com/${subTag}/about/rules`;
+	console.log("[ModmailExtraInfo] %cMain function ran!", "color: grey");
 
 	/* SETTINGS */
+
+	/* NOTE (If you want to use the Custom Responses): Reddit's sync feature removes the script's added text.
+	- If you block "https://oauth.reddit.com/api/mod/conversations/*****?markRead=false&redditWebClient=modmail", the added text will stay. */
+
+	//Variables for the responses
+	const subTag = $(".ThreadTitle__community").href.slice(23);
+	const userTag = "u/" + $(".InfoBar__username").innerText;
+	const modmail = `[modmail](https://www.reddit.com/message/compose?to=/${subTag})`;
+	const rules = `https://www.reddit.com/${subTag}/about/rules`;
+	const randItem = itemArr => itemArr[Math.floor(Math.random() * itemArr.length)];
 
 	//Text color settings
 	var textColor = null, lightModeTextColor = "#6e6e6e", darkModeTextColor = "#757575";
@@ -38,13 +43,16 @@ function main() {
 	var listBoxColor = null, lightModeListColor = "#fff", darkModeListColor = "#242424";
 
 	//Data (Such as numbers) color settings
-	var dataColor = "#0079d3";
+	const dataColor = "#0079d3";
 
-	//If false, no response list is created
-	var enableCustomResponses = true;
+	//No response list is created if false
+	const enableCustomResponses = true;
+
+	//No chat profile icons are added if false
+	const chatProfileIcons = true;
 
 	//Feel free to edit and add more responses suitable for you! Replace means if to replace all text or just to add the text.
-	var responses = [
+	const responses = [
 		{
 			"name":"Select a template",
 			"replace":true,
@@ -59,6 +67,11 @@ function main() {
 			"name":"Default rule broken",
 			"replace":true,
 			"content":`Your post broke our [rules](${rules}).\n\nThe action will not be reverted.`
+		},
+		{
+			"name":"Add greetings",
+			"replace":true,
+			"content":`${randItem(["Greetings","Hello","Hi"])} ${userTag},\n\n`
 		},
 		{
 			"name":"Add thanks",
@@ -100,36 +113,48 @@ function main() {
 	/* ---------- JS & HTML ---------- */
 	
 	function time(UNIX_timestamp){
-	var a = new Date(UNIX_timestamp * 1000);
-	var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-	var year = a.getFullYear();
-	var month = months[a.getMonth()];
-	var date = a.getDate();
-	var hour = fixnumber(a.getHours());
-	var min = fixnumber(a.getMinutes());
-	var sec = fixnumber(a.getSeconds());
-	var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
-	return time;
+		//Get UNIX time
+		var d = new Date(UNIX_timestamp * 1000);
+		const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+		//Get year, month, date, hour, min & sec variables
+		var year = d.getFullYear(), 
+		monthNum = d.getMonth(),
+		month = months[d.getMonth()],
+		date = d.getDate(), 
+		hour = fixnumber(d.getHours()), 
+		min = fixnumber(d.getMinutes()), 
+		sec = fixnumber(d.getSeconds());
+
+		//Construct the time (DD/MM/YY HH/MM/SS) and return it
+		var time = `${date}.${monthNum}.${year} ${hour}:${min}:${sec}`;
+		return time;
 	}
 	
-	function fixnumber(number) {
-		if(number < 10) return "0" + number;
-		else return number;
-	}
-	
+	//Adds a zero suffix if x < 10
+	const fixnumber = number => number < 10 ? "0" + number : number;
+
+	//Removes the u/ prefix
+	const removePrefix = username => username.includes("u/") ? username.slice(2) : username;
+
+	//Adds the u/ prefix if nonexistant
+	const keepPrefix = username => username.includes("u/") ? username : "u/" + username;
+
+	//Function to avoid XSS
 	function sanitize(evilstring) {
 		const decoder = document.createElement('div')
 		decoder.innerHTML = evilstring;
 		return decoder.textContent;
 	}
-	
-	//Function that appends HTML into the Modmail page
+
+	//Appends the info (main, karma, links) to the page
 	function addInfo(){
 		//Load and parse username
-		var username = document.getElementsByClassName("InfoBar__username")[0].innerText;
+		var username = removePrefix($(".InfoBar__username").innerText);
 		var about = "https://www.reddit.com/user/" + username + "/about.json";
 		const xhr = new XMLHttpRequest();
 	
+		//Once the user info JSON has been fetched
 		xhr.onload = () => {
 			var user = JSON.parse(xhr.responseText);
 			//Separator HTML element
@@ -139,8 +164,7 @@ function main() {
 			//HTML element that contains all the data
 			var userDetails = document.createElement('div');
 			userDetails.classList.add("InfoBar__age");
-			userDetails.innerHTML = `
-			<img class="profileIcon" src="${user.data.icon_img}" width="25">
+			userDetails.innerHTML = `<img class="profileIcon" src="${user.data.icon_img}" width="25">
 			<a class="InfoBar__username" href="https://www.reddit.com/user/${user.data.name}">${user.data.subreddit.display_name_prefixed}</a>
 			<h1 style="color: ${textColor} ; font-size: 11px; margin-top: 17px; margin-bottom: 10px;">${sanitize(user.data.subreddit.public_description)}</h1>
 			<h1 class="dataTitle">Main</h1>
@@ -164,64 +188,85 @@ function main() {
 				<a class="InfoBar__recent" href="https://redditmetis.com/user/${user.data.name}" target="_blank">Redditmetis</a>
 				<a class="InfoBar__recent" href="https://www.reddit.com/search?q=${user.data.name}" target="_blank">Reddit Search</a>
 				<a class="InfoBar__recent" href="https://www.google.com/search?q=%22${user.data.name}%22" target="_blank">Google Search</a>
-			</div>
-			`;
+			</div>`;
+
+			//Add profile pictures
+			if(chatProfileIcons) {
+				//Icon element
+				var chatProfileIcon = document.createElement('div');
+				chatProfileIcon.innerHTML = `<img class="chatProfileIcon" src="${user.data.icon_img}" width="25">`;
+
+				//Loop trough every username on chat
+				for(var i = 0; i < $$(".ThreadPreview__author").length; i++) {
+					//Get username (u/xxxxxx)
+					let name = $$(".Author__text")[i].innerText;
+					//Check if there is an icon appended already
+					let exists = $$(".ThreadPreview__author")[i].childNodes.length == 1 ? false : true;
+					//If the username is the user (non-mod)
+					if(removePrefix(name) == username && !exists) {
+						//Append the icon next to the username -> [icon] u/username
+						$$(".ThreadPreview__author")[i].insertBefore(chatProfileIcon.cloneNode(true), $$(".ThreadPreview__author")[i].firstChild);
+					}
+				}
+			}
+
+			//Append the elements
+			$(".ThreadViewer__infobar").appendChild(seperator);
+			$(".ThreadViewer__infobar").appendChild(seperator);
+			$(".ThreadViewer__infobar").appendChild(userDetails);
+			$(".ThreadViewer__infobar").appendChild($(".ThreadViewer__infobar").firstChild);
+			$(".InfoBar").appendChild($(".InfoBar__modActions"));
+			$(".InfoBar").insertBefore($(".InfoBar__modActions"),$(".InfoBar").firstChild);
+			if($(".InfoBar__banText"))
+				$(".ThreadViewer__infobar").insertBefore($(".InfoBar__banText"),$(".ThreadViewer__infobar").firstChild);
 			
-			//Arrange items and append
-			document.getElementsByClassName("ThreadViewer__infobar")[0].appendChild(seperator);
-			document.getElementsByClassName("ThreadViewer__infobar")[0].appendChild(userDetails);
-			document.getElementsByClassName("ThreadViewer__infobar")[0].appendChild(document.getElementsByClassName("ThreadViewer__infobar")[0].firstChild);
-			document.getElementsByClassName("InfoBar")[0].appendChild(document.getElementsByClassName("InfoBar__modActions")[0]);
-			document.getElementsByClassName("InfoBar")[0].insertBefore(document.getElementsByClassName("InfoBar__modActions")[0],document.getElementsByClassName("InfoBar")[0].firstChild);
-			if(document.getElementsByClassName("InfoBar__banText")[0])
-				document.getElementsByClassName("ThreadViewer__infobar")[0].insertBefore(document.getElementsByClassName("InfoBar__banText")[0],document.getElementsByClassName("ThreadViewer__infobar")[0].firstChild);
-			document.getElementsByClassName("InfoBar__username")[1].outerHTML = "";
-			document.getElementsByClassName("InfoBar__age")[1].outerHTML = "";
-			document.getElementsByClassName("InfoBar__modActions")[1].outerHTML = "";
+			//Remove certain elements
+			$$(".InfoBar__username")[1].outerHTML = "";
+			$$(".InfoBar__age")[1].outerHTML = "";
+			$$(".InfoBar__modActions")[1].outerHTML = "";
 		};
 		
+		//Get user details
 		xhr.open('GET', about);
 		xhr.send();
 	}
 	
+	//Appends the response template listbox to the page
 	function addResponseBox() {
 		//Listbox element
 		var responseBox = document.createElement('div');
 		responseBox.classList.add("select");
-		responseBox.innerHTML = `
-		<h2 class="dataTitle">Response templates</h2>
+		responseBox.innerHTML = `<h2 class="dataTitle">Response templates</h2>
 		<select id="responseListbox" onchange="listBoxChanged(this.value);" onfocus="this.selectedIndex = -1;"/>
-		<span class="focus"></span>
-		`;
+		<span class="focus"></span>`;
 	
 		//Script element to head
 		var headJS = document.createElement('script');
-		headJS.innerHTML = `
-		function listBoxChanged(message) {
+		headJS.innerHTML = `function listBoxChanged(message) {
 			var messageBox = document.getElementsByClassName("Textarea ThreadViewerReplyForm__replyText")[0];
 			var responses = ${JSON.stringify(responses)};
 			var response = responses.find(x => x.content == message);
 			response.replace ? messageBox.value = message : messageBox.value += message;
-			console.log("[ModmailExtraInfo] %cNew messageBox value: " + messageBox.value,"color: orange");
-		}
-		`;
+			console.log("[ModmailExtraInfo] New messageBox value: %c" + messageBox.value,"color: orange");
+		}`;
 	
 		function populate() {
-			var select = document.getElementById("responseListbox");
+			var select = $("#responseListbox");
 			for(var i = 0; i < responses.length; i++) {
 				select.options[select.options.length] = new Option(responses[i].name, responses[i].content);
 			}
 		}
 	
-		document.getElementsByClassName("ThreadViewer__replyContainer")[0].prepend(responseBox);
-		var head = document.getElementsByTagName('head')[0];
+		$(".ThreadViewer__replyContainer").prepend(responseBox);
+		var head = $("head");
 		head.appendChild(headJS);
 	
 		populate();
 	}
 
+	//Detects the current theme (dark/light) and applies the correct color (for the added elements)
 	function themeColors() {
-		var darkTheme = document.getElementsByClassName("theme-dark").length ? true : false;
+		var darkTheme = $$(".theme-dark").length ? true : false;
 		if(darkTheme) {
 			console.log("[ModmailExtraInfo] Dark mode detected! Setting colors...");
 			textColor = darkModeTextColor;
@@ -238,8 +283,7 @@ function main() {
 	themeColors();
 
 	//Took advice for the listbox CSS from moderncss.dev/custom-select-styles-with-pure-css, thanks!
-	var css = `
-	.profileIcon:hover {
+	var css = `.profileIcon:hover {
 		-ms-transform: scale(6);
 		-webkit-transform: scale(6);
 		transform: scale(6);
@@ -249,7 +293,7 @@ function main() {
 		bottom: 4px;
 		margin-bottom: 10px;
 		float: left; border-radius: 50%;
-		transition: transform .2s;
+		transition: transform .1s;
 	}
 	.InfoBar__recentsNone {
 		color: #6e6e6e;
@@ -283,6 +327,7 @@ function main() {
 	}
 	.responseListbox {
 		width: 50%;
+		cursor: pointer;
 	}
 	:root {
 		--select-border: #0079d3;
@@ -302,9 +347,9 @@ function main() {
 		padding: 0 1em 0 0;
 		margin: 0;
 		width: 100%;
+		cursor: pointer;
 		font-family: inherit;
 		font-size: inherit;
-		cursor: inherit;
 		line-height: inherit;
 		outline: none;
 		position: relative;
@@ -317,7 +362,6 @@ function main() {
 		border-radius: 0.25em;
 		padding: 0.3em 0.4em;
 		font-size: 0.9rem;
-		cursor: pointer;
 		line-height: 1.1;
 		background-color: ${listBoxColor};
 	}
@@ -337,20 +381,14 @@ function main() {
 		border: 2px solid var(--select-focus);
 		border-radius: inherit;
 	}
-	base: [
-		"color: #fff",
-		"background-color: #444",
-		"padding: 2px 4px",
-		"border-radius: 2px"
-	  ],
-	  warning: [
-		"color: #eee",
-		"background-color: red"
-	  ],
-	  success: [
-		"background-color: green"
-	  ]
-	`;
+	.Author__text {
+		padding: 6px 0;
+	}
+	.chatProfileIcon {
+		margin-right: 7px;
+		transition: transform .1s;
+		border-radius: 50%;
+	}`;
 
 	//Apply the custom css
 	var styleSheet = document.createElement("style");
@@ -359,33 +397,25 @@ function main() {
 	document.head.appendChild(styleSheet);
 
 	addInfo();
-	if(enableCustomResponses && document.getElementById("responseListbox") == null) addResponseBox();
+	if(enableCustomResponses && $("#responseListbox") == null) addResponseBox();
 	console.log("[ModmailExtraInfo] %cLoaded!", "color: lime");
-	running = true;
-}
 
-var fireOnHashChangesToo    = true;
-var pageURLCheckTimer       = setInterval (
-    function () {
-        if (   this.lastPathStr  !== location.pathname
-            || this.lastQueryStr !== location.search
-            || (fireOnHashChangesToo && this.lastHashStr !== location.hash)
-        ) {
-            this.lastPathStr  = location.pathname;
-            this.lastQueryStr = location.search;
-            this.lastHashStr  = location.hash;
-            running = false;
-			console.log("[ModmailExtraInfo] %cURL changed!", "color: grey");
-        }
-    }
-    , 111
-);
+} /* End of Main function */
 
-if(document.getElementsByClassName("InfoBar__username")[0]) {
-	if(!running) main();
-}
+/* Start Main function when visiting new modmail */
+var pageURLCheckTimer = setInterval (function () {
+	if (this.lastPathStr !== location.pathname) 
+	{
+		this.lastPathStr = location.pathname;
 
-const elementToWatch = 'a[class="InfoBar__username"]';
-document.arrive(elementToWatch, function () {
-	if(!running) main();
-});
+		first = true;
+
+		let startInterval = setInterval (function () {
+			if($(".InfoBar__username")) {
+				if(first) main();
+				first = false;
+				clearInterval(startInterval);
+			}
+		}, 5);
+	}
+}, 100);
