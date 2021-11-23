@@ -3,14 +3,14 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     2.0
+// @version     2.1
 // @author      HKR
 // @description Additional tools and information to Reddit's Modmail
 // @icon        https://www.redditstatic.com/modmail/favicon/favicon-32x32.png
 // @supportURL  https://github.com/Hakorr/Userscripts/issues
 // ==/UserScript==
 
-console.log("[ModmailExtraInfo] %cScript started!", "color: green");
+console.log("[Modmail++] %cScript started!", "color: green");
 
 /* Do not touch */
 const $ = document.querySelector.bind(document);
@@ -19,16 +19,13 @@ var first = false;
 /* Do not touch */
 
 function main() {
-	console.log("[ModmailExtraInfo] %cMain function ran!", "color: grey");
+	console.log("[Modmail++] %cMain function ran!", "color: grey");
 
 	/* SETTINGS */
 
-	/* NOTE (If you want to use the Custom Responses): Reddit's sync feature removes the script's added text.
-	- If you block "https://oauth.reddit.com/api/mod/conversations/*****?markRead=false&redditWebClient=modmail", the added text will stay. */
-
 	//Variables for the responses
-	const subTag = $(".ThreadTitle__community").href.slice(23);
-	const userTag = "u/" + $(".InfoBar__username").innerText;
+	const subTag = $(".ThreadTitle__community").href.slice(23); //Format r/subreddit
+	const userTag = "u/" + $(".InfoBar__username").innerText; //Format u/username
 	const modmail = `[modmail](https://www.reddit.com/message/compose?to=/${subTag})`;
 	const rules = `https://www.reddit.com/${subTag}/about/rules`;
 	const randItem = itemArr => itemArr[Math.floor(Math.random() * itemArr.length)];
@@ -51,47 +48,70 @@ function main() {
 	//No chat profile icons are added if false
 	const chatProfileIcons = true;
 
+	const placeholderMessage = randItem([
+		"Message...",
+		"Look, a bird! Message...",
+		"What have you been up to today? Message...",
+		"Beautiful day, isn't it? Message...",
+		"Was the weather nice? Message...",
+		"You look good today! Message...",
+		"What dreams did you see last night? Message...",
+		"What did you do today? Message...",
+		"ヽ(ｏ`皿′ｏ)ﾉ AAAAAAAaaahh, spooked you! Message...",
+		"What did you eat today? Message...",
+		"Have you drank enough water? Message...",
+		"Remember to stretch! Message...",
+		"≖‿≖ I live inside of your walls. Message...",
+		"(✿◠‿◠) Message...",
+		"ಠ╭╮ಠ This modmail isn't going to get a reply just by itself, get back to work! Message..."
+	]);
+
 	//Feel free to edit and add more responses suitable for you! Replace means if to replace all text or just to add the text.
 	const responses = [
 		{
-			"name":"Select a template",
+			"name":"Select A Template",
 			"replace":true,
 			"content":``
 		},
 		{
-			"name":"Default approved",
+			"name":"Default Approved",
 			"replace":true,
 			"content":`Hey, approved the post!`
 		},
 		{
-			"name":"Default rule broken",
+			"name":"Default Rule Broken",
 			"replace":true,
 			"content":`Your post broke our [rules](${rules}).\n\nThe action will not be reverted.`
 		},
 		{
-			"name":"Add greetings",
+			"name":"Add Greetings",
 			"replace":true,
 			"content":`${randItem(["Greetings","Hello","Hi"])} ${userTag},\n\n`
 		},
 		{
-			"name":"Add thanks",
+			"name":"Add Thanks",
 			"replace":false,
 			"content":`\n\nThank you!`
 		},
 		{
-			"name":"Add subreddit mention",
+			"name":"Add Subreddit Mention",
 			"replace":false,
 			"content":`${subTag}`
 		},
 		{
-			"name":"Add user mention",
+			"name":"Add User Mention",
 			"replace":false,
 			"content":`${userTag}`
 		},
 		{
-			"name":"Add Modmail link",
+			"name":"Add Modmail Link",
 			"replace":false,
 			"content":`${modmail}`
+		},
+		{
+			"name":"Add Karma Link",
+			"replace":false,
+			"content":`[karma](https://reddit.zendesk.com/hc/en-us/articles/204511829-What-is-karma-)`
 		},
 		{
 			"name":"Add Content Policy",
@@ -233,6 +253,14 @@ function main() {
 	
 	//Appends the response template listbox to the page
 	function addResponseBox() {
+		//Hide real textarea and append a new one (so the text won't get removed by the sync feature)
+		$(".ThreadViewerReplyForm__replyText").style.cssText += 'display: none';
+		const txtArea = document.createElement("textarea");
+		txtArea.setAttribute('class', 'Textarea ThreadViewerReplyForm__replyText ');
+		txtArea.setAttribute('name', 'body');
+		txtArea.setAttribute('placeholder', `${placeholderMessage}`);
+		$(".ThreadViewerReplyForm").insertBefore(txtArea,$(".ThreadViewerReplyForm__replyFooter"));
+			
 		//Listbox element
 		var responseBox = document.createElement('div');
 		responseBox.classList.add("select");
@@ -243,11 +271,11 @@ function main() {
 		//Script element to head
 		var headJS = document.createElement('script');
 		headJS.innerHTML = `function listBoxChanged(message) {
-			var messageBox = document.getElementsByClassName("Textarea ThreadViewerReplyForm__replyText")[0];
+			var messageBox = document.getElementsByClassName("Textarea ThreadViewerReplyForm__replyText")[1];
 			var responses = ${JSON.stringify(responses)};
 			var response = responses.find(x => x.content == message);
 			response.replace ? messageBox.value = message : messageBox.value += message;
-			console.log("[ModmailExtraInfo] New messageBox value: %c" + messageBox.value,"color: orange");
+			console.log("[Modmail++] New messageBox value: %c" + messageBox.value,"color: orange");
 		}`;
 	
 		function populate() {
@@ -260,7 +288,9 @@ function main() {
 		$(".ThreadViewer__replyContainer").prepend(responseBox);
 		var head = $("head");
 		head.appendChild(headJS);
-	
+
+		$(".ThreadViewer__replyContainer").insertBefore($(".ThreadViewer__typingIndicator"),$(".select"));
+
 		populate();
 	}
 
@@ -268,12 +298,12 @@ function main() {
 	function themeColors() {
 		var darkTheme = $$(".theme-dark").length ? true : false;
 		if(darkTheme) {
-			console.log("[ModmailExtraInfo] Dark mode detected! Setting colors...");
+			console.log("[Modmail++] Dark mode detected! Setting colors...");
 			textColor = darkModeTextColor;
 			titleColor = darkModeTitleColor;
 			listBoxColor = darkModeListColor;
 		} else {
-			console.log("[ModmailExtraInfo] Light mode detected! Setting colors...");
+			console.log("[Modmail++] Light mode detected! Setting colors...");
 			textColor = lightModeTextColor;
 			titleColor = lightModeTitleColor;
 			listBoxColor = lightModeListColor;
@@ -364,6 +394,7 @@ function main() {
 		font-size: 0.9rem;
 		line-height: 1.1;
 		background-color: ${listBoxColor};
+		margin-bottom: 15px;
 	}
 	select::-ms-expand {
 		display: none;
@@ -388,6 +419,21 @@ function main() {
 		margin-right: 7px;
 		transition: transform .1s;
 		border-radius: 50%;
+	}
+	.App__page {
+		background: var(--color-tone-8);
+	}
+	::-webkit-scrollbar {
+	  width: 10px;
+	}
+	::-webkit-scrollbar-track {
+	  background: ${listBoxColor}; 
+	}
+	::-webkit-scrollbar-thumb {
+	  background: #888; 
+	}
+	::-webkit-scrollbar-thumb:hover {
+	  background: #555;
 	}`;
 
 	//Apply the custom css
@@ -398,7 +444,7 @@ function main() {
 
 	addInfo();
 	if(enableCustomResponses && $("#responseListbox") == null) addResponseBox();
-	console.log("[ModmailExtraInfo] %cLoaded!", "color: lime");
+	console.log("[Modmail++] %cLoaded!", "color: lime");
 
 } /* End of Main function */
 
