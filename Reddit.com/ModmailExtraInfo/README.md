@@ -3,7 +3,7 @@ Additional tools and information to Reddit's Modmail
 
 * [Greasyfork](https://greasyfork.org/en/scripts/429732-reddit-modmail)
 
-## What it does
+## What does it do?
 
 The main differences between Modmail++ and the Default modmail...
  
