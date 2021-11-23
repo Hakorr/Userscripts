@@ -85,7 +85,7 @@ function main() {
 		},
 		{
 			"name":"Add Greetings",
-			"replace":true,
+			"replace":false,
 			"content":`${randItem(["Greetings","Hello","Hi"])} ${userTag},\n\n`
 		},
 		{
