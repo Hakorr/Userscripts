@@ -69,7 +69,7 @@ function main() {
 	//Feel free to edit and add more responses suitable for you! Replace means if to replace all text or just to add the text.
 	const responses = [
 		{
-			"name":"Select A Template",
+			"name":"Select a template",
 			"replace":true,
 			"content":``
 		},
@@ -171,7 +171,7 @@ function main() {
 	function addInfo(){
 		//Load and parse username
 		var username = removePrefix($(".InfoBar__username").innerText);
-		var about = "https://www.reddit.com/user/" + username + "/about.json";
+		var about = `https://www.reddit.com/user/${username}/about.json`;
 		const xhr = new XMLHttpRequest();
 	
 		//Once the user info JSON has been fetched
@@ -264,7 +264,7 @@ function main() {
 		//Listbox element
 		var responseBox = document.createElement('div');
 		responseBox.classList.add("select");
-		responseBox.innerHTML = `<h2 class="dataTitle">Response templates</h2>
+		responseBox.innerHTML = `<h2 class="dataTitle">Response Templates</h2>
 		<select id="responseListbox" onchange="listBoxChanged(this.value);" onfocus="this.selectedIndex = -1;"/>
 		<span class="focus"></span>`;
 	
