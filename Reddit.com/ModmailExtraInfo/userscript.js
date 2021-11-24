@@ -3,7 +3,7 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     2.1
+// @version     2.2
 // @author      HKR
 // @description Additional tools and information to Reddit's Modmail
 // @icon        https://www.redditstatic.com/modmail/favicon/favicon-32x32.png
@@ -66,66 +66,87 @@ function main() {
 		"ಠ╭╮ಠ This modmail isn't going to get a reply just by itself, get back to work! Message..."
 	]);
 
-	//Feel free to edit and add more responses suitable for you! Replace means if to replace all text or just to add the text.
+	/* 
+	
+	Responses - Edit to your own liking, remove whatever you don't like!
+
+	name | The name of the response that will show on the listbox. (Example value: "Hello!")
+	replace | Replace all messagebox text if true, otherwise just add. (Example value: true)
+	subreddit | Visible only while on this subreddit's modmail. (Example value: "r/subreddit") 
+	content | This text will be added to the messagebox once selected (Example value: "Hello world!") 
+	
+	*/
 	const responses = [
 		{
 			"name":"Select a template",
 			"replace":true,
+			"subreddit":"",
 			"content":``
 		},
 		{
 			"name":"Default Approved",
 			"replace":true,
+			"subreddit":"",
 			"content":`Hey, approved the post!`
 		},
 		{
 			"name":"Default Rule Broken",
 			"replace":true,
+			"subreddit":"",
 			"content":`Your post broke our [rules](${rules}).\n\nThe action will not be reverted.`
 		},
 		{
 			"name":"Add Greetings",
 			"replace":false,
+			"subreddit":"",
 			"content":`${randItem(["Greetings","Hello","Hi"])} ${userTag},\n\n`
 		},
 		{
 			"name":"Add Thanks",
 			"replace":false,
+			"subreddit":"",
 			"content":`\n\nThank you!`
 		},
 		{
 			"name":"Add Subreddit Mention",
 			"replace":false,
+			"subreddit":"",
 			"content":`${subTag}`
 		},
 		{
 			"name":"Add User Mention",
 			"replace":false,
+			"subreddit":"",
 			"content":`${userTag}`
 		},
 		{
 			"name":"Add Modmail Link",
 			"replace":false,
+			"subreddit":"",
 			"content":`${modmail}`
 		},
 		{
 			"name":"Add Karma Link",
 			"replace":false,
+			"subreddit":"",
 			"content":`[karma](https://reddit.zendesk.com/hc/en-us/articles/204511829-What-is-karma-)`
 		},
 		{
 			"name":"Add Content Policy",
 			"replace":false,
+			"subreddit":"",
 			"content":`[Content Policy](https://www.redditinc.com/policies/content-policy)`
 		},
 		{
 			"name":"Add User Agreement",
 			"replace":false,
+			"subreddit":"",
 			"content":`[User Agreement](https://www.redditinc.com/policies/user-agreement)`
 		},
 		{
 			"name":"Add Rickroll",
 			"replace":false,
+			"subreddit":"",
 			"content":`[link](https://www.youtube.com/watch?v=dQw4w9WgXcQ)`
 		}
 	];
@@ -154,11 +175,11 @@ function main() {
 	//Adds a zero suffix if x < 10
 	const fixnumber = number => number < 10 ? "0" + number : number;
 
-	//Removes the u/ prefix
-	const removePrefix = username => username.includes("u/") ? username.slice(2) : username;
+	//Removes the Reddit prefix
+	const removePrefix = (username) => ["r/","u/"].some(tag => username.includes(tag)) ? username.slice(2) : username;
 
-	//Adds the u/ prefix if nonexistant
-	const keepPrefix = username => username.includes("u/") ? username : "u/" + username;
+	//Adds the Reddit prefix if nonexistant
+	const keepPrefix = (username, subreddit) => ["r/","u/"].some(tag => username.includes(tag)) ? username : subreddit ? `r/${username}` : `u/${username}`;
 
 	//Function to avoid XSS
 	function sanitize(evilstring) {
@@ -261,6 +282,11 @@ function main() {
 		txtArea.setAttribute('placeholder', `${placeholderMessage}`);
 		$(".ThreadViewerReplyForm").insertBefore(txtArea,$(".ThreadViewerReplyForm__replyFooter"));
 			
+		//Fix clear textarea - will not clear it if the moderator stays to send another message
+		var replyButton = document.getElementsByClassName("Button ThreadViewerReplyForm__replyButton m-internal ")[0];
+		const clearBoxJS = `setTimeout(function(){document.getElementsByClassName("Textarea ThreadViewerReplyForm__replyText")[1].value = ""; console.log("[Modmail++] Cleared the textarea!");},500)`;
+		replyButton.setAttribute("onclick", clearBoxJS);
+
 		//Listbox element
 		var responseBox = document.createElement('div');
 		responseBox.classList.add("select");
@@ -278,9 +304,12 @@ function main() {
 			console.log("[Modmail++] New messageBox value: %c" + messageBox.value,"color: orange");
 		}`;
 	
+		//Add all the responses to the listbox
 		function populate() {
 			var select = $("#responseListbox");
 			for(var i = 0; i < responses.length; i++) {
+				//Sorry if it looks a bit complicated
+				if(keepPrefix(responses[i].subreddit.toLowerCase(), true) == keepPrefix(subTag.toLowerCase(), true) || responses[i].subreddit == "") 
 				select.options[select.options.length] = new Option(responses[i].name, responses[i].content);
 			}
 		}
