@@ -283,7 +283,7 @@ function main() {
 		$(".ThreadViewerReplyForm").insertBefore(txtArea,$(".ThreadViewerReplyForm__replyFooter"));
 			
 		//Fix clear textarea - will not clear it if the moderator stays to send another message
-		var replyButton = document.getElementsByClassName("Button ThreadViewerReplyForm__replyButton m-internal ")[0];
+		var replyButton = $(".ThreadViewerReplyForm__replyButton")
 		const clearBoxJS = `setTimeout(function(){document.getElementsByClassName("Textarea ThreadViewerReplyForm__replyText")[1].value = ""; console.log("[Modmail++] Cleared the textarea!");},500)`;
 		replyButton.setAttribute("onclick", clearBoxJS);
 
