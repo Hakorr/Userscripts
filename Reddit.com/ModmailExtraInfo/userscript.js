@@ -206,7 +206,7 @@ function main() {
 			var userDetails = document.createElement('div');
 			userDetails.classList.add("InfoBar__age");
 			userDetails.innerHTML = `<img class="profileIcon" src="${user.data.icon_img}" width="25">
-			<a class="InfoBar__username" href="https://www.reddit.com/user/${user.data.name}">${user.data.subreddit.display_name_prefixed}</a>
+			<a class="InfoBar__username" href="https://www.reddit.com/user/${user.data.name}">${removePrefix(user.data.subreddit.display_name_prefixed)}</a>
 			<h1 style="color: ${textColor} ; font-size: 11px; margin-top: 17px; margin-bottom: 10px;">${sanitize(user.data.subreddit.public_description)}</h1>
 			<h1 class="dataTitle">Main</h1>
 			<div class="dataText">
