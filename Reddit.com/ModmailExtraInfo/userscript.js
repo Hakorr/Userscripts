@@ -3,11 +3,12 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     2.2
+// @version     2.3
 // @author      HKR
 // @description Additional tools and information to Reddit's Modmail
 // @icon        https://www.redditstatic.com/modmail/favicon/favicon-32x32.png
 // @supportURL  https://github.com/Hakorr/Userscripts/issues
+// @require     https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js
 // ==/UserScript==
 
 console.log("[Modmail++] %cScript started!", "color: green");
@@ -15,7 +16,9 @@ console.log("[Modmail++] %cScript started!", "color: green");
 /* Do not touch */
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
+const randItem = itemArr => itemArr[Math.floor(Math.random() * itemArr.length)];
 var first = false;
+var confettiDeployed = false;
 /* Do not touch */
 
 function main() {
@@ -28,7 +31,6 @@ function main() {
 	const userTag = "u/" + $(".InfoBar__username").innerText; //Format u/username
 	const modmail = `[modmail](https://www.reddit.com/message/compose?to=/${subTag})`;
 	const rules = `https://www.reddit.com/${subTag}/about/rules`;
-	const randItem = itemArr => itemArr[Math.floor(Math.random() * itemArr.length)];
 
 	//Text color settings
 	var textColor = null, lightModeTextColor = "#6e6e6e", darkModeTextColor = "#757575";
@@ -69,7 +71,6 @@ function main() {
 	/* 
 	
 	Responses - Edit to your own liking, remove whatever you don't like!
-
 	name | The name of the response that will show on the listbox. (Example value: "Hello!")
 	replace | Replace all messagebox text if true, otherwise just add. (Example value: true)
 	subreddit | Visible only while on this subreddit's modmail. (Example value: "r/subreddit") 
@@ -153,7 +154,7 @@ function main() {
 
 	/* ---------- JS & HTML ---------- */
 	
-	function time(UNIX_timestamp){
+	function time(UNIX_timestamp) {
 		//Get UNIX time
 		var d = new Date(UNIX_timestamp * 1000);
 		const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -189,7 +190,7 @@ function main() {
 	}
 
 	//Appends the info (main, karma, links) to the page
-	function addInfo(){
+	function addInfo() {
 		//Load and parse username
 		var username = removePrefix($(".InfoBar__username").innerText);
 		var about = `https://www.reddit.com/user/${username}/about.json`;
@@ -479,18 +480,30 @@ function main() {
 
 /* Start Main function when visiting new modmail */
 var pageURLCheckTimer = setInterval (function () {
-	if (this.lastPathStr !== location.pathname) 
-	{
-		this.lastPathStr = location.pathname;
+    if (this.lastPathStr !== location.pathname) 
+    {
+        this.lastPathStr = location.pathname;
 
-		first = true;
+        first = true;
+        confettiDeployed = false;
 
-		let startInterval = setInterval (function () {
-			if($(".InfoBar__username")) {
-				if(first) main();
-				first = false;
-				clearInterval(startInterval);
-			}
-		}, 5);
-	}
+        let startInterval = setInterval (function () {
+            //Add confetti explosion if no mail
+            if($(".NoThreadMessage__generic") && !confettiDeployed) {
+                confettiDeployed = true;
+                console.log("[Modmail++] %cNo modmail!", "color: lime");
+
+                party.confetti($(".NoThreadMessage__generic"), {
+                    count: party.variation.range(20, 40),
+                    spread: 50
+                });
+            }
+            //User is on modmail "chat" page
+            if($(".InfoBar__username")) {
+                if(first) main();
+                first = false;
+                clearInterval(startInterval);
+            }
+        }, 5);
+    }
 }, 100);
