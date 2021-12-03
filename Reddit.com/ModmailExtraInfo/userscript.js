@@ -783,7 +783,7 @@ const randItem = itemArr => itemArr[Math.floor(Math.random() * itemArr.length)];
 const fixnumber = number => number < 10 ? "0" + number : number;
 
 //Removes the Reddit prefix
-const removePrefix = (username) => ["r/","u/"].some(tag => username.includes(tag)) ? username.slice(2) : username;
+const removePrefix = username => ["r/","u/"].some(tag => username.includes(tag)) ? username.slice(2) : username;
 
 //Adds the Reddit prefix if nonexistant
 const keepPrefix = (username, subreddit) => ["r/","u/"].some(tag => username.includes(tag)) ? username : subreddit ? `r/${username}` : `u/${username}`;
@@ -792,8 +792,7 @@ $(".Sidebar__titleMessage").setAttribute("onclick","window.open('https://github.
 $(".Sidebar__titleMessage").setAttribute("style","cursor: pointer");
 $(".Sidebar__titleMessage").innerText = "Modmail++";
 
-var first = false;
-var confettiDeployed = false;
+var run = true;
 
 /* Start Main function when visiting new modmail */
 var pageURLCheckTimer = setInterval (function () {
@@ -801,14 +800,15 @@ var pageURLCheckTimer = setInterval (function () {
     {
         this.lastPathStr = location.pathname;
 
-        first = true;
-        confettiDeployed = false;
+		console.log("[Modmail++] %cNew page detected!", "color: gold")
+		run = true;
 
+		let interval = setInterval (function () {
 		//Add confetti explosion if no mail
-		if($(".NoThreadMessage__generic") && !confettiDeployed) {
-			confettiDeployed = true;
+		if($(".NoThreadMessage__generic") && run) {
+			clearInterval(interval);
+			run = false;
 			console.log("[Modmail++] %cNo modmail!", "color: lime");
-
 			party.confetti($(".NoThreadMessage__generic"), {
 				count: party.variation.range(20, 40),
 				spread: 50
@@ -816,9 +816,11 @@ var pageURLCheckTimer = setInterval (function () {
 		}
 
 		//User is on modmail "chat" page
-		if($(".InfoBar__username")) {
-			if(first) main();
-			first = false;
+		if($(".InfoBar__username")&& run) {
+			clearInterval(interval);
+			run = false;
+			if($("body")) main();
 		}
+		}, 5);
     }
 }, 100);
