@@ -347,7 +347,7 @@ function main() { console.log("[Modmail++] %cMain function ran!", "color: grey")
 		}
 		//Implement listbox select highlight
 		function selected(element){
-			let selectColor = "#353535";
+			let selectColor = "#79797959";
 			let selectedElem = document.getElementById("currentlySelected");
 			//If an elem already selected, reset the id and set its background color to nothing
 			if(selectedElem) { selectedElem.style.backgroundColor = ""; selectedElem.id = ""; }
@@ -533,18 +533,17 @@ function main() { console.log("[Modmail++] %cMain function ran!", "color: grey")
 	  background: #555;
 	}
 	.subredditRuleList {
-		--newRedditTheme-bodyText: #D7DADC;
-		--newRedditTheme-metaText: #818384;
+		--newRedditTheme-bodyText: ${titleColor};
+		--newRedditTheme-metaText: ${textColor};
 		--newRedditTheme-navIconFaded10: rgba(215,218,220,0.1);
 		--newRedditTheme-actionIconTinted80: #9a9b9c;
 		--newRedditTheme-activeShaded90: #006cbd;
 		--newRedditTheme-actionIconAlpha20: rgba(129,131,132,0.2);
 		--newCommunityTheme-actionIcon: #818384;
-		--newRedditTheme-bodyTextAlpha03: rgba(215,218,220,0.03);
+		--newRedditTheme-bodyTextAlpha03: ${listBoxColor};
 		--newRedditTheme-navIcon: #D7DADC;
 		--newCommunityTheme-line: #343536;
 		--newCommunityTheme-body: #1A1A1B;
-		--listSelect: #353535;
 	}
 	.ruleList {
 		padding: 0 24px 0 20px;
@@ -604,7 +603,7 @@ function main() { console.log("[Modmail++] %cMain function ran!", "color: grey")
 		color: var(--newRedditTheme-metaText);
 	}
 	.infoIcon {
-		background: var(--newRedditTheme-bodyTextAlpha03);
+		background: #86848412;
 		border-radius: 8px;
 		padding: 10px 16px 10px 12px;
 		display: -ms-flexbox;
