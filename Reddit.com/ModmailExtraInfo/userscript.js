@@ -8,7 +8,7 @@
 // @description Additional tools and information to Reddit's Modmail
 // @icon        https://www.redditstatic.com/modmail/favicon/favicon-32x32.png
 // @supportURL  https://github.com/Hakorr/Userscripts/issues
-// @require     https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js
+// @require     https://cdn.jsdelivr.net/npm/party-js@2.1.2/bundle/party.js
 // ==/UserScript==
 
 function main() { console.log("[Modmail++] %cMain function ran!", "color: grey");
@@ -790,7 +790,7 @@ const keepPrefix = (username, subreddit) => ["r/","u/"].some(tag => username.inc
 
 $(".Sidebar__titleMessage").setAttribute("onclick","window.open('https://github.com/Hakorr/Userscripts/tree/main/Reddit.com/ModmailExtraInfo')");
 $(".Sidebar__titleMessage").setAttribute("style","cursor: pointer");
-$(".Sidebar__titleMessage").innerText = "Modmail ++";
+$(".Sidebar__titleMessage").innerText = "Modmail++";
 
 var first = false;
 var confettiDeployed = false;
