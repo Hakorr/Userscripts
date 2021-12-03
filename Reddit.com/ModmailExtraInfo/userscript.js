@@ -3,7 +3,7 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     2.3
+// @version     2.4
 // @author      HKR
 // @description Additional tools and information to Reddit's Modmail
 // @icon        https://www.redditstatic.com/modmail/favicon/favicon-32x32.png
@@ -11,26 +11,14 @@
 // @require     https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js
 // ==/UserScript==
 
-console.log("[Modmail++] %cScript started!", "color: green");
-
-/* Do not touch */
-const $ = document.querySelector.bind(document);
-const $$ = document.querySelectorAll.bind(document);
-const randItem = itemArr => itemArr[Math.floor(Math.random() * itemArr.length)];
-var first = false;
-var confettiDeployed = false;
-/* Do not touch */
-
-function main() {
-	console.log("[Modmail++] %cMain function ran!", "color: grey");
-
-	/* SETTINGS */
+function main() { console.log("[Modmail++] %cMain function ran!", "color: grey");
+	/* ---------- SETTINGS ---------- */
 
 	//Variables for the responses
 	const subTag = $(".ThreadTitle__community").href.slice(23); //Format r/subreddit
 	const userTag = "u/" + $(".InfoBar__username").innerText; //Format u/username
-	const modmail = `[modmail](https://www.reddit.com/message/compose?to=/${subTag})`;
-	const rules = `https://www.reddit.com/${subTag}/about/rules`;
+	const modmail = `[modmail](https://www.reddit.com/message/compose?to=/${keepPrefix(subTag,true)})`;
+	const rules = `https://www.reddit.com/${keepPrefix(subTag,true)}/about/rules`;
 
 	//Text color settings
 	var textColor = null, lightModeTextColor = "#6e6e6e", darkModeTextColor = "#757575";
@@ -59,24 +47,18 @@ function main() {
 		"You look good today! Message...",
 		"What dreams did you see last night? Message...",
 		"What did you do today? Message...",
-		"ヽ(ｏ`皿′ｏ)ﾉ AAAAAAAaaahh, spooked you! Message...",
 		"What did you eat today? Message...",
 		"Have you drank enough water? Message...",
 		"Remember to stretch! Message...",
 		"≖‿≖ I live inside of your walls. Message...",
 		"(✿◠‿◠) Message...",
-		"ಠ╭╮ಠ This modmail isn't going to get a reply just by itself, get back to work! Message..."
 	]);
 
-	/* 
-	
-	Responses - Edit to your own liking, remove whatever you don't like!
-	name | The name of the response that will show on the listbox. (Example value: "Hello!")
-	replace | Replace all messagebox text if true, otherwise just add. (Example value: true)
-	subreddit | Visible only while on this subreddit's modmail. (Example value: "r/subreddit") 
-	content | This text will be added to the messagebox once selected (Example value: "Hello world!") 
-	
-	*/
+	/* Responses - Edit to your own liking, remove whatever you don't like!
+	- name | The name of the response that will show on the listbox. (Example value: "Hello!")
+	- replace | Replace all messagebox text if true, otherwise just add. (Example value: true)
+	- subreddit | Visible only while on this subreddit's modmail. (Example value: "r/subreddit") 
+	- content | This text will be added to the messagebox once selected (Example value: "Hello world!")*/
 	const responses = [
 		{
 			"name":"Select a template",
@@ -95,6 +77,12 @@ function main() {
 			"replace":true,
 			"subreddit":"",
 			"content":`Your post broke our [rules](${rules}).\n\nThe action will not be reverted.`
+		},
+		{
+			"name":"Add Rule Description",
+			"replace":false,
+			"subreddit":"",
+			"content":`<open-rulelist-dialog>`
 		},
 		{
 			"name":"Add Greetings",
@@ -152,8 +140,10 @@ function main() {
 		}
 	];
 
-	/* ---------- JS & HTML ---------- */
-	
+	/* ---------- SETTINGS END ---------- */
+
+	/* ---------- JAVASCRIPT & HTML ---------- */
+
 	function time(UNIX_timestamp) {
 		//Get UNIX time
 		var d = new Date(UNIX_timestamp * 1000);
@@ -173,15 +163,6 @@ function main() {
 		return time;
 	}
 	
-	//Adds a zero suffix if x < 10
-	const fixnumber = number => number < 10 ? "0" + number : number;
-
-	//Removes the Reddit prefix
-	const removePrefix = (username) => ["r/","u/"].some(tag => username.includes(tag)) ? username.slice(2) : username;
-
-	//Adds the Reddit prefix if nonexistant
-	const keepPrefix = (username, subreddit) => ["r/","u/"].some(tag => username.includes(tag)) ? username : subreddit ? `r/${username}` : `u/${username}`;
-
 	//Function to avoid XSS
 	function sanitize(evilstring) {
 		const decoder = document.createElement('div')
@@ -251,7 +232,7 @@ function main() {
 					}
 				}
 			}
-
+			
 			//Append the elements
 			$(".ThreadViewer__infobar").appendChild(seperator);
 			$(".ThreadViewer__infobar").appendChild(seperator);
@@ -272,20 +253,25 @@ function main() {
 		xhr.open('GET', about);
 		xhr.send();
 	}
-	
+
+	function makeListValue(name,description) {
+		return `<div class="listValue" value='${description}'><input onclick="selected(this)" name="subredditRule" type="radio" id='${name}' value='${name}' ><label for='${name}'>${name}</label></div>`
+	}
+
 	//Appends the response template listbox to the page
 	function addResponseBox() {
 		//Hide real textarea and append a new one (so the text won't get removed by the sync feature)
 		$(".ThreadViewerReplyForm__replyText").style.cssText += 'display: none';
 		const txtArea = document.createElement("textarea");
 		txtArea.setAttribute('class', 'Textarea ThreadViewerReplyForm__replyText ');
+		txtArea.setAttribute('id', 'realTextarea');
 		txtArea.setAttribute('name', 'body');
 		txtArea.setAttribute('placeholder', `${placeholderMessage}`);
 		$(".ThreadViewerReplyForm").insertBefore(txtArea,$(".ThreadViewerReplyForm__replyFooter"));
 			
 		//Fix clear textarea - will not clear it if the moderator stays to send another message
 		var replyButton = $(".ThreadViewerReplyForm__replyButton")
-		const clearBoxJS = `setTimeout(function(){document.getElementsByClassName("Textarea ThreadViewerReplyForm__replyText")[1].value = ""; console.log("[Modmail++] Cleared the textarea!");},500)`;
+		const clearBoxJS = `setTimeout(function(){document.getElementById("realTextarea").value = ""; console.log("[Modmail++] Cleared the textarea!");},500)`;
 		replyButton.setAttribute("onclick", clearBoxJS);
 
 		//Listbox element
@@ -294,15 +280,96 @@ function main() {
 		responseBox.innerHTML = `<h2 class="dataTitle">Response Templates</h2>
 		<select id="responseListbox" onchange="listBoxChanged(this.value);" onfocus="this.selectedIndex = -1;"/>
 		<span class="focus"></span>`;
+
+		const xhr = new XMLHttpRequest();
+		const ruleJSON = rules + ".json";
+
+		//Once the user info JSON has been fetched
+		xhr.onload = () => {
+			try {
+				$$(".subredditRuleList").forEach(elem => elem.remove());
+				let json = JSON.parse(xhr.responseText);
+				let listContent = "";
+				for(let i = 0; i < json.rules.length; i++) {
+					listContent += makeListValue(json.rules[i].short_name,json.rules[i].description);
+				}
 	
+				var ruleList = document.createElement('div');
+				ruleList.classList.add("subredditRuleList");
+				ruleList.innerHTML = `<div class="ruleDiv" style="background-color: rgba(26, 26, 27, 0.6); visibility: hidden">
+					<div aria-modal="true" class="dialogWindow" role="dialog" tabindex="-1">
+						<div class="listWindow">
+							<div class="ruleList">
+								<div class="ruleHeader">Select a rule<svg onclick="closeIconClicked()" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="closeIconSVG"><polygon fill="inherit" points="11.649 9.882 18.262 3.267 16.495 1.5 9.881 8.114 3.267 1.5 1.5 3.267 8.114 9.883 1.5 16.497 3.267 18.264 9.881 11.65 16.495 18.264 18.262 16.497"></polygon></svg></div>
+								<fieldset class="fieldSet">
+									<div class="title"><span>Which community rule did the user violate?</span></div>
+									<div class="listBox">
+										${listContent}
+									</div>
+									<div class="infoIcon"><svg class="infoIconSVG" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><g><path d="M10,8.5 C10.553,8.5 11,8.948 11,9.5 L11,13.5 C11,14.052 10.553,14.5 10,14.5 C9.447,14.5 9,14.052 9,13.5 L9,9.5 C9,8.948 9.447,8.5 10,8.5 Z M10.7002,5.79 C10.8012,5.89 10.8702,6 10.9212,6.12 C10.9712,6.24 11.0002,6.37 11.0002,6.5 C11.0002,6.57 10.9902,6.63 10.9802,6.7 C10.9712,6.76 10.9502,6.82 10.9212,6.88 C10.9002,6.94 10.8702,7 10.8302,7.05 C10.7902,7.11 10.7502,7.16 10.7002,7.21 C10.6602,7.25 10.6102,7.29 10.5512,7.33 C10.5002,7.37 10.4402,7.4 10.3812,7.42 C10.3202,7.45 10.2612,7.47 10.1902,7.48 C10.1312,7.49 10.0602,7.5 10.0002,7.5 C9.7402,7.5 9.4802,7.39 9.2902,7.21 C9.1102,7.02 9.0002,6.77 9.0002,6.5 C9.0002,6.37 9.0302,6.24 9.0802,6.12 C9.1312,5.99 9.2002,5.89 9.2902,5.79 C9.5202,5.56 9.8702,5.46 10.1902,5.52 C10.2612,5.53 10.3202,5.55 10.3812,5.58 C10.4402,5.6 10.5002,5.63 10.5512,5.67 C10.6102,5.71 10.6602,5.75 10.7002,5.79 Z M10,16 C6.691,16 4,13.309 4,10 C4,6.691 6.691,4 10,4 C13.309,4 16,6.691 16,10 C16,13.309 13.309,16 10,16 M10,2 C5.589,2 2,5.589 2,10 C2,14.411 5.589,18 10,18 C14.411,18 18,14.411 18,10 C18,5.589 14.411,2 10,2"></path></g></svg>
+										<div class="infoBox">
+											<p><span>Not sure? </span><a href="https://www.reddit.com/${keepPrefix(subTag)}/about/rules" target="_blank" rel="noopener noreferrer">Read ${subTag}'s rules</a></p>
+										</div>
+									</div>
+									<footer class="bottomFooter"><button type="button" disabled="" onclick="selectButtonClicked()" class="selectButton">Select</button></footer>
+								</fieldset>
+							</div>
+						</div>
+					</div>
+				</div>`;
+
+				$("body").appendChild(ruleList);
+				
+			} catch(e) {
+				console.log("[Modmail++] %cFailed to load subreddit rules, possibly a private subreddit?", "color: red");
+			}
+		};
+
+		//Get subreddit's rules
+		xhr.open('GET', ruleJSON);
+		xhr.send();
+
 		//Script element to head
 		var headJS = document.createElement('script');
-		headJS.innerHTML = `function listBoxChanged(message) {
-			var messageBox = document.getElementsByClassName("Textarea ThreadViewerReplyForm__replyText")[1];
-			var responses = ${JSON.stringify(responses)};
-			var response = responses.find(x => x.content == message);
-			response.replace ? messageBox.value = message : messageBox.value += message;
-			console.log("[Modmail++] New messageBox value: %c" + messageBox.value,"color: orange");
+		headJS.innerHTML = `
+		var responses = ${JSON.stringify(responses)};
+		var ruleListActivator = "<open-rulelist-dialog>";
+		function listBoxChanged(message) {
+			if(message == ruleListActivator) {
+				let ruleDiv = document.getElementsByClassName("ruleDiv")[0];
+				ruleDiv.style.visibility = "visible";
+			} else {
+				var messageBox = document.getElementById("realTextarea");
+				var response = responses.find(x => x.content == message);
+				response.replace ? messageBox.value = message : messageBox.value += message;
+				console.log("[Modmail++] New messageBox value: %c" + messageBox.value,"color: orange");
+			}
+		}
+		//Implement listbox select highlight
+		function selected(element){
+			let selectColor = "#353535";
+			let selectedElem = document.getElementById("currentlySelected");
+			//If an elem already selected, reset the id and set its background color to nothing
+			if(selectedElem) { selectedElem.style.backgroundColor = ""; selectedElem.id = ""; }
+			
+			element.parentElement.style.backgroundColor = selectColor;
+			element.parentElement.id = "currentlySelected";
+			document.getElementsByClassName("selectButton")[0].disabled = false;
+		}
+		function selectButtonClicked() {
+			let selectedElem = document.getElementById("currentlySelected");
+			let messageBox = document.getElementById("realTextarea");
+			if(selectedElem) {
+				let response = responses.find(x => x.content == ruleListActivator);
+				let message = \`Rule | Description\n---------|----------\n\${selectedElem.children[1].textContent} | \${selectedElem.getAttribute('value')}\`;
+				response.replace ? messageBox.value = message : messageBox.value += message;
+				console.log("[Modmail++] New messageBox value: %c" + messageBox.value,"color: orange");
+				closeIconClicked();
+			}
+		}
+		function closeIconClicked() {
+			let ruleDiv = document.getElementsByClassName("ruleDiv")[0];
+			ruleDiv.style.visibility = "hidden";
 		}`;
 	
 		//Add all the responses to the listbox
@@ -320,7 +387,7 @@ function main() {
 		head.appendChild(headJS);
 
 		$(".ThreadViewer__replyContainer").insertBefore($(".ThreadViewer__typingIndicator"),$(".select"));
-
+	
 		populate();
 	}
 
@@ -464,6 +531,233 @@ function main() {
 	}
 	::-webkit-scrollbar-thumb:hover {
 	  background: #555;
+	}
+	.subredditRuleList {
+		--newRedditTheme-bodyText: #D7DADC;
+		--newRedditTheme-metaText: #818384;
+		--newRedditTheme-navIconFaded10: rgba(215,218,220,0.1);
+		--newRedditTheme-actionIconTinted80: #9a9b9c;
+		--newRedditTheme-activeShaded90: #006cbd;
+		--newRedditTheme-actionIconAlpha20: rgba(129,131,132,0.2);
+		--newCommunityTheme-actionIcon: #818384;
+		--newRedditTheme-bodyTextAlpha03: rgba(215,218,220,0.03);
+		--newRedditTheme-navIcon: #D7DADC;
+		--newCommunityTheme-line: #343536;
+		--newCommunityTheme-body: #1A1A1B;
+		--listSelect: #353535;
+	}
+	.ruleList {
+		padding: 0 24px 0 20px;
+		background: var(--newRedditTheme-bodyTextAlpha03);
+		max-height: 100%;
+	}
+	html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, button, cite, code, del, dfn, em, img, input, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		font-size: 100%;
+		font: inherit;
+		vertical-align: baseline;
+	}
+	.dialogWindow {
+		pointer-events: auto;
+	}
+	.ruleDiv {
+		-ms-flex-align: center;
+		align-items: center;
+		box-sizing: border-box;
+		display: -ms-flexbox;
+		display: flex;
+		height: 100%;
+		padding: 75px 30px 20px;
+		pointer-events: none;
+		position: fixed;
+		top: 0;
+		width: 100%;
+		z-index: 55;
+	}
+	.dialogWindow {
+		background-color: var(--newCommunityTheme-body);
+		border: 1px solid var(--newCommunityTheme-line);
+		border-radius: 4px;
+		box-shadow: 0 2px 20px 0 rgb(0 0 0 / 30%);
+		margin: auto;
+		pointer-events: auto;
+		z-index: 55;
+	}
+	.listWindow {
+		width: 550px;
+		position: relative;
+	}
+	.ruleHeader {
+		height: 50px;
+		border-bottom: 1px solid var(--newRedditTheme-bodyTextAlpha03);
+		position: relative;
+		display: -ms-flexbox;
+		display: flex;
+		-ms-flex-align: center;
+		align-items: center;
+		padding: 0 24px 0 20px;
+		margin: 0 -24px 0 -20px;
+		font-weight: 700;
+		font-size: 14px;
+		color: var(--newRedditTheme-metaText);
+	}
+	.infoIcon {
+		background: var(--newRedditTheme-bodyTextAlpha03);
+		border-radius: 8px;
+		padding: 10px 16px 10px 12px;
+		display: -ms-flexbox;
+		display: flex;
+		box-sizing: border-box;
+		margin-top: 16px;
+	}
+	.bottomFooter {
+		box-shadow: 0 -1px 0 var(--newRedditTheme-bodyTextAlpha03);
+		padding: 20px 0 16px;
+		min-height: 80px;
+		display: -ms-flexbox;
+		display: flex;
+		box-sizing: border-box;
+		bottom: 0;
+		left: 0;
+	}
+	.closeIconSVG {
+		margin-left: auto;
+		margin-right: -4px;
+		cursor: pointer;
+		height: 20px;
+		padding: 4px;
+		width: 20px;
+		fill: var(--newCommunityTheme-actionIcon);
+	}
+	.infoIconSVG {
+		-ms-flex: 0 0 20px;
+		flex: 0 0 20px;
+		width: 20px;
+		margin-right: 12px;
+		fill: #878a8c;
+	}
+	.selectButton:disabled {
+		opacity: .5;
+	}
+	.selectButton {
+		margin-top: 8px;
+		-ms-flex: 0 0 150px;
+		flex: 0 0 150px;
+		background: var(--newRedditTheme-activeShaded90);
+		height: 31px;
+		border-radius: 100px;
+		color: #fff;
+		-ms-flex-item-align: end;
+		align-self: flex-end;
+		margin-left: auto;
+		font-size: 12px;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: .05em;
+		outline: none!important;
+	}
+	.infoBox {
+		-ms-flex: 0 1 auto;
+		flex: 0 1 auto;
+		font-size: 14px;
+		line-height: 1.45;
+		letter-spacing: -.01em;
+		color: var(--newRedditTheme-metaText);
+	}
+	.infoBox a {
+		color: #24a0ed;
+	}
+	button {
+		background: transparent;
+		border: none;
+		color: inherit;
+		cursor: pointer;
+		padding: initial;
+	}
+	input {
+		-webkit-writing-mode: horizontal-tb !important;
+		text-rendering: auto;
+		color: -internal-light-dark(black, white);
+		letter-spacing: normal;
+		word-spacing: normal;
+		text-transform: none;
+		text-indent: 0px;
+		text-shadow: none;
+		display: inline-block;
+		text-align: start;
+		appearance: auto;
+		background-color: -internal-light-dark(rgb(255, 255, 255), rgb(59, 59, 59));
+		-webkit-rtl-ordering: logical;
+		cursor: text;
+		margin: 0em;
+		font: 400 13.3333px Arial;
+		padding: 1px 2px;
+		border-width: 2px;
+		border-style: inset;
+		border-color: -internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
+		border-image: initial;
+	}
+	body {
+		min-height: calc(100vh - 48px);
+		line-height: 1;
+		font-family: IBMPlexSans, Arial, sans-serif;
+		-webkit-font-smoothing: antialiased;
+	}
+	._3kEv5z1lDKGV8PQ5ijp4Uh {
+		background-size: 24px 24px;
+		background-position: 11px 6px;
+		padding-left: 42px!important;
+		background-repeat: no-repeat;
+	}
+	.title {
+		margin-top: 16px;
+		font-size: 16px;
+		line-height: 1.2;
+		font-weight: 700;
+		color: var(--newRedditTheme-bodyText);
+	}
+	.fieldSet {
+		display: -ms-flexbox;
+		display: flex;
+		-ms-flex-direction: column;
+		flex-direction: column;
+		box-sizing: border-box;
+	}
+	.listValue label {
+		padding: 0 72px 0 20px;
+		display: -ms-flexbox;
+		display: flex;
+		height: 100%;
+		-ms-flex-align: center;
+		align-items: center;
+		cursor: pointer;
+		font-size: 14px;
+		font-weight: 700;
+		color: var(--newRedditTheme-metaText);
+		position: relative;
+	}
+	.listValue {
+		box-sizing: border-box;
+		height: 64px;
+		border-top: 1px solid var(--newRedditTheme-navIconFaded10);
+	}
+	.listBox {
+		margin: 16px -24px 0 -20px;
+		max-height: 60vh;
+		min-height: 100px;
+		overflow: auto;
+	}
+	.listValue input {
+		visibility: hidden;
+		display: none;
+	}
+	.StyledHtml tr {
+		color: ${titleColor};
+	}
+	.StyledHtml td {
+		color: ${textColor};
 	}`;
 
 	//Apply the custom css
@@ -478,6 +772,30 @@ function main() {
 
 } /* End of Main function */
 
+console.log("[Modmail++] %cScript started!", "color: green");
+
+const $ = document.querySelector.bind(document);
+const $$ = document.querySelectorAll.bind(document);
+
+//Returns a random item from array
+const randItem = itemArr => itemArr[Math.floor(Math.random() * itemArr.length)];
+
+//Adds a zero suffix if x < 10
+const fixnumber = number => number < 10 ? "0" + number : number;
+
+//Removes the Reddit prefix
+const removePrefix = (username) => ["r/","u/"].some(tag => username.includes(tag)) ? username.slice(2) : username;
+
+//Adds the Reddit prefix if nonexistant
+const keepPrefix = (username, subreddit) => ["r/","u/"].some(tag => username.includes(tag)) ? username : subreddit ? `r/${username}` : `u/${username}`;
+
+$(".Sidebar__titleMessage").setAttribute("onclick","window.open('https://github.com/Hakorr/Userscripts/tree/main/Reddit.com/ModmailExtraInfo')");
+$(".Sidebar__titleMessage").setAttribute("style","cursor: pointer");
+$(".Sidebar__titleMessage").innerText = "Modmail ++";
+
+var first = false;
+var confettiDeployed = false;
+
 /* Start Main function when visiting new modmail */
 var pageURLCheckTimer = setInterval (function () {
     if (this.lastPathStr !== location.pathname) 
@@ -487,23 +805,21 @@ var pageURLCheckTimer = setInterval (function () {
         first = true;
         confettiDeployed = false;
 
-        let startInterval = setInterval (function () {
-            //Add confetti explosion if no mail
-            if($(".NoThreadMessage__generic") && !confettiDeployed) {
-                confettiDeployed = true;
-                console.log("[Modmail++] %cNo modmail!", "color: lime");
+		//Add confetti explosion if no mail
+		if($(".NoThreadMessage__generic") && !confettiDeployed) {
+			confettiDeployed = true;
+			console.log("[Modmail++] %cNo modmail!", "color: lime");
 
-                party.confetti($(".NoThreadMessage__generic"), {
-                    count: party.variation.range(20, 40),
-                    spread: 50
-                });
-            }
-            //User is on modmail "chat" page
-            if($(".InfoBar__username")) {
-                if(first) main();
-                first = false;
-                clearInterval(startInterval);
-            }
-        }, 5);
+			party.confetti($(".NoThreadMessage__generic"), {
+				count: party.variation.range(20, 40),
+				spread: 50
+			});
+		}
+
+		//User is on modmail "chat" page
+		if($(".InfoBar__username")) {
+			if(first) main();
+			first = false;
+		}
     }
 }, 100);
