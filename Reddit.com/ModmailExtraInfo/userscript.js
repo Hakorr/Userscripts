@@ -356,12 +356,13 @@ function main() { console.log("[Modmail++] %cMain function ran!", "color: grey")
 			element.parentElement.id = "currentlySelected";
 			document.getElementsByClassName("selectButton")[0].disabled = false;
 		}
+		const removeBreaks = text => text.replace(/(\\r\\n|\\n|\\r)/gm, "");
 		function selectButtonClicked() {
 			let selectedElem = document.getElementById("currentlySelected");
 			let messageBox = document.getElementById("realTextarea");
 			if(selectedElem) {
 				let response = responses.find(x => x.content == ruleListActivator);
-				let message = \`Rule | Description\n---------|----------\n\${selectedElem.children[1].textContent} | \${selectedElem.getAttribute('value')}\`;
+				let message = \`Rule | Description\n---------|----------\n\${selectedElem.children[1].textContent} | \${removeBreaks(selectedElem.getAttribute('value'))}\`;
 				response.replace ? messageBox.value = message : messageBox.value += message;
 				console.log("[Modmail++] New messageBox value: %c" + messageBox.value,"color: orange");
 				closeIconClicked();
