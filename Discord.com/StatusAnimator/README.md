@@ -3,7 +3,7 @@ A **dead simple** manually editable status animator for Discord (Browser)
 
 https://greasyfork.org/en/scripts/427960-discord-status-animator-manual-edit-non-ui
 
-**This is a personal project, the code is not meant to be clean, the repo is public so I can share it to friends.**
+**This is a personal project, the code is not meant to be clean, the repo is public so I can share it with friends.**
 
 ## How to install?
 
