@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        [Aternos] AntiAntiAdblock
 // @namespace   HKR
-// @match       https://aternos.org/*
+// @match       https://aternos.org/server/*
 // @grant       none
 // @version     1.0
 // @author      HKR
