@@ -1,4 +1,4 @@
-# No adblock reminders
+# [Aternos] AntiAntiAdblock
 
 Removes all the adblock reminders without a hussle.
 
