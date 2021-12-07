@@ -17,12 +17,22 @@ document.arrive('.ad', function () {
     Array.from(document.querySelectorAll(".ad")).forEach(ad => ad.setAttribute("style","display: none;"));
 });
 
-window.addEventListener('load', function () {
+document.arrive('#start', function () {
+    //Patch the start button to make it functional
+    document.querySelector("#start").setAttribute("onclick","start()");
+});
+
+function removeLayer() {
     //Find and remove a restrictive top element
     Array.from(document.querySelectorAll("*[style]")).forEach(elim => {
         if(elim.getAttribute("style").includes("top: 0px;"))
             elim.style += "top: -1px";
     });
-    //Patch the start button to make it functional
-    if(document.querySelector("#start")) document.querySelector("#start").setAttribute("onclick","start()");
-})
+}
+
+window.addEventListener('load', function () {
+    removeLayer();
+    $(document).mouseenter(function () {
+        removeLayer();
+    });
+});
