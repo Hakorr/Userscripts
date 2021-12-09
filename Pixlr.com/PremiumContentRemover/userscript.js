@@ -24,7 +24,8 @@ const removeList = [
     "#tool-glitch",
     "#tool-focus",
     "#tool-dispersion",
-    "#cutout-auto"
+    "#cutout-auto",
+    "#modal-pop"
 ];
 
 function handlePremiumElement(elem) {
