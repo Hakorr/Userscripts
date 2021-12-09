@@ -6,6 +6,7 @@
 // @version     2.1
 // @author      HKR
 // @description Removes all the adblock reminders without a hussle.
+// @supportURL  https://github.com/Hakorr/Userscripts/issues
 // @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
 // @run-at      document-start
 // ==/UserScript==
