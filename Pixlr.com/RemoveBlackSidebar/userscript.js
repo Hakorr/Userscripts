@@ -14,9 +14,11 @@
 GM_addStyle("#workspace { right: 0px !important; }");
 
 document.arrive('#slot', function () {
-	document.getElementById("slot").remove();
+    document.querySelector('#slot').remove();
+    console.log("[Remove Black Siderbar] Removed an element!")
 });
 
-document.arrive('div[id="right-space"]', function () {
-	document.getElementById("right-space").remove();
+document.arrive('#right-space', function () {
+    document.querySelector('#right-space').remove();
+    console.log("[Remove Black Siderbar] Removed an element!")
 });
