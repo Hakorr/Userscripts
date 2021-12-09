@@ -6,6 +6,7 @@
 // @version     1.0
 // @author      HKR
 // @description Removes all the adblock reminders. A bit slow and laggy.
+// @supportURL  https://github.com/Hakorr/Userscripts/issues
 // @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
 // @run-at      document-load
 // ==/UserScript==
