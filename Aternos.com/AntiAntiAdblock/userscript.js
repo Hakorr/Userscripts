@@ -3,13 +3,18 @@
 // @namespace   HKR
 // @match       https://aternos.org/*
 // @grant       none
-// @version     2.1
+// @version     2.2
 // @author      HKR
 // @description Removes all the adblock reminders without a hussle.
 // @supportURL  https://github.com/Hakorr/Userscripts/issues
 // @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
 // @run-at      document-start
 // ==/UserScript==
+
+//Remove a base64 encoded JS script that ads the fullscreen anti ablock message
+document.arrive('[src*="data:text/javascript;base64"]', function () { 
+    document.querySelector('[src*="data:text/javascript;base64"]').remove();
+});
 
 //Found the advertisement element on document -> Hide all the nondeleted advertisement elements
 document.arrive('.ad', function () { 
@@ -78,7 +83,7 @@ Makes catching all web requests and blocking them if necessary possible. */
 //A new web request initiated
 document.onbeforescriptexecute = (e) => {
     //If it requests a base64 encoded js file
-    if (e.target.src.includes('data:text/javascript;base64,')) {
+    if (e.target.src.includes('data:text/javascript;base64')) {
         //Block it
         e.preventDefault();
     }
