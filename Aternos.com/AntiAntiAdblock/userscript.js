@@ -7,7 +7,6 @@
 // @author      HKR
 // @description Removes all the adblock reminders without a hussle.
 // @supportURL  https://github.com/Hakorr/Userscripts/issues
-// @home-url    https://github.com/Hakorr/Userscripts/tree/main/Aternos.com/AntiAntiAdblock
 // @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
 // @run-at      document-start
 // ==/UserScript==
