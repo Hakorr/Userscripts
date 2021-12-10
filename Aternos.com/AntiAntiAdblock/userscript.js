@@ -17,7 +17,7 @@
     - I'm not trying to advertise the script to everyone, it's only on GreasyFork and Github and only those who really, really want an antiantiadblocker can find it.
 */
 
-//Remove a base64 encoded JS script that ads the fullscreen anti ablock message (This is incase onbeforescriptexecute fails)
+//Remove a base64 encoded JS script which appends the fullscreen anti ablock message (This is incase onbeforescriptexecute fails to block it from loading)
 document.arrive('[src*="data:text/javascript;base64"]', function () { 
     document.querySelector('[src*="data:text/javascript;base64"]').remove();
 });
