@@ -3,15 +3,22 @@
 // @namespace   HKR
 // @match       https://aternos.org/*
 // @grant       none
-// @version     2.2
+// @version     2.3
 // @author      HKR
 // @description Removes all the adblock reminders without a hussle.
 // @supportURL  https://github.com/Hakorr/Userscripts/issues
+// @home-url    https://github.com/Hakorr/Userscripts/tree/main/Aternos.com/AntiAntiAdblock
 // @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
 // @run-at      document-start
 // ==/UserScript==
 
-//Remove a base64 encoded JS script that ads the fullscreen anti ablock message
+/* Note to the Aternos developers who are constantly wasting their precious time on this script, please stop.
+    - I'm sorry for making the script, but at the same not. I will personally never take my adblock off, so you'd get no (ad) profits from me (or other people like me) either way.
+    - If I remember correctly, you also sell user data, that should keep you afloat.
+    - I'm not trying to advertise the script to everyone, it's only on GreasyFork and Github and only those who really, really want an antiantiadblocker can find it.
+*/
+
+//Remove a base64 encoded JS script that ads the fullscreen anti ablock message (This is incase onbeforescriptexecute fails)
 document.arrive('[src*="data:text/javascript;base64"]', function () { 
     document.querySelector('[src*="data:text/javascript;base64"]').remove();
 });
@@ -44,12 +51,17 @@ document.arrive('.sidebar', function () {
 /* onbeforescriptexecute - https://github.com/Ray-Adams/beforeScriptExecute-Polyfill 
 Makes catching all web requests and blocking them if necessary possible. */
 
+/* Updated it to randomize the name, because of Aternos' countermeasures */
+
+let randomNum = max => Math.floor(Math.random() * max);
+const scriptExecuteName = Math.random().toString(36).substring(2, randomNum(40) + 5);
+
 (() => {
     'use strict';
 
     if ('onbeforescriptexecute' in document) return;
 
-    const BseEvent = new Event('beforescriptexecute', {
+    const BseEvent = new Event(scriptExecuteName, {
         bubbles: true,
         cancelable: true
     });
@@ -60,10 +72,10 @@ Makes catching all web requests and blocking them if necessary possible. */
                 if (node.tagName !== 'SCRIPT') continue;
                 
                 // Adds functionality to document.onbeforescriptexecute
-                if (typeof document.onbeforescriptexecute === 'function') {
+                if (typeof document.scriptExecuteName === 'function') {
                     document.addEventListener(
-                        'beforescriptexecute',
-                        document.onbeforescriptexecute,
+                        scriptExecuteName,
+                        document.scriptExecuteName,
                         { once: true }
                     );
                 };
@@ -81,7 +93,7 @@ Makes catching all web requests and blocking them if necessary possible. */
 })();
 
 //A new web request initiated
-document.onbeforescriptexecute = (e) => {
+document.scriptExecuteName = (e) => {
     //If it requests a base64 encoded js file
     if (e.target.src.includes('data:text/javascript;base64')) {
         //Block it
