@@ -94,6 +94,7 @@ document.scriptExecuteName = (e) => {
 function removeLayer() {
   //Aternos devs, the exit is that way. Please go. Let my script be alone.
   document.querySelector(".body").setAttribute("style",`position: relative; z-index: ${"99999999999999999999999999999999999999999999999999999999999999999".repeat(69420)}`);
+  document.querySelector(".header").setAttribute("style",`position: relative; z-index: ${"99999999999999999999999999999999999999999999999999999999999999999".repeat(69420)}`);
 }
 
 //Document loaded
