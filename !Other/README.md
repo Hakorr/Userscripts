@@ -2,12 +2,7 @@
 
 ###### Find an element by text
 ```js
-function contains(selector, text) {
-  var elements = document.querySelectorAll(selector);
-  return Array.prototype.filter.call(elements, function(element){
-    return RegExp(text).test(element.textContent);
-  });
-}
+const contains = (selector,text) => Array.from(document.querySelectorAll(selector)).find(el => el.textContent === text);
 ```
 
 ###### Add CSS
@@ -41,13 +36,6 @@ function Get(url) {
     xmlHttp.send( null );
     return xmlHttp.responseText;
 }
-```
-
-###### Multiline variable
-```js
-var name = `
-
-`;
 ```
 
 ###### Wildcard pattern matching
