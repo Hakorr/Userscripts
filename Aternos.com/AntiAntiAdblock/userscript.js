@@ -3,7 +3,7 @@
 // @namespace   HKR
 // @match       https://aternos.org/*
 // @grant       none
-// @version     2.3
+// @version     2.4
 // @author      HKR
 // @description Removes all the adblock reminders without a hussle.
 // @supportURL  https://github.com/Hakorr/Userscripts/issues
@@ -11,16 +11,7 @@
 // @run-at      document-start
 // ==/UserScript==
 
-/* Note to the Aternos developers who are constantly wasting their precious time on this script, please stop.
-    - I'm sorry for making the script, but at the same not. I will personally never take my adblock off, so you'd get no (ad) profits from me (or other people like me) either way.
-    - If I remember correctly, you also sell user data, that should keep you afloat.
-    - I'm not trying to advertise the script to everyone, it's only on GreasyFork and Github and only those who really, really want an antiantiadblocker can find it.
-*/
-
-//Remove a base64 encoded JS script which appends the fullscreen anti ablock message (This is incase onbeforescriptexecute fails to block it from loading)
-document.arrive('[src*="data:text/javascript;base64"]', function () { 
-    document.querySelector('[src*="data:text/javascript;base64"]').remove();
-});
+/* Let's dance then. */
 
 //Found the advertisement element on document -> Hide all the nondeleted advertisement elements
 document.arrive('.ad', function () { 
@@ -93,15 +84,26 @@ const scriptExecuteName = Math.random().toString(36).substring(2, randomNum(40) 
 
 //A new web request initiated
 document.scriptExecuteName = (e) => {
-    //If it requests a base64 encoded js file
-    if (e.target.src.includes('data:text/javascript;base64')) {
+    //If it requests a selected file
+    if (e.target.src.includes('base64')) {
         //Block it
         e.preventDefault();
     }
 }
 
+function removeAttributesOver(attribute, length) {
+    Array.from(document.querySelectorAll(attribute)).forEach(div => {
+        Array.from(div.attributes).forEach(atr => {
+            if(atr.name.length > 9) div.remove();
+        });
+    });
+}
+
 //Find and "hide" a restrictive top element
-function removeLayer() { Array.from(document.querySelectorAll("[style]")).forEach(elim => { if(elim.getAttribute("style").includes("top: 0;")) elim.style += "top: -1px"; }); }
+function removeLayer() { 
+    removeAttributesOver("div",9);
+    removeAttributesOver("span",9);
+}
 
 //Document loaded
 window.addEventListener('load', function () {
