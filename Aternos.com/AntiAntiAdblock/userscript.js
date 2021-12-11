@@ -3,7 +3,7 @@
 // @namespace   HKR
 // @match       https://aternos.org/*
 // @grant       none
-// @version     2.5
+// @version     2.6
 // @author      HKR
 // @description Removes all the adblock reminders without a hussle.
 // @supportURL  https://github.com/Hakorr/Userscripts/issues
@@ -11,7 +11,7 @@
 // @run-at      document-start
 // ==/UserScript==
 
-/* Please. */
+/* Quite clever, devs. */
 
 //Found the advertisement element on document -> Hide all the nondeleted advertisement elements
 document.arrive('.ad', function () { 
@@ -93,7 +93,7 @@ document.scriptExecuteName = (e) => {
 
 function removeLayer() {
 	const findByText = (selector,text) => Array.from(document.querySelectorAll(selector)).find(el => el.textContent === text);
-	let antiadblockElem = findByText("div","You are using an adblocker!")
+	let antiadblockElem = findByText("*","You are using an adblocker!")
 	antiadblockElem.parentElement.parentElement.parentElement.parentElement.parentElement.innerHTML = "";
 }
 
