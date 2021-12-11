@@ -1,5 +1,9 @@
 ## Functions & other stuff taken from the internet
 
+Some of them are modified by me.
+
+---
+
 ###### Find an element by text
 ```js
 const contains = (selector,text) => Array.from(document.querySelectorAll(selector)).find(el => el.textContent === text);
