@@ -6,7 +6,7 @@ Some of them are modified by me.
 
 ###### Find an element by text
 ```js
-const contains = (selector,text) => Array.from(document.querySelectorAll(selector)).find(el => el.textContent === text);
+const findByText = (selector,text) => Array.from(document.querySelectorAll(selector)).find(el => el.textContent === text);
 ```
 
 ###### Add CSS
