@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name        [Aternos] AntiAntiAdblock
+// @name        [Aternos] AntiAntiAdblock!
 // @namespace   HKR
 // @match       https://aternos.org/*
 // @grant       none
