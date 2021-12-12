@@ -32,7 +32,7 @@ Above us, you can see the files Aternos' server page loads, and their order. Mos
 
 So, let's take a look at the site's HTML structure, shall we? Here's a screenshot of the HTML, ***when the user has yet to clear the Anti-Adblock message.*** Feel free to take a closer look by opening the image on a new tab.
 
-![](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/structure2.jpg)
+<img src="https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/structure2.jpg" alt="pageContentScreenshot" width="500"/>
 
 The element inside the blue box is Aternos' page content element, which is basically the area below.
 
@@ -42,7 +42,7 @@ The red area is where the page "hides" those elements you see on the above scree
 
 We can see the loaded files correspond with their order in the HTML (duh).  You can spot the Base64 encoded JavaScript file we talked about earlier on the bottom. It's the core of the Anti-Adblock.
 
-![](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/structure.jpg)
+<img src="https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/structure.jpg" alt="pageContentScreenshot" width="500"/>
 
 You can also see a similar Base64 source attribute on the top, on class body's element. That's a fake one, created by the Aternos' developers in response to my script. *(I once had a function that deleted every element with a Base64 encoded Javascript. Their change made my userscript delete the body element, which rendered the script useless for a while.)*
 
