@@ -49,6 +49,7 @@ You can also see a similar Base64 source attribute on the top, on class body's e
 Again, this is the reason you wouldn't make your AntiAntiAdblock script public, the developers do stuff like this to prevent it functioning properly. Really annoying, but eh, I'll give them some respect for being so active.
 
 ### Bypassing the Anti-Adblock
+<center><img src="https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/step1.jpg"></center>
 
 Anyway, where were we... Ah yes, the Base64 encoded file at the bottom. Currently at the time of writing this, **to bypass the Anti-Adblock, you need to stop that script from running.** I've done this by capturing all script execute(s), and then blocking all that request a Base64 encoded file.
 
@@ -182,7 +183,7 @@ $(".ContinueAnywayButton").click(function () {
 Most of that code is not helpful to us though, as the class/id names are obfuscated. We'll get back to this.
 
 ### Enabling all the buttons
-
+<center><img src="https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/step2.jpg"></center>
 On the bottom of the Base64 encoded JavaScript file, is a function that enables many of the buttons. What I've done is add a couple functions from the last "Continue with adblocker anyway" button's click function to it. The result is a function that enables every button that was disabled. This can be used in your userscript.
 
 ```js
@@ -242,6 +243,7 @@ $(document).ready(function () {
 Right, so now the buttons work and the fullscreen red Anti-Adblock screen is not visible, what else? Well, the fullscreen red Anti-Adblock screen is not visible, but it's still there, because the Base64 encoded JavaScript file couldn't take it away (because we didn't load it). You need to have a function that finds and deletes this invisible element.
 
 ### Finding the obfuscated element's name and removing it
+<center><img src="https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/step3.jpg"></center>
 
 What I've done is decode the Base64 Javascript file, look for the variable name in a known location, then extract the element's id and remove it. This method is really vulnerable and will break by the slightest changes by the dev team.
 
@@ -336,6 +338,7 @@ function removeLayer() {
 ```
 
 ### Result
+<center><img src="https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/done.jpg"></center>
 
 The final result of the userscript is below,
 
