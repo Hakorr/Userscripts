@@ -241,7 +241,7 @@ $(document).ready(function () {
 
 Right, so now the buttons work and the fullscreen red Anti-Adblock screen is not visible, what else? Well, the fullscreen red Anti-Adblock screen is not visible, but it's still there, because the Base64 encoded JavaScript file couldn't take it away (because we didn't load it). You need to have a function that finds and deletes this invisible element.
 
-### Finding the obfuscated element's name
+### Finding the obfuscated element's name and removing it
 
 What I've done is decode the Base64 Javascript file, look for the variable name in a known location, then extract the element's id and remove it. This method is really vulnerable and will break by the slightest changes by the dev team.
 
