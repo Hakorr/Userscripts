@@ -33,6 +33,7 @@
                                         if ($("#14eaTbXvbBLpL").css("display") !== "none") { // else atStartThisNumWasZero = 450;
                                           if ($(".bad").css("display") === "none") { // else atStartThisNumWasZero = 33;
                                             if ($("#LSqmXOlQ7lWT0gnI3QBOaTE").css("display") !== "none") { // else atStartThisNumWasZero = 258;
+                                              //The regex detects a function: https://regex101.com/r/hJOnZZ/1
                                               if (window.pbjsChunk && !String(pbjsChunk).match(/^(?:function[\s\n]*\w*[\s\n]*\(\)|\(\s*\)\s*=>\s*)[\s\n]*\{[\s\n]*(?:return(?:\s+true|false)?\s*;?)?[\s\S]*\}[\s\n]*$/)) { // else  atStartThisNumWasZero = 97;
                                                 if ($("#KeAH3ACQT9U9VlV1l").css("display") !== "none") { //else atStartThisNumWasZero = 274;
                                                   if ($("#QGmsoi47k").css("display") !== "none") { // else atStartThisNumWasZero = 162;
@@ -350,6 +351,7 @@
     }
 
     //This part is probably run after the "Continue with adblock anyway" button has been pressed or somewhere later there
+    //The regex detects a function: https://regex101.com/r/hJOnZZ/1
     if (XMLHttpRequest.setUpdateListener && !String(XMLHttpRequest.setUpdateListener).match(/^(?:function[\s\n]*\w*[\s\n]*\(\)|\(\s*\)\s*=>\s*)[\s\n]*\{[\s\n]*(?:return(?:\s+true|false)?\s*;?)?[\s\S]*\}[\s\n]*$/) && XMLHttpRequest.setUpdateListener(-1) === "wZpEHVAwXZkBGDoxgfqwwnnOJtSjdsEXyt") {
       XMLHttpRequest.setUpdateListener(d => {
         let d1 = ["hbopenbid.pubmatic.com", "c.amazon-adsystem.com", "tlx.3lift.com", "prebid.digitru.st", "ad.yieldlab.net", "onetag-sys.com", "bidder.criteo.com", "securepubads.g.doubleclick.net", "snigel-d.openx.net", "cdn.snigelweb.com", "prebid.a-mo.net", "pagead2.googlesyndication.com"];
