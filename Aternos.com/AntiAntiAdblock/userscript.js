@@ -22,7 +22,8 @@ That's all, if it doesn't work, please don't cry and make your own one, keep it 
 
 $(document).ready(function () {
     Array.from($(".ad")).forEach(ad => ad.setAttribute("style","display: none;")); 
-  
+    document.querySelector(".sidebar").setAttribute("style","display: none;"); 
+    
     $(".body, .header").each(function () {
         this.style.setProperty("display", "");
         this.style.setProperty("height", "");
