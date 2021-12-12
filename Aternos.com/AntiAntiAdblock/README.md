@@ -421,3 +421,5 @@ document.beforeScriptExecute = (e) => {
 ```
 
 It is probable that the methods above will get patched and the structure changed. Don't worry though, only small edits should get you far, as long as you don't share it. Try to use this as advice, not a copypaste tutorial, the floor is yours!
+
+If you'd like to see the Base64 encoded JavaScript file decoded and slightly deobfuscated you can see it [here](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Other/Anti-Adblock-Decoded.js).
