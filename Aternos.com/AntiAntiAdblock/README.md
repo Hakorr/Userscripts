@@ -3,7 +3,9 @@
 Removes all the adblock reminders without a hussle.
 
 ---
-
+<details open><summary>Q&A</summary>	
+<p>
+	
 ### Why doesn't the script work?
 
 * Aternos's developers are hunting AntiAntiAdblock scripts. With the current methods, they can easily change a little detail on their code, which renders the script useless, unable to find its wanted element or variable.
@@ -16,24 +18,33 @@ Removes all the adblock reminders without a hussle.
 ### How will I do that?
 
 * You'll need to study and reverse engineer the website's structure, and figure out how the Anti-Adblock element is loaded. I can teach you on the current (12.12.2021) ways they do it, but can't predict the future.
-* If the site's structure has been changed, you'll need JS knowledge.
+* If the site's structure has been changed, you might need some Javascript knowledge.
 
 ---
+	
+</p>
+</details>
 
 ## How Aternos' Anti-Adblock works and how to block it
 
+<details open><summary>Open/Close</summary>	
+<p>
+	
 *(This section was last updated 12.12.2021, and was made to help you build your own scripts by understanding the structure better.)*
 
-* [Basic structure](https://github.com/Hakorr/Userscripts/tree/main/Aternos.com/AntiAntiAdblock#basic-structure)
-* [Bypassing the Anti-Adblock](https://github.com/Hakorr/Userscripts/tree/main/Aternos.com/AntiAntiAdblock#bypassing-the-anti-adblock)
-* [A look inside the Base64 encoded JavaScript file](https://github.com/Hakorr/Userscripts/tree/main/Aternos.com/AntiAntiAdblock#a-look-inside-the-base64-encoded-javascript-file)
+* [Basic structure](#basic-structure)
+* [Bypassing the Anti-Adblock](#bypassing-the-anti-adblock)
+	* [A look inside the Base64 encoded JavaScript file](#a-look-inside-the-base64-encoded-javascript-file)
 * [Enabling all the buttons](https://github.com/Hakorr/Userscripts/tree/main/Aternos.com/AntiAntiAdblock#enabling-all-the-buttons)
-* [Finding the obfuscated element's name and removing it](https://github.com/Hakorr/Userscripts/tree/main/Aternos.com/AntiAntiAdblock#finding-the-obfuscated-elements-name-and-removing-it)
-* [Result](https://github.com/Hakorr/Userscripts/tree/main/Aternos.com/AntiAntiAdblock#result)
+* [Finding the obfuscated element's name and removing it](#finding-the-obfuscated-elements-name-and-removing-it)
+* [Result](#result)
 
 
 ### Basic structure
-
+	
+<details open><summary>Open/Close</summary>	
+<p>
+	
 ![](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/network.jpg)
 
 Above us, you can see the files Aternos' server page loads, and their order. Most of the files do not contain anything harmful, but the Base64 encoded JavaScript file is what starts the Anti-Adblock message. It also deletes the content page's elements, disables all the buttons and so fourth. It also enables everything afterwards.
@@ -56,7 +67,16 @@ You can also see a similar Base64 source attribute on the top, on class body's e
 
 Again, this is the reason you wouldn't make your AntiAntiAdblock script public, the developers do stuff like this to prevent it functioning properly. Really annoying, but eh, I'll give them some respect for being so active.
 
+---
+
+</p>
+</details>
+
 ### Bypassing the Anti-Adblock
+	
+<details open><summary>Open/Close</summary>	
+<p>
+
 <center><img src="https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/step1.jpg"></center>
 
 Anyway, where were we... Ah yes, the Base64 encoded file at the bottom. Currently at the time of writing this, **to bypass the Anti-Adblock, you need to stop that script from running.** I've done this by capturing all script execute(s), and then blocking all that request a Base64 encoded file.
@@ -116,8 +136,16 @@ If the loaded script's source has the `data:text/javascript;base64` tag, it'll b
 ![](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/blockedVariable.jpg)
 
 Great, so we've stopped the Anti-Ablock's JS file from loading, we should be good now, right? Not quite, the Base64 encoded JavaScript file has important pieces of code that return everything back to normal. No buttons work without it. It also hides the fullscreen red Anti-Adblock element. We'll need to copy some code from the script to our userscript.
-
+	
+---
+	
+</p>
+</details>
+	
 ### A look inside the Base64 encoded JavaScript file
+
+<details open><summary>Open/Close</summary>	
+<p>
 
 Here's a code snippet from the Base64 encoded JavaScript. This is the "Continue with adblocker anyway" button's click function. Do remember that the whole script and all the class/id names would normally be obfuscated, like they are in the bottom of the HTML.
 
@@ -189,8 +217,17 @@ $(".ContinueAnywayButton").click(function () {
 ```
 
 Most of that code is not helpful to us though, as the class/id names are obfuscated. We'll get back to this.
-
+	
+---
+	
+</p>
+</details>
+	
 ### Enabling all the buttons
+	
+<details open><summary>Open/Close</summary>	
+<p>
+	
 <center><img src="https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/step2.jpg"></center>
 On the bottom of the Base64 encoded JavaScript file, is a function that enables many of the buttons. What I've done is add a couple functions from the last "Continue with adblocker anyway" button's click function to it. The result is a function that enables every button that was disabled. This can be used in your userscript.
 
@@ -250,7 +287,16 @@ $(document).ready(function () {
 
 Right, so now the buttons work and the fullscreen red Anti-Adblock screen is not visible, what else? Well, the fullscreen red Anti-Adblock screen is not visible, but it's still there, because the Base64 encoded JavaScript file couldn't take it away (because we didn't load it). You need to have a function that finds and deletes this invisible element.
 
+---
+		
+</p>
+</details>	
+		
 ### Finding the obfuscated element's name and removing it
+				    
+<details open><summary>Open/Close</summary>	
+<p>
+	
 <center><img src="https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/step3.jpg"></center>
 
 What I've done is decode the Base64 Javascript file, look for the variable name in a known location, then extract the element's id and remove it. This method is really vulnerable and will break by the slightest changes by the dev team.
@@ -297,7 +343,7 @@ Here's also my older methods of finding the element, hopefully it gives you idea
 *Note that they're all patched but should work with slight adjustments!*
 
 #### Find by the attribute it has
-
+	
 ```js
 function removeLayer() { Array.from(document.querySelectorAll("[style]")).forEach(elim => { if(elim.getAttribute("style").includes("top: 0;")) elim.style += "top: -1px"; }); }
 ```
@@ -344,8 +390,17 @@ function removeLayer() {
     removeAttributesOver("span",9);
 }
 ```
-
+	
+---
+	
+</p>
+</details>
+	
 ### Result
+	
+<details open><summary>Open/Close</summary>	
+<p>
+	
 <center><img src="https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/done.jpg"></center>
 
 The final result of the userscript is below,
@@ -483,7 +538,15 @@ document.beforeScriptExecute = (e) => {
     }
 }
 ```
-
+	
+---
+	
+</p>
+</details>
+	
 It is probable that the methods above will get patched and the structure changed. Don't worry though, only small edits should get you far, as long as you don't share it. Try to use this as advice, not a copypaste tutorial, the floor is yours!
 
 If you'd like to see the Base64 encoded JavaScript file decoded and slightly deobfuscated you can see it [here](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Other/Anti-Adblock-Decoded.js).
+
+</p>
+</details>
