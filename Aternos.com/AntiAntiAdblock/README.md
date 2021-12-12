@@ -24,6 +24,14 @@ Removes all the adblock reminders without a hussle.
 
 *(This section was last updated 12.12.2021, and was made to help you build your own scripts by understanding the structure better.)*
 
+* [Basic structure](https://github.com/Hakorr/Userscripts/tree/main/Aternos.com/AntiAntiAdblock#basic-structure)
+* [Bypassing the Anti-Adblock](https://github.com/Hakorr/Userscripts/tree/main/Aternos.com/AntiAntiAdblock#bypassing-the-anti-adblock)
+* [A look inside the Base64 encoded JavaScript file](https://github.com/Hakorr/Userscripts/tree/main/Aternos.com/AntiAntiAdblock#a-look-inside-the-base64-encoded-javascript-file)
+* [Enabling all the buttons](https://github.com/Hakorr/Userscripts/tree/main/Aternos.com/AntiAntiAdblock#enabling-all-the-buttons)
+* [Finding the obfuscated element's name and removing it](https://github.com/Hakorr/Userscripts/tree/main/Aternos.com/AntiAntiAdblock#finding-the-obfuscated-elements-name-and-removing-it)
+* [Result](https://github.com/Hakorr/Userscripts/tree/main/Aternos.com/AntiAntiAdblock#result)
+
+
 ### Basic structure
 
 ![](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/network.jpg)
