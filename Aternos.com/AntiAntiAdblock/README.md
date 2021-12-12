@@ -1,4 +1,4 @@
-# [[Aternos] AntiAntiAdblock](https://greasyfork.org/en/scripts/436701-aternos-no-adblock-reminders)
+# [[Aternos] AntiAntiAdblock](https://greasyfork.org/en/scripts/436921-aternos-antiantiadblock)
 
 Removes all the adblock reminders without a hussle.
 
