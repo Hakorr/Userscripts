@@ -47,7 +47,7 @@ Removes all the adblock reminders without a hussle.
 	
 ![](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/network.jpg)
 
-Above us, you can see the files Aternos' server page loads, and their order. Most of the files do not contain anything harmful, but the Base64 encoded JavaScript file is what starts the Anti-Adblock message. It also deletes the content page's elements, disables all the buttons and so fourth. It also enables everything afterwards.
+Above us, you can see the files Aternos' server page loads, and their order. Most of the files do not contain anything harmful, but the [Base64 encoded JavaScript file](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Other/Anti-Adblock-Obfuscated.js) is what starts the Anti-Adblock message. It also deletes the content page's elements, disables all the buttons and so fourth. It also enables everything afterwards.
 
 So, let's take a look at the site's HTML structure, shall we? Here's a screenshot of the HTML, ***when the user has yet to clear the Anti-Adblock message.*** Feel free to take a closer look by opening the image on a new tab.
 
@@ -59,7 +59,7 @@ The element inside the blue box is Aternos' page content element, which is basic
 
 The red area is where the page "hides" those elements you see on the above screenshot, inside the blue box. Once the user presses the "Continue with adblock" button and waits 3 seconds, those elements will be copied into the blue box, and then the red box removed. More about this later...
 
-We can see the loaded files correspond with their order in the HTML (duh).  You can spot the Base64 encoded JavaScript file we talked about earlier on the bottom. It's the core of the Anti-Adblock.
+We can see the loaded files correspond with their order in the HTML (duh).  You can spot the [Base64 encoded JavaScript file](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Other/Anti-Adblock-Obfuscated.js) we talked about earlier on the bottom. It's the core of the Anti-Adblock.
 
 <img src="https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/structure.jpg" alt="pageContentScreenshot" width="500"/>
 
@@ -79,7 +79,7 @@ Again, this is the reason you wouldn't make your AntiAntiAdblock script public, 
 
 <center><img src="https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/step1.jpg"></center>
 
-Anyway, where were we... Ah yes, the Base64 encoded file at the bottom. Currently at the time of writing this, **to bypass the Anti-Adblock, you need to stop that script from running.** I've done this by capturing all script execute(s), and then blocking all that request a Base64 encoded file.
+Anyway, where were we... Ah yes, the [Base64 encoded file](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Other/Anti-Adblock-Obfuscated.js) at the bottom. Currently at the time of writing this, **to bypass the Anti-Adblock, you need to stop that script from running.** I've done this by capturing all script execute(s), and then blocking all that request a [Base64 encoded file](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Other/Anti-Adblock-Obfuscated.js).
 
 Here's a code snippet.
 
@@ -135,7 +135,7 @@ If the loaded script's source has the `data:text/javascript;base64` tag, it'll b
 
 ![](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/blockedVariable.jpg)
 
-Great, so we've stopped the Anti-Ablock's JS file from loading, we should be good now, right? Not quite, the Base64 encoded JavaScript file has important pieces of code that return everything back to normal. No buttons work without it. It also hides the fullscreen red Anti-Adblock element. We'll need to copy some code from the script to our userscript.
+Great, so we've stopped the [Anti-Adblock's JS file](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Other/Anti-Adblock-Obfuscated.js) from loading, we should be good now, right? Not quite, the [Base64 encoded JavaScript file](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Other/Anti-Adblock-Obfuscated.js) has important pieces of code that return everything back to normal. No buttons work without it. It also hides the fullscreen red Anti-Adblock element. We'll need to copy some code from the script to our userscript.
 	
 ---
 	
@@ -229,7 +229,7 @@ Most of that code is not helpful to us though, as the class/id names are obfusca
 <p>
 	
 <center><img src="https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/step2.jpg"></center>
-On the bottom of the Base64 encoded JavaScript file, is a function that enables many of the buttons. What I've done is add a couple functions from the last "Continue with adblocker anyway" button's click function to it. The result is a function that enables every button that was disabled. This can be used in your userscript.
+On the bottom of the [Base64 encoded JavaScript file](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Other/Anti-Adblock-Obfuscated.js), is a function that enables many of the buttons. What I've done is add a couple functions from the last "Continue with adblocker anyway" button's click function to it. The result is a function that enables every button that was disabled. This can be used in your userscript.
 
 ```js
 $(document).ready(function () {
@@ -285,7 +285,7 @@ $(document).ready(function () {
 });
 ```
 
-Right, so now the buttons work and the fullscreen red Anti-Adblock screen is not visible, what else? Well, the fullscreen red Anti-Adblock screen is not visible, but it's still there, because the Base64 encoded JavaScript file couldn't take it away (because we didn't load it). You need to have a function that finds and deletes this invisible element.
+Right, so now the buttons work and the fullscreen red Anti-Adblock screen is not visible, what else? Well, the fullscreen red Anti-Adblock screen is not visible, but it's still there, because the [Base64 encoded JavaScript file](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Other/Anti-Adblock-Obfuscated.js) couldn't take it away (because we didn't load it). You need to have a function that finds and deletes this invisible element.
 
 ---
 		
