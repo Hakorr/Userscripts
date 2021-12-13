@@ -61,3 +61,15 @@ document.ChangeMe = (e) => {
 ```
 
 ---
+
+#### Remove a script element that contains Base64
+
+```js
+// @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
+
+document.arrive('script[src*="data:text/javascript;base64"]', function () { 
+    document.querySelector('script[src*="data:text/javascript;base64"]').remove();
+});
+```
+
+---
