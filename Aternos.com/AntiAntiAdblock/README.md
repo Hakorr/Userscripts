@@ -3,8 +3,6 @@
 Removes all the adblock reminders without a hussle.
 
 ---
-<details open><summary>Q&A</summary>	
-<p>
 	
 ### Why doesn't the script work?
 
@@ -21,9 +19,6 @@ Removes all the adblock reminders without a hussle.
 * If the site's structure has been changed, you might need some JavaScript knowledge.
 
 ---
-	
-</p>
-</details>
 
 ## How Aternos' Anti-Adblock works and how to block it
 
