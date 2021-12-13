@@ -15,7 +15,7 @@ Removes all the adblock reminders without a hussle.
 
 ### How will I do that?
 
-* You'll need to study and reverse engineer the website's structure, and figure out how the Anti-Adblock element is loaded. I can teach you on the current (12.12.2021) ways they do it, but can't predict the future.
+* You'll need to study and reverse engineer the website's structure, and figure out how the Anti-Adblock element is loaded. [I can teach you on the current (12.12.2021) ways they do it](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/README.md), but can't predict the future.
 * If the site's structure has been changed, you might need some JavaScript knowledge.
 
 ---
