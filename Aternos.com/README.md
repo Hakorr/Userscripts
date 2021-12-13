@@ -263,6 +263,8 @@ $(document).ready(function () {
 
 Right, so now the buttons work and the fullscreen red Anti-Adblock screen is not visible, what else? Well, the fullscreen red Anti-Adblock screen is not visible, but it's still there, because the [Base64 encoded JavaScript file](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Other/Anti-Adblock-Obfuscated.js) couldn't take it away (because we didn't load it). You need to have a function that finds and deletes this invisible element.
 
+[You can find more methods to enable the buttons here.](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Methods/FixButtons.md)
+
 ---
 		
 </p>
@@ -314,7 +316,7 @@ document.beforeScriptExecute = (e) => {
 
 At the time of writing, the method above works. They have just changed the `_0x4c04=` variable name to the new one. If you decode the Base64 JavaScript file and look for a variable similar to `var _0x4c04 = ["#mainAntiBlockElem", "css"];`, but just with a different name, you can replace the `_0x4c04=` with the new variable name.
 
-[Here's also my older methods of finding the element, hopefully it gives you ideas.](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Methods/FindWarning.md)
+[You can find other methods to find and remove the warning here.](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Methods/FindWarning.md)
 
 ---
 	
@@ -471,6 +473,15 @@ document.beforeScriptExecute = (e) => {
 	
 It is probable that the methods above will get patched and the structure changed. Don't worry though, only small edits should get you far, as long as you don't share it. Try to use this as advice, not a copypaste tutorial, the floor is yours!
 
+So, TL;DR, all you have to do is,
+1. [Select a method to Bypass the Anti-Adblock here](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Methods/BypassAntiAdblock.md)
+	* Modify the method a bit so it works!
+2. [Select a method to find and remove the warning here](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Methods/FindWarning.md)
+	* Modify the method a bit so it works!
+3. [Select a method to fix the buttons here](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Methods/FixButtons.md)
+	* Modify the method a bit so it works!
+4. Put them all together as an userscript!
+	
 If you'd like to see the Base64 encoded JavaScript file decoded and slightly deobfuscated you can see it [here](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Other/Anti-Adblock-Decoded.js).
 
 </p>
