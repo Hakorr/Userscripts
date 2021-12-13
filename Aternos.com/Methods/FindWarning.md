@@ -70,6 +70,29 @@ function removeFromBottom(amount) {
 }
 
 function removeLayer() { 
-  removeFromBottom(12);
+    removeFromBottom(12);
 }
+```
+
+#### Find the element ID from the blocked Base64 script
+```js
+e.target.getAttribute("src").split("data:text/javascript;base64,").forEach(str => {
+    //If the string is Base64
+    if(isBase64(str)) {
+	//Decode the Base64 string
+	let beforeScriptExecute = atob(str);
+
+	beforeScriptExecute.split(" ").forEach(x => {
+	    //_0x4c04= is a variable name inside the Base64 encoded JavaScript file
+	    //The name has been changed, please edit this.
+	    if(x.includes("_0x4c04=")) {
+		x.split("'").forEach(x => {
+		    if(x.includes("#")) {
+			if(x.length != 0 && $(x)) $(x)[0].innerHTML = "";
+		    }
+		})
+	    } 
+	})
+    }
+});
 ```
