@@ -31,8 +31,15 @@ Your status won't be cleared after you exit Discord.
 <details>
 <summary>Open for instructions</summary><br>
   
-(**Currently not working, at least with this method of using userscripts on mobile. You can still try.**)
-  
+### Method 1
+ 
+1. Install the [Kiwi Browser](https://kiwibrowser.com/).
+2. Add the userscript manager of your choice from Google's Extension Store.
+3. Add the Animator script manually by copy pasting, or go visit its [GreasyFork](https://greasyfork.org/en/scripts/427960-discord-status-animator-manual-edit-non-ui).
+4. Open Discord on the browser, and enjoy!
+ 
+### Method 2
+ 
 1. Install Firefox Nightly.
 2. Go to the settings, scroll down to the last option "About Firefox Nightly".
 3. Click the Firefox logo a couple times until you've unlocked the extra settings.
@@ -42,9 +49,7 @@ Your status won't be cleared after you exit Discord.
 7. Tap the extension you just installed, go to its settings.
 8. Add the Animator script manually by copy pasting, or go visit its [GreasyFork](https://greasyfork.org/en/scripts/427960-discord-status-animator-manual-edit-non-ui) while still using Firefox Nightly.
 9. Use your Discord on your browser and see if it works.
- 
-*You could also try to use the script with [Tampermonkey's Android application](https://play.google.com/store/apps/details?id=net.biniok.tampermonkey).* 
- 
+
 ---
 </details>
 
