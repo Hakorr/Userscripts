@@ -35,6 +35,7 @@ function handlePremiumElement(elem) {
     switch(elem.getAttribute("class")) {
       case "button small outline pad-20 premium":
         elem.style.display = "none";
+        console.log(elem);
         return;
     }
   
@@ -42,16 +43,18 @@ function handlePremiumElement(elem) {
     switch(elem.parentElement.getAttribute("class")) {
       case "template-box large": "template-box";
           elem.parentElement.outerHTML = "";
+          console.log(elem);
           return;
 
       case "element-group":
           elem.remove();
+          console.log(elem);
           return;
     }
     
     //Default
-    console.log(elem)
     elem.outerHTML = "";
+    console.log(elem);
 }
 
 function getPremiumElements(elem) {
