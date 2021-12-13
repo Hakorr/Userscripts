@@ -339,59 +339,8 @@ document.beforeScriptExecute = (e) => {
 
 At the time of writing, the method above works. They have just changed the `_0x4c04=` variable name to the new one. If you decode the Base64 JavaScript file and look for a variable similar to `var _0x4c04 = ["#mainAntiBlockElem", "css"];`, but just with a different name, you can replace the `_0x4c04=` with the new variable name.
 
-Here's also my older methods of finding the element, hopefully it gives you ideas,
+[Here's also my older methods of finding the element, hopefully it gives you ideas.](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Methods/FindWarning.md)
 
-*Note that they're all patched but should work with slight adjustments!*
-
-#### Find by the attribute it has
-	
-```js
-function removeLayer() { Array.from(document.querySelectorAll("[style]")).forEach(elim => { if(elim.getAttribute("style").includes("top: 0;")) elim.style += "top: -1px"; }); }
-```
-
-#### Find by the attribute it has #2
-```js
-/* REMOVE FULLSCREEN "ADBLOCK" ALERT */
-Array.from(document.querySelectorAll("[style]")).forEach(elem => {
-    //Change the top: 0 to some attribute the fullscreen red Anti-Adblock has, then it works
-    if(elem.getAttribute("style").includes("top: 0")) {
-        elem.innerHTML = ""; elem.style += "display: none"; 
-    }
-});
-```
-#### By making the body's z-index a lot, basically going over the element
-```js
-function removeLayer() {
-  document.querySelector(".body").setAttribute("style",`position: relative; z-index: ${"99999999999999999999999999999999999999999999999999999999999999999".repeat(69420)}`);
-}
-```
-
-#### Find by text, then go a couple parents above and remove the element
-```js
-function removeLayer() {
-	const findByText = (selector,text) => Array.from(document.querySelectorAll(selector)).find(el => el.textContent === text);
-	let antiadblockElem = findByText("*","You are using an adblocker!")
-	antiadblockElem.parentElement.parentElement.parentElement.parentElement.parentElement.innerHTML = "";
-}
-```
-
-#### Remove all elements with attribute names over a certain amount
-```js
-function removeAttributesOver(attribute, length) {
-    Array.from(document.querySelectorAll(attribute)).forEach(div => {
-        Array.from(div.attributes).forEach(atr => {
-            if(atr.name.length > 9) div.remove();
-        });
-    });
-}
-
-//Find and "hide" a restrictive top element
-function removeLayer() { 
-    removeAttributesOver("div",9);
-    removeAttributesOver("span",9);
-}
-```
-	
 ---
 	
 </p>
