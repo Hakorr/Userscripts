@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         [Pixlr X] Premium Content Remover
-// @version      2.0
+// @version      2.1
 // @description  Removes premium features on Pixlr.com, because they are just on your way.
 // @author       HKR
 // @match        https://pixlr.com/*
@@ -29,20 +29,29 @@ const removeList = [
 ];
 
 function handlePremiumElement(elem) {
-    switch(elem.parentElement.getAttribute("class")) {
-        case "template-box large":
-            elem.parentElement.outerHTML = "";
-            break;
-
-        case "template-box":
-            elem.parentElement.outerHTML = "";
-            break;
-
-        default:
-            elem.outerHTML = "";
-            break;
-    }
     console.log(`${userScriptName} Removed a premium element! (${count++})`);
+  
+    //Check by element class
+    switch(elem.getAttribute("class")) {
+      case "button small outline pad-20 premium":
+        elem.style.display = "none";
+        return;
+    }
+  
+    //Check by element's parent's class
+    switch(elem.parentElement.getAttribute("class")) {
+      case "template-box large": "template-box";
+          elem.parentElement.outerHTML = "";
+          return;
+
+      case "element-group":
+          elem.remove();
+          return;
+    }
+    
+    //Default
+    console.log(elem)
+    elem.outerHTML = "";
 }
 
 function getPremiumElements(elem) {
