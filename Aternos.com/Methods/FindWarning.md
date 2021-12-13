@@ -4,6 +4,8 @@
 
 * Some of the functions require JQuery!
 
+---
+
 #### Find by attribute
 	
 ```js
@@ -13,6 +15,8 @@ function removeLayer() {
   }); 
 }
 ```
+
+---
 
 #### Find by attribute #2
 ```js
@@ -25,6 +29,9 @@ Array.from(document.querySelectorAll("[style]")).forEach(elem => {
     }
 });
 ```
+
+---
+
 #### Body element z-index over the fullscreen layer
 ```js
 function removeLayer() {
@@ -33,6 +40,8 @@ function removeLayer() {
   });
 }
 ```
+
+---
 
 #### Find by text, go a couple parents above and remove the element
 ```js
@@ -43,6 +52,8 @@ function removeLayer() {
   antiadblockElem.parentElement.parentElement.parentElement.parentElement.parentElement.innerHTML = "";
 }
 ```
+
+---
 
 #### Remove all elements with attribute names over a certain amount
 ```js
@@ -60,6 +71,8 @@ function removeLayer() {
 }
 ```
 
+---
+
 #### Remove elements from the bottom
 ```js
 function removeFromBottom(amount) {
@@ -73,6 +86,8 @@ function removeLayer() {
     removeFromBottom(12);
 }
 ```
+
+---
 
 #### Find the element ID from the blocked Base64 script
 ```js
@@ -96,3 +111,5 @@ e.target.getAttribute("src").split("data:text/javascript;base64,").forEach(str =
     }
 });
 ```
+
+---
