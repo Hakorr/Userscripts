@@ -471,7 +471,7 @@ document.beforeScriptExecute = (e) => {
 </p>
 </details>
 	
-It is probable that the methods above will get patched and the structure changed. Don't worry though, only small edits should get you far, as long as you don't share it. Try to use this as advice, not a copypaste tutorial, the floor is yours!
+It is probable that the methods above will get patched and the structure changed. Don't worry though, only small edits should get you far, as long as you don't share it. Try to use this as advice, not as a copypaste tutorial, the floor is yours!
 
 So, TL;DR, all you have to do is,
 1. [Select a method to Bypass the Anti-Adblock here](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Methods/BypassAntiAdblock.md)
