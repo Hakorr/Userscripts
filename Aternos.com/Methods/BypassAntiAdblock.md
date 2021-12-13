@@ -11,6 +11,8 @@
 Check the requested script file, if contains the keyword, stop it from loading.
 
 ```js
+// @run-at      document-start
+
 /* onbeforescriptexecute - https://github.com/Ray-Adams/beforeScriptExecute-Polyfill */
 const ChangeMe = Math.random().toString(36).substring(2, Math.floor(Math.random() * 40) + 5);
 
@@ -66,6 +68,7 @@ document.ChangeMe = (e) => {
 
 ```js
 // @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
+// @run-at      document-start
 
 document.arrive('[src*="data:text/javascript;base64"]', function () { 
     let scriptElem = document.querySelector('script[src*="data:text/javascript;base64"]');
