@@ -2,7 +2,7 @@
 
 * *Note that they're probably all patched but should work with slight adjustments!*
 
-* Some of the functions require JQuery!
+* Some of the functions might require JQuery!
 
 ---
 
