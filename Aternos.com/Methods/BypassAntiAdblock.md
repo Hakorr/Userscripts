@@ -67,8 +67,9 @@ document.ChangeMe = (e) => {
 ```js
 // @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
 
-document.arrive('script[src*="data:text/javascript;base64"]', function () { 
-    document.querySelector('script[src*="data:text/javascript;base64"]').remove();
+document.arrive('[src*="data:text/javascript;base64"]', function () { 
+    let scriptElem = document.querySelector('script[src*="data:text/javascript;base64"]');
+    if(scriptElem) scriptElem.remove();
 });
 ```
 
