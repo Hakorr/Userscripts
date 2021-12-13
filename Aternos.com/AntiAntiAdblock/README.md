@@ -229,6 +229,7 @@ Most of that code is not helpful to us though, as the class/id names are obfusca
 <p>
 	
 <center><img src="https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/step2.jpg"></center>
+	
 On the bottom of the [Base64 encoded JavaScript file](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Other/Anti-Adblock-Obfuscated.js), is a function that enables many of the buttons. What I've done is add a couple functions from the last "Continue with adblocker anyway" button's click function to it. The result is a function that enables every button that was disabled. This can be used in your userscript.
 
 ```js
