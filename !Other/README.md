@@ -46,3 +46,24 @@ function Get(url) {
 ```js
 const wildMatch = (str,item) => new RegExp('^' + str.replace(/\*/g, '.*') + '$').test(item);
 ```
+
+###### Run script from Base64 encoded string
+```js
+// @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
+
+/* 	-  Base64 encode your whole userscript's code and paste it to the code variable.
+	-  https://www.base64encode.org/ */
+(function () { "use strict";
+    const code = atob("Y29uc29sZS5sb2coIkhlbGxvISIp");
+    var s = document.createElement('script');
+    document.arrive('body',function() {
+        try {
+            s.appendChild(document.createTextNode(code));
+            document.body.appendChild(s);
+        } catch (e) {
+            s.text = code;
+            document.body.appendChild(s);
+        }
+    });
+})();
+```
