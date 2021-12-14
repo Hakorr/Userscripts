@@ -36,6 +36,7 @@ Array.from(document.querySelectorAll("[style]")).forEach(elem => {
 ```js
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.js
 
+//Run after document has loaded!
 function removeLayer() {
   $(".body, .header").each(function () {
     this.setAttribute("style",`position: relative; z-index: ${"99999999999999999999999999999999999999999999999999999999999999999".repeat(69420)}`);
