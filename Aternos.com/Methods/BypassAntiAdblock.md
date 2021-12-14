@@ -56,6 +56,11 @@ const ChangeMe = Math.random().toString(36).substring(2, Math.floor(Math.random(
 document.ChangeMe = (e) => {
   console.log(e.target.src)
     //If it requests a selected file
+    /* Example keywords:
+    'data:text/javascript;base64,'
+    'base64'
+    'jquery'
+    */
     if (e.target.src.includes('keyword')) {
         //Block it
         e.preventDefault();
