@@ -19,8 +19,6 @@ const ChangeMe = Math.random().toString(36).substring(2, Math.floor(Math.random(
 (() => {
     'use strict';
 
-    if ('onbeforescriptexecute' in document) return;
-
     const BseEvent = new Event(ChangeMe, {
         bubbles: true,
         cancelable: true
@@ -54,13 +52,14 @@ const ChangeMe = Math.random().toString(36).substring(2, Math.floor(Math.random(
 
 //A new web request initiated
 document.ChangeMe = (e) => {
-    //If it requests a selected file
-    /* Example keywords:
-    'data:text/javascript;base64,'
-    'base64'
-    'jquery'
-    */
-    if (e.target.src.includes('keyword')) {
+    /* Example keywords: 
+     - 'data:text/javascript;base64
+     - 'base64'
+     - 'jquery' */
+  
+    if (e.target.src.includes('data:text/javascript;base64') 
+        || e.target.outerHTML.includes('data:text/javascript;base64') 
+        || e.target.innerHTML.includes('data:text/javascript;base64')) {
         //Block it
         e.preventDefault();
     }
