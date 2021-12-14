@@ -5,6 +5,8 @@
 	
 *(This section was last updated 12.12.2021, and was made to help you build your own scripts by understanding the structure better.)*
 
+> [Violentmonkey](https://violentmonkey.github.io) and Chromium are recommended, the scripts were built using them.
+
 * [Basic structure](#basic-structure)
 * [Bypassing the Anti-Adblock](#bypassing-the-anti-adblock)
 	* [A look inside the Base64 encoded JavaScript file](#a-look-inside-the-base64-encoded-javascript-file)
