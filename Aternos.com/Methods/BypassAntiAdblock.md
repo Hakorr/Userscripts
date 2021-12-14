@@ -46,8 +46,8 @@ const ChangeMe = Math.random().toString(36).substring(2, Math.floor(Math.random(
         };
     };
 
-    const AlsoChangeMe = new MutationObserver(observerCallback);
-    AlsoChangeMe.observe(document, { childList: true, subtree: true });
+    const mutObvsr = new MutationObserver(observerCallback);
+    mutObvsr.observe(document, { childList: true, subtree: true });
 })();
 
 //A new web request initiated
