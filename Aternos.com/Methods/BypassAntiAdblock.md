@@ -54,7 +54,6 @@ const ChangeMe = Math.random().toString(36).substring(2, Math.floor(Math.random(
 
 //A new web request initiated
 document.ChangeMe = (e) => {
-  console.log(e.target.src)
     //If it requests a selected file
     /* Example keywords:
     'data:text/javascript;base64,'
