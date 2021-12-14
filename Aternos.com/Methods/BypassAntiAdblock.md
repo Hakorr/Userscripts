@@ -64,6 +64,7 @@ document.ChangeMe = (e) => {
     if (e.target.src.includes('keyword')) {
         //Block it
         e.preventDefault();
+    }
 }
 ```
 
