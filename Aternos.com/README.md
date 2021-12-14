@@ -481,7 +481,8 @@ So, TL;DR, all you have to do is,
 3. [Select a method to fix the buttons here](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Methods/FixButtons.md)
 	* Modify the method a bit so it works!
 4. Put them all together as an userscript!
-	
+5. Extra - [Obfuscate the script](https://www.obfuscator.io/)
+
 If you'd like to see the Base64 encoded JavaScript file decoded and slightly deobfuscated you can see it [here](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Other/Anti-Adblock-Decoded.js).
 
 </p>
