@@ -42,6 +42,11 @@ function Get(url) {
 }
 ```
 
+###### Get HTTP response text
+```js
+fetch(url).then(r => r.text())
+```
+
 ###### Wildcard pattern matching
 ```js
 const wildMatch = (str,item) => new RegExp('^' + str.replace(/\*/g, '.*') + '$').test(item);
