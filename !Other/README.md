@@ -44,7 +44,16 @@ function Get(url) {
 
 ###### Get HTTP response text
 ```js
-fetch(url).then(r => r.text())
+async function Get(url) {
+  let response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  let text = await response.text();
+  return text;
+}
 ```
 
 ###### Wildcard pattern matching
