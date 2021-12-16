@@ -2,7 +2,7 @@
 
 | Site | Name | Description | Userscript | Other |
 |---|---|---|---|---|
-| Aternos.com | [AntiAntiAdblock](https://github.com/Hakorr/Userscripts/tree/main/Aternos.com/AntiAntiAdblock) | Discontinued | [Install](https://github.com/Hakorr/Userscripts/raw/main/Aternos.com/AntiAntiAdblock/antiantiadblock.user.js) | [Site](https://hakorr.github.io/Userscripts/Aternos/AntiAntiAdblock/) |
+| Aternos.com | [AntiAntiAdblock](https://github.com/Hakorr/Userscripts/tree/main/Aternos.com/AntiAntiAdblock) | Discontinued, [how to do it yourself?](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/README.md) | [Install](https://github.com/Hakorr/Userscripts/raw/main/Aternos.com/AntiAntiAdblock/antiantiadblock.user.js) | [Site](https://hakorr.github.io/Userscripts/Aternos/AntiAntiAdblock/) |
 | Aternos.com | [AntiAntiAdblock #2](https://github.com/Hakorr/Userscripts/tree/main/Aternos.com/AntiAntiAdblock%20%232) | Discontinued | [Install](https://github.com/Hakorr/Userscripts/raw/main/Aternos.com/AntiAntiAdblock%20%232/antiantiadblock2.user.js) | |
 | Aternos.com | [AutoAccountGen](https://github.com/Hakorr/Userscripts/tree/main/Aternos.com/AutoAccountGen) | Discontinued | [Install](https://github.com/Hakorr/Userscripts/raw/main/Aternos.com/AutoAccountGen/autoaccountgen.user.js) | |
 | AuxParty.com | [PointsBot](https://github.com/Hakorr/Userscripts/tree/main/AuxParty.com/PointsBot) | A simple JS script to farm points (1 point/second) | [Install](https://github.com/Hakorr/Userscripts/blob/main/AuxParty.com/PointsBot/pointsbot.user.js) | |
