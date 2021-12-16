@@ -1,8 +1,5 @@
 # A crash course into bypassing the Anti-Adblock
 
-<details open><summary>Open/Close</summary>	
-<p>
-	
 *(This section was last updated 12.12.2021, and was made to help you build your own scripts by understanding the structure better.)*
 
 > [Violentmonkey](https://violentmonkey.github.io) and Chromium are recommended, the scripts were built using them.
@@ -16,9 +13,6 @@
 
 
 ### Basic structure
-	
-<details open><summary>Open/Close</summary>	
-<p>
 	
 ![](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/network.jpg)
 
@@ -43,9 +37,6 @@ You can also see a similar Base64 source attribute on the top, on class body's e
 Again, this is the reason you wouldn't make your AntiAntiAdblock script public, the developers do stuff like this to prevent it functioning properly. Really annoying, but eh, I'll give them some respect for being so active.
 
 ---
-
-</p>
-</details>
 
 ### Bypassing the Anti-Adblock
 	
@@ -490,6 +481,3 @@ So, TL;DR, all you have to do is,
 If you'd like to see the Base64 encoded JavaScript file decoded and slightly deobfuscated you can see it [here](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Other/Anti-Adblock-Decoded.js).
 
 I've made an userscript creator for this userscript, find it [here](https://hakorr.github.io/Userscripts/Aternos/AntiAntiAdblock/)!
-
-</p>
-</details>
