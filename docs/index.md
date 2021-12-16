@@ -8,4 +8,4 @@
 
 ## Other
 
-* [Functions to copypaste](https://hakorr.github.io/Userscripts/functions)
+* [Functions to copy n' paste](https://hakorr.github.io/Userscripts/functions)
