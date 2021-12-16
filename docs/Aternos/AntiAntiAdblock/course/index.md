@@ -48,12 +48,12 @@ Here's a code snippet.
 
 ```js
 /* onbeforescriptexecute - https://github.com/Ray-Adams/beforeScriptExecute-Polyfill */
+const ChangeMe = Math.random().toString(36).substring(2, Math.floor(Math.random() * 40) + 5);
+
 (() => {
     'use strict';
 
-    if ('onbeforescriptexecute' in document) return;
-
-    const BseEvent = new Event(beforeScriptExecute, {
+    const BseEvent = new Event(ChangeMe, {
         bubbles: true,
         cancelable: true
     });
@@ -64,10 +64,10 @@ Here's a code snippet.
                 if (node.tagName !== 'SCRIPT') continue;
 
                 // Adds functionality to document.onbeforescriptexecute
-                if (typeof document.beforeScriptExecute === 'function') {
+                if (typeof document.ChangeMe === 'function') {
                     document.addEventListener(
-                        beforeScriptExecute,
-                        document.beforeScriptExecute,
+                        ChangeMe,
+                        document.ChangeMe,
                         { once: true }
                     );
                 };
@@ -80,14 +80,20 @@ Here's a code snippet.
         };
     };
 
-    const scriptObserver = new MutationObserver(observerCallback);
-    scriptObserver.observe(document, { childList: true, subtree: true });
+    const mutObvsr = new MutationObserver(observerCallback);
+    mutObvsr.observe(document, { childList: true, subtree: true });
 })();
 
 //A new web request initiated
-document.beforeScriptExecute = (e) => {
-    //If it requests a selected file
-    if (e.target.src.includes('data:text/javascript;base64,')) {
+document.ChangeMe = (e) => {
+    /* Example keywords: 
+     - 'data:text/javascript;base64
+     - 'base64'
+     - 'jquery' */
+  
+    if (e.target.src.includes('data:text/javascript;base64') 
+        || e.target.outerHTML.includes('data:text/javascript;base64') 
+        || e.target.innerHTML.includes('data:text/javascript;base64')) {
         //Block it
         e.preventDefault();
     }
@@ -249,44 +255,21 @@ Right, so now the buttons work and the fullscreen red Anti-Adblock screen is not
 	
 <center><img src="https://raw.githubusercontent.com/Hakorr/Userscripts/main/Aternos.com/Images/step3.jpg"></center>
 
-What I've done is decode the Base64 Javascript file, look for the variable name in a known location, then extract the element's id and remove it. This method is really vulnerable and will break by the slightest changes by the dev team.
+What I've done is search for all elements which have the element attribute, then, for all the elements which have a specific style value, remove the innerHTML, basically removing the element.
 
 There are many, many other ways to remove the red fullscreen element, you'll need to make your own or edit mine a bit. It's not hard.
 
 Here's a code snippet of my method,
 ```js
-function isBase64(r){ try { return btoa(atob(r)) == r} catch(r) { return!1}}
-
-//A new web request initiated
-document.beforeScriptExecute = (e) => {
-    //If it requests a selected file
-    if (e.target.src.includes('data:text/javascript;base64,')) {
-        //Block it
-        e.preventDefault();
-
-        e.target.getAttribute("src").split("data:text/javascript;base64,").forEach(str => {
-            //If the string is Base64
-            if(isBase64(str)) {
-                //Decode the Base64 string
-                let beforeScriptExecute = atob(str);
-                
-                beforeScriptExecute.split(" ").forEach(x => {
-                    //_0x4c04= is a variable name inside the Base64 encoded JavaScript file
-                    if(x.includes("_0x4c04=")) {
-                        x.split("'").forEach(x => {
-                            if(x.includes("#")) {
-                                if(x.length != 0 && $(x)) $(x)[0].innerHTML = "";
-                            }
-                        })
-                    } 
-                })
-            }
-        });
+Array.from(document.querySelectorAll("[style]")).forEach(elem => {
+    //Change the top: 0 to some attribute the fullscreen red Anti-Adblock has, then it works
+    if(elem.getAttribute("style").includes("top: 0")) {
+        //What to do with the element, feel free to modify
+        elem.innerHTML = ""; 
+        elem.style += "display: none"; 
     }
-}
+});
 ```
-
-At the time of writing, the method above works. They have just changed the `_0x4c04=` variable name to the new one. If you decode the Base64 JavaScript file and look for a variable similar to `var _0x4c04 = ["#mainAntiBlockElem", "css"];`, but just with a different name, you can replace the `_0x4c04=` with the new variable name.
 
 [You can find other methods to find and remove the warning here.](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Methods/FindWarning.md)
 
@@ -364,13 +347,12 @@ $(document).ready(function () {
     });
 });
 
-//Stop the Base64 encoded JavaScript file from loading
+const ChangeMe = Math.random().toString(36).substring(2, Math.floor(Math.random() * 40) + 5);
+
 (() => {
     'use strict';
 
-    if ('onbeforescriptexecute' in document) return;
-
-    const BseEvent = new Event(beforeScriptExecute, {
+    const BseEvent = new Event(ChangeMe, {
         bubbles: true,
         cancelable: true
     });
@@ -381,10 +363,10 @@ $(document).ready(function () {
                 if (node.tagName !== 'SCRIPT') continue;
 
                 // Adds functionality to document.onbeforescriptexecute
-                if (typeof document.beforeScriptExecute === 'function') {
+                if (typeof document.ChangeMe === 'function') {
                     document.addEventListener(
-                        beforeScriptExecute,
-                        document.beforeScriptExecute,
+                        ChangeMe,
+                        document.ChangeMe,
                         { once: true }
                     );
                 };
@@ -397,39 +379,33 @@ $(document).ready(function () {
         };
     };
 
-    const scriptObserver = new MutationObserver(observerCallback);
-    scriptObserver.observe(document, { childList: true, subtree: true });
+    const mutObvsr = new MutationObserver(observerCallback);
+    mutObvsr.observe(document, { childList: true, subtree: true });
 })();
 
-function isBase64(r){ try { return btoa(atob(r)) == r} catch(r) { return!1}}
-
 //A new web request initiated
-document.beforeScriptExecute = (e) => {
-    //If it requests a selected file
-    if (e.target.src.includes('data:text/javascript;base64,')) {
+document.ChangeMe = (e) => {
+    /* Example keywords: 
+     - 'data:text/javascript;base64
+     - 'base64'
+     - 'jquery' */
+  
+    if (e.target.src.includes('data:text/javascript;base64') 
+        || e.target.outerHTML.includes('data:text/javascript;base64') 
+        || e.target.innerHTML.includes('data:text/javascript;base64')) {
         //Block it
         e.preventDefault();
-
-        e.target.getAttribute("src").split("data:text/javascript;base64,").forEach(str => {
-            //If the string is Base64
-            if(isBase64(str)) {
-                //Decode the Base64 string
-                let beforeScriptExecute = atob(str);
-                
-                beforeScriptExecute.split(" ").forEach(x => {
-                    //_0x4c04= is a variable name inside the Base64 encoded JavaScript file
-                    if(x.includes("_0x4c04=")) {
-                        x.split("'").forEach(x => {
-                            if(x.includes("#")) {
-                                if(x.length != 0 && $(x)) $(x)[0].innerHTML = "";
-                            }
-                        })
-                    } 
-                })
-            }
-        });
     }
 }
+
+Array.from(document.querySelectorAll("[style]")).forEach(elem => {
+    //Change the top: 0 to some attribute the fullscreen red Anti-Adblock has, then it works
+    if(elem.getAttribute("style").includes("top: 0")) {
+        //What to do with the element, feel free to modify
+        elem.innerHTML = ""; 
+        elem.style += "display: none"; 
+    }
+});
 ```
 	
 ---
