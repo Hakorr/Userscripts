@@ -65,8 +65,11 @@ const wildMatch = (str,item) => new RegExp('^' + str.replace(/\*/g, '.*') + '$')
 ```js
 // @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
 
-/* 	-  Base64 encode your whole userscript's code and paste it to the code variable.
-	-  https://www.base64encode.org/ */
+/* 
+-  Base64 encode your whole userscript's code and paste it to the code variable.
+-  https://www.base64encode.org/ 
+*/
+
 (function () { "use strict";
     const code = atob("Y29uc29sZS5sb2coIkhlbGxvISIp");
     var s = document.createElement('script');
