@@ -1,0 +1,1 @@
+# AntiAntiAdblock userscript creator
