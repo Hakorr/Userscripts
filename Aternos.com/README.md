@@ -485,7 +485,11 @@ So, TL;DR, all you have to do is,
 4. Put them all together as an userscript!
 5. Extra - [Obfuscate the script](https://www.obfuscator.io/)
 
+---
+	
 If you'd like to see the Base64 encoded JavaScript file decoded and slightly deobfuscated you can see it [here](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Other/Anti-Adblock-Decoded.js).
+
+I've made an userscript creator for this userscript, find it [here](https://hakorr.github.io/Userscripts/Aternos/AntiAntiAdblock/)!
 
 </p>
 </details>
