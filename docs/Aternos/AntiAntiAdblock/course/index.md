@@ -40,9 +40,6 @@ Again, this is the reason you wouldn't make your AntiAntiAdblock script public, 
 
 ### Bypassing the Anti-Adblock
 	
-<details open><summary>Open/Close</summary>	
-<p>
-
 <center><img src="https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/step1.jpg"></center>
 
 Anyway, where were we... Ah yes, the [Base64 encoded file](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Other/Anti-Adblock-Obfuscated.js) at the bottom. Currently at the time of writing this, **to bypass the Anti-Adblock, you need to stop that script from running.** I've done this by capturing all script execute(s), and then blocking all that request a [Base64 encoded file](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Other/Anti-Adblock-Obfuscated.js).
@@ -107,13 +104,7 @@ Great, so we've stopped the [Anti-Adblock's JS file](https://github.com/Hakorr/U
 	
 ---
 	
-</p>
-</details>
-	
 ### A look inside the Base64 encoded JavaScript file
-
-<details open><summary>Open/Close</summary>	
-<p>
 
 Here's a code snippet from the Base64 encoded JavaScript. This is the "Continue with adblocker anyway" button's click function. Do remember that the whole script and all the class/id names would normally be obfuscated, like they are in the bottom of the HTML.
 
@@ -188,13 +179,7 @@ Most of that code is not helpful to us though, as the class/id names are obfusca
 	
 ---
 	
-</p>
-</details>
-	
 ### Enabling all the buttons
-	
-<details open><summary>Open/Close</summary>	
-<p>
 	
 <center><img src="https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/step2.jpg"></center>
 	
@@ -258,15 +243,9 @@ Right, so now the buttons work and the fullscreen red Anti-Adblock screen is not
 
 [You can find more methods to enable the buttons here.](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Methods/FixButtons.md)
 
----
-		
-</p>
-</details>	
+---	
 		
 ### Finding the obfuscated element's name and removing it
-				    
-<details open><summary>Open/Close</summary>	
-<p>
 	
 <center><img src="https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/step3.jpg"></center>
 
@@ -313,13 +292,7 @@ At the time of writing, the method above works. They have just changed the `_0x4
 
 ---
 	
-</p>
-</details>
-	
 ### Result
-	
-<details open><summary>Open/Close</summary>	
-<p>
 	
 <center><img src="https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Images/done.jpg"></center>
 
@@ -460,9 +433,6 @@ document.beforeScriptExecute = (e) => {
 ```
 	
 ---
-	
-</p>
-</details>
 	
 It is probable that the methods above will get patched and the structure changed. Don't worry though, only small edits should get you far, as long as you don't share it. Try to use this as advice, not as a copypaste tutorial, the floor is yours!
 
