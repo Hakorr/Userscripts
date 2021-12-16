@@ -1,0 +1,45 @@
+.title {
+    color: #ffffff;
+    margin-left: 10px;
+}
+
+h2 {
+    color: #ffffff;
+}
+
+select {
+    display: block;
+    margin-bottom: 10px;
+    width: 99%;
+}
+
+textarea {
+    margin-bottom: 15px;
+    width: 98%;
+    height: 200px;
+    border: 2px solid #000000;
+	border-radius: 5px;
+}
+
+form {
+    background-color: rgb(23 23 23);
+    border: 2px solid #000000;
+	border-radius: 10px;
+    padding: 10px;
+    width: 500px;
+    margin-bottom: 10px;
+}
+
+#buildBtn {
+    width: 100px;
+    height: 25px;
+    display: block;
+    margin-left: auto;
+    margin-right: 0;
+}
+
+body {
+  padding: 0;
+  font-family: ui-monospace, monospace;
+  background: rgb(34, 34, 34);
+}
