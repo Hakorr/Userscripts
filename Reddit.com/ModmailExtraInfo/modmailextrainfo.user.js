@@ -3,7 +3,7 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     2.5
+// @version     2.6
 // @author      HKR
 // @description Additional tools and information to Reddit's Modmail
 // @icon        https://www.redditstatic.com/modmail/favicon/favicon-32x32.png
@@ -254,9 +254,11 @@ function main() { console.log("[Modmail++] %cMain function ran!", "color: grey")
 		xhr.send();
 	}
 
-	function makeListValue(name,description) {
-		return `<div class="listValue" value='${description}'><input onclick="selected(this)" name="subredditRule" type="radio" id='${name}' value='${name}' ><label for='${name}'>${name}</label></div>`
-	}
+    function makeListValue(name,description) {
+    let encodedName = btoa(name);
+    let encodedDesc = btoa(description);
+        return `<div class="listValue" value='${encodedDesc}'><input onclick="selected(this)" name="subredditRule" type="radio" id='${encodedName}' value='${encodedName}' ><label for='${encodedName}'>${name}</label></div>`
+    }
 
 	//Appends the response template listbox to the page
 	function addResponseBox() {
@@ -332,47 +334,48 @@ function main() { console.log("[Modmail++] %cMain function ran!", "color: grey")
 
 		//Script element to head
 		var headJS = document.createElement('script');
-		headJS.innerHTML = `
-		var responses = ${JSON.stringify(responses)};
-		var ruleListActivator = "<open-rulelist-dialog>";
-		function listBoxChanged(message) {
-			if(message == ruleListActivator) {
-				let ruleDiv = document.getElementsByClassName("ruleDiv")[0];
-				ruleDiv.style.visibility = "visible";
-			} else {
-				var messageBox = document.getElementById("realTextarea");
-				var response = responses.find(x => x.content == message);
-				response.replace ? messageBox.value = message : messageBox.value += message;
-				console.log("[Modmail++] Updated the message: %c" + messageBox.value,"color: orange");
-			}
-		}
-		//Implement listbox select highlight
-		function selected(element){
-			let selectColor = "#79797959";
-			let selectedElem = document.getElementById("currentlySelected");
-			//If an elem already selected, reset the id and set its background color to nothing
-			if(selectedElem) { selectedElem.style.backgroundColor = ""; selectedElem.id = ""; }
-			
-			element.parentElement.style.backgroundColor = selectColor;
-			element.parentElement.id = "currentlySelected";
-			document.getElementsByClassName("selectButton")[0].disabled = false;
-		}
-		const removeBreaks = text => text.replace(/(\\r\\n|\\n|\\r)/gm, "");
-		function selectButtonClicked() {
-			let selectedElem = document.getElementById("currentlySelected");
-			let messageBox = document.getElementById("realTextarea");
-			if(selectedElem) {
-				let response = responses.find(x => x.content == ruleListActivator);
-				let message = \`Rule | Description\n---------|----------\n\${selectedElem.children[1].textContent} | \${removeBreaks(selectedElem.getAttribute('value'))}\`;
-				response.replace ? messageBox.value = message : messageBox.value += message;
-				console.log("[Modmail++] New messageBox value: %c" + messageBox.value,"color: orange");
-				closeIconClicked();
-			}
-		}
-		function closeIconClicked() {
-			let ruleDiv = document.getElementsByClassName("ruleDiv")[0];
-			ruleDiv.style.visibility = "hidden";
-		}`;
+        headJS.innerHTML = `
+        var responses = ${JSON.stringify(responses)};
+        var ruleListActivator = "<open-rulelist-dialog>";
+        function listBoxChanged(message) {
+        if(message == ruleListActivator) {
+            let ruleDiv = document.getElementsByClassName("ruleDiv")[0];
+            ruleDiv.style.visibility = "visible";
+        } else {
+            var messageBox = document.getElementById("realTextarea");
+            var response = responses.find(x => x.content == message);
+            response.replace ? messageBox.value = message : messageBox.value += message;
+            console.log("[Modmail++] Updated the message: %c" + messageBox.value,"color: orange");
+        }
+        }
+        //Implement listbox select highlight
+        function selected(element){
+            let selectColor = "#79797959";
+            let selectedElem = document.getElementById("currentlySelected");
+            //If an elem already selected, reset the id and set its background color to nothing
+            if(selectedElem) { selectedElem.style.backgroundColor = ""; selectedElem.id = ""; }
+
+            element.parentElement.style.backgroundColor = selectColor;
+            element.parentElement.id = "currentlySelected";
+            document.getElementsByClassName("selectButton")[0].disabled = false;
+        }
+        const removeBreaks = text => text.replace(/(\\r\\n|\\n|\\r)/gm, "");
+        function selectButtonClicked() {
+            let selectedElem = document.getElementById("currentlySelected");
+            let messageBox = document.getElementById("realTextarea");
+            if(selectedElem) {
+                let fixedDescription = atob(selectedElem.getAttribute('value')).replaceAll("\\n","\\n> ") + '\\n\\n';
+                let message = \`> [**\${selectedElem.children[1].textContent}**]\\n>\\n> \${fixedDescription}\`;
+                let response = responses.find(x => x.content == ruleListActivator);
+                response.replace ? messageBox.value = message : messageBox.value += message;
+                console.log("[Modmail++] New messageBox value: %c" + messageBox.value,"color: orange");
+                closeIconClicked();
+            }
+        }
+        function closeIconClicked() {
+        let ruleDiv = document.getElementsByClassName("ruleDiv")[0];
+        ruleDiv.style.visibility = "hidden";
+        }`;
 	
 		//Add all the responses to the listbox
 		function populate() {
