@@ -58,6 +58,20 @@ async function main() {
 		$("#finalUserscript textarea").value = combined;
 		console.log("Constructed the userscript!");
 	}
+	
+	Array.from(document.querySelectorAll("textarea")).forEach(textarea => {
+		textarea.addEventListener("input", function (e) {
+		  this.style.height = "auto";
+		  this.style.height = this.scrollHeight + "px";
+		});
+	});
+
+	function adjustTextboxes() {
+		Array.from(document.querySelectorAll("textarea")).forEach(textarea => {
+			textarea.style.height = "auto";
+			textarea.style.height = textarea.scrollHeight + "px";
+		});
+	}
 
 	let headers = [
 		{
@@ -89,7 +103,8 @@ async function main() {
 	//Userscript header dropdown selected
 	$(`${headerId} select`).onchange = function() {
 		$(`${headerId} textarea`).value = $(`${headerId} select`).value;
-
+		adjustTextboxes();
+		
 		let button = $(`#${this.parentElement.id} .button`);
 		button.style.display = "";
 		button.onclick =  function() {
@@ -113,6 +128,8 @@ async function main() {
 		$(`${bypassId} textarea`).value = $(`${bypassId} select`).value;
 		let button = $(`#${this.parentElement.id} .button`);
 		button.style.display = "";
+		adjustTextboxes();
+		
 		button.onclick =  function() {
 			this.parentElement.style.display = "none";
 			$("body").style.backgroundColor = "lightpink";
@@ -134,6 +151,8 @@ async function main() {
 		$(`${findId} textarea`).value = $(`${findId} select`).value;
 		let button = $(`#${this.parentElement.id} .button`);
 		button.style.display = "";
+		adjustTextboxes();
+		
 		button.onclick =  function() {
 			this.parentElement.style.display = "none";
 			$("body").style.backgroundColor = "lightsalmon";
@@ -156,6 +175,8 @@ async function main() {
 		constructScript();
 		let button = $(`#${this.parentElement.id} .button`);
 		button.style.display = "";
+		adjustTextboxes();
+		
 		button.onclick =  function() {
 			this.parentElement.style.display = "none";
 			$("body").style.backgroundColor = "lightgreen";
