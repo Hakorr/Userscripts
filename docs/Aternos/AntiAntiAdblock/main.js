@@ -82,16 +82,17 @@ async function main() {
 		name:"Default",
 		content:`// ==UserScript==
 // @name        [Aternos] AntiAntiAdblock
-// @namespace   name
+// @namespace   none
 // @match       https://aternos.org/*
 // @grant       none
 // @version     1.0
-// @author      name
+// @author      HKR
 // @description Removes all the adblock reminders.
 // @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.js
 // @run-at      document-start
-// ==/UserScript==`
+// ==/UserScript==
+//Userscript created with https://hakorr.github.io/Userscripts/Aternos/AntiAntiAdblock/`
 		}
 	];
 
