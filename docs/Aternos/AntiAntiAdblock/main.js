@@ -24,8 +24,8 @@ async function main() {
 			let split = trimmed.split("```js");
 			if(trimmed.length != 0 && split.length == 2) {
 				//Function's name
-				let name = split[0].
-					split('\n')[0];
+				let name = split[0]
+					.split('\n')[0];
 			
 				//Function's code
 				let code = split[1]
