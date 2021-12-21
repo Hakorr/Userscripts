@@ -32,6 +32,10 @@ async function main() {
 					.trimStart()
 					.substr(0,split[1].length - 5);
 			
+				//Randomize ChangeMe
+				if(code.includes("ChangeMe"))
+					code = code.replaceAll("ChangeMe",(Math.random() + 1).toString(36).substring(2));
+				
 				resultObj.push({
 					"name":name,
 					"code":code
