@@ -80,7 +80,8 @@ async function main() {
 	let headers = [
 		{
 		name:"Default",
-		content:`// ==UserScript==
+		content:`// Userscript created with https://hakorr.github.io/Userscripts/Aternos/AntiAntiAdblock/
+// ==UserScript==
 // @name        [Aternos] AntiAntiAdblock
 // @namespace   none
 // @match       https://aternos.org/*
@@ -91,8 +92,7 @@ async function main() {
 // @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.js
 // @run-at      document-start
-// ==/UserScript==
-//Userscript created with https://hakorr.github.io/Userscripts/Aternos/AntiAntiAdblock/`
+// ==/UserScript==`
 		}
 	];
 
