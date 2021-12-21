@@ -63,6 +63,8 @@ async function main() {
 		textarea.addEventListener("input", function (e) {
 		  this.style.height = "auto";
 		  this.style.height = this.scrollHeight + "px";
+		  if(textarea.scrollHeight > 0)
+		  	$("form").style.height = (textarea.scrollHeight + 150) + "px";
 		});
 	});
 
@@ -70,6 +72,8 @@ async function main() {
 		Array.from(document.querySelectorAll("textarea")).forEach(textarea => {
 			textarea.style.height = "auto";
 			textarea.style.height = textarea.scrollHeight + "px";
+			if(textarea.scrollHeight > 0)
+				$("form").style.height = (textarea.scrollHeight + 150) + "px";
 		});
 	}
 
@@ -111,6 +115,7 @@ async function main() {
 			this.parentElement.style.display = "none";
 			$("body").style.backgroundColor = "lightblue";
 			$(bypassId).style.display = "";
+			adjustTextboxes();
 		}
 	};
 
@@ -134,6 +139,7 @@ async function main() {
 			this.parentElement.style.display = "none";
 			$("body").style.backgroundColor = "lightpink";
 			$(findId).style.display = "";
+			adjustTextboxes();
 		}
 	};
 
@@ -157,6 +163,7 @@ async function main() {
 			this.parentElement.style.display = "none";
 			$("body").style.backgroundColor = "lightsalmon";
 			$(fixId).style.display = "";
+			adjustTextboxes();
 		}
 	};
 
@@ -181,6 +188,7 @@ async function main() {
 			this.parentElement.style.display = "none";
 			$("body").style.backgroundColor = "lightgreen";
 			$("#finalUserscript").style.display = "";
+			adjustTextboxes();
 		}
 	};
 
