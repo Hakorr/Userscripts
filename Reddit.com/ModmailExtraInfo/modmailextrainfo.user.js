@@ -120,13 +120,13 @@ function main() { console.log("[Modmail++] %cMain function ran!", "color: grey")
 			"subreddit":"",
 			"content":`[User Agreement](https://www.redditinc.com/policies/user-agreement)`
 		},
-    {
+        {
 			"name":"Add Reddiquette",
 			"replace":false,
 			"subreddit":"",
 			"content":`[Reddiquette](https://reddit.zendesk.com/hc/en-us/articles/205926439-Reddiquette)`
 		},
-    {
+        {
 			"name":"Add Admin Modmail",
 			"replace":false,
 			"subreddit":"",
