@@ -7,49 +7,36 @@
     <link href="style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-
 <form>
     <div id="scriptHeader">
         <h2>#0 Userscript Header</h2>
-        <select>
-            <option selected disabled hidden>Select an option</option>
-        </select>
+        <select><option selected disabled hidden>Select an option</option></select>
         <textarea>Select a method</textarea>
+        <input type="button" style="display:none" class="button" value="Next">
     </div>
-
-    <div id="antiAdBlock">
+    <div id="antiAdBlock" style="display:none">
         <h2>#1 Block Anti-Adblock</h2>
-        <select>
-            <option selected disabled hidden>Select an option</option>
-        </select>
+        <select><option selected disabled hidden>Select an option</option></select>
         <textarea>Select a method</textarea>
+        <input type="button" style="display:none" class="button" value="Next">
     </div>
-
-    <div id="findWarning">
+    <div id="findWarning" style="display:none">
         <h2>#2 Find and remove the warning</h2>
-        <select>
-            <option selected disabled hidden>Select an option</option>
-        </select>
+        <select><option selected disabled hidden>Select an option</option></select>
         <textarea>Select a method</textarea>
+        <input type="button" style="display:none" class="button" value="Next">
     </div>
-
-    <div id="fixButtons">
+    <div id="fixButtons" style="display:none">
         <h2>#3 Fix the buttons</h2>
-        <select>
-            <option selected disabled hidden>Select an option</option>
-        </select>
+        <select><option selected disabled hidden>Select an option</option></select>
         <textarea>Select a method</textarea>
+        <input type="button" style="display:none" class="button" value="Next">
     </div>
-
-    <input type="button" id="buildBtn" value="Construct">
-</form>
-
-<form>
-    <div id="finalUserscript">
-        <h2>Finished</h2>
-        <textarea>Construct the userscript</textarea>
+    <div id="finalUserscript" style="display:none;height:500px">
+        <h2>Here's your userscript!</h2>
+        <textarea id="result" style="height:80%">Failed to construct</textarea>
+        <input type="button" id="copyBtn" class="button" value="Copy">
     </div>
 </form>
-
 </body>
 </html>
