@@ -10,24 +10,30 @@
 	
 ```js
 function removeLayer() {
-  Array.from(document.querySelectorAll("[style]")).forEach(elim => {
-    if(elim.getAttribute("style").includes("top: 0;")) elim.style += "top: -1px"; 
-  }); 
+	Array.from(document.querySelectorAll("[style]")).forEach(elim => {
+		if(elim.getAttribute("style").includes("top: 0;")) elim.style += "top: -1px"; 
+	}); 
 }
+
+window.onload = function() { removeLayer() } 
 ```
 
 ---
 
 #### Find by attribute #2
 ```js
-Array.from(document.querySelectorAll("[style]")).forEach(elem => {
-    //Change the top: 0 to some attribute the fullscreen red Anti-Adblock has, then it works
-    if(elem.getAttribute("style").includes("top: 0")) {
-        //What to do with the element, feel free to modify
-        elem.innerHTML = ""; 
-        elem.style += "display: none"; 
-    }
-});
+function removeLayer() {
+	Array.from(document.querySelectorAll("[style]")).forEach(elem => {
+		//Change the top: 0 to some attribute the fullscreen red Anti-Adblock has, then it works
+		if(elem.getAttribute("style").includes("top: 0")) {
+			//What to do with the element, feel free to modify
+			elem.innerHTML = ""; 
+			elem.style += "display: none"; 
+		}
+	});
+}
+
+window.onload = function() { removeLayer() } 
 ```
 
 ---
@@ -36,12 +42,13 @@ Array.from(document.querySelectorAll("[style]")).forEach(elem => {
 ```js
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.js
 
-//Run after document has loaded!
 function removeLayer() {
   $(".body, .header").each(function () {
     this.setAttribute("style",`position: relative; z-index: ${"99999999999999999999999999999999999999999999999999999999999999999".repeat(69420)}`);
   });
 }
+
+window.onload = function() { removeLayer() } 
 ```
 
 ---
@@ -54,6 +61,8 @@ function removeLayer() {
   //Adjust this to make it work
   antiadblockElem.parentElement.parentElement.parentElement.parentElement.parentElement.innerHTML = "";
 }
+
+window.onload = function() { removeLayer() } 
 ```
 
 ---
@@ -72,6 +81,8 @@ function removeLayer() {
     removeAttributesOver("div",9);
     removeAttributesOver("span",9);
 }
+
+window.onload = function() { removeLayer() } 
 ```
 
 ---
@@ -88,6 +99,8 @@ function removeFromBottom(amount) {
 function removeLayer() { 
     removeFromBottom(12);
 }
+
+window.onload = function() { removeLayer() } 
 ```
 
 ---
