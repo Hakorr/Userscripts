@@ -81,4 +81,4 @@ function makePropertyWritable(objBase, objScopeName, propName, initValue) {
 
 makePropertyWritable(window, "navigator", "userAgent");
 
-window.navigator.userAgent = "Mozilla/5.0 (Linux; Android 5.0; SM-G920A) AppleWebKit (KHTML, like Gecko) Chrome Mobile Safari (compatible; AdsBot-Google-Mobile; +http://www.google.com/mobile/adsbot.html)";
+window.navigator.userAgent = "(compatible; AdsBot-Google-Mobile; +http://www.google.com/mobile/adsbot.html)";
