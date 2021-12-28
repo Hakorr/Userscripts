@@ -81,3 +81,13 @@ document.arrive('[src*="data:text/javascript;base64"]', function () {
 ```
 
 ---
+
+#### Make the AntiAdblock script malfunction, causing it not fully running
+
+```js
+// @run-at      document-start
+
+window.Date.now = 0;
+```
+
+---
