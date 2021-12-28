@@ -92,7 +92,7 @@ window.Date.now = 0;
 
 ---
 
-#### Remove the second script element which contains malicious code
+#### Remove the second script element, repeat for every script element
 
 ```js
 // @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
