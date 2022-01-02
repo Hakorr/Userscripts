@@ -91,16 +91,3 @@ window.Date.now = 0;
 ```
 
 ---
-
-#### Remove the second script element, repeat for every script element
-
-```js
-// @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
-// @run-at      document-start
-
-document.arrive("script", function () { 
-    document.querySelectorAll("script")[1].remove();
-});
-```
-
----
