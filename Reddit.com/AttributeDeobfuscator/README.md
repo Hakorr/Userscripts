@@ -2,6 +2,10 @@
 
 Gives the ability to turn the original attribute names into the obfuscated/randomized ones and vice versa.
 
+## Moved
+
+Please visit the new repo [here](https://github.com/Hakorr/AttributeDeobfuscator).
+
 ## How does it work?
 
 The randomized element class names are usually inside functions, such as the one below...
