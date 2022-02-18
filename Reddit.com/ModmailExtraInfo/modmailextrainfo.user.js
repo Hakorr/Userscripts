@@ -3,7 +3,7 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     2.7
+// @version     2.8
 // @author      HKR
 // @description Additional tools and information to Reddit's Modmail
 // @icon        https://www.redditstatic.com/modmail/favicon/favicon-32x32.png
@@ -12,10 +12,18 @@
 // ==/UserScript==
 
 console.log("[Modmail++] %cScript started!", "color: green");
-let run = true;
 
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
+
+// returns a random item from array
+const randItem = itemArr => itemArr[Math.floor(Math.random() * itemArr.length)];
+
+// removes the Reddit prefix
+const removePrefix = username => ["r/","u/"].some(tag => username.includes(tag)) ? username.slice(2) : username;
+
+// adds the Reddit prefix if nonexistant
+const keepPrefix = (username, subreddit) => ["r/","u/"].some(tag => username.includes(tag)) ? username : subreddit ? `r/${username}` : `u/${username}`;
 
 function __settings__() {
     "use strict";
@@ -156,17 +164,8 @@ const Get = async (url) => {
     return text;
 };
 
-// returns a random item from array
-const randItem = itemArr => itemArr[Math.floor(Math.random() * itemArr.length)];
-
-// removes the Reddit prefix
-const removePrefix = username => ["r/","u/"].some(tag => username.includes(tag)) ? username.slice(2) : username;
-
-// adds the Reddit prefix if nonexistant
-const keepPrefix = (username, subreddit) => ["r/","u/"].some(tag => username.includes(tag)) ? username : subreddit ? `r/${username}` : `u/${username}`;
-
 // adds a zero suffix if x < 10
-const fixnumber = number => number < 10 ? "0" + number : number; 
+const fixnumber = number => number < 10 ? "0" + number : number;
 
 // returns a date string from UNIX timestamp
 const unixToDate = UNIX_timestamp => {
@@ -935,9 +934,6 @@ const __main__ = async () => {
     console.log("[Modmail++] %cLoaded!", "color: lime");
 };
 
-/* Known issues
-    - Visit a modmail, exit it, then visit it again, the script will run twice
-*/
 setInterval (function () {
     if (this.lastPathStr !== location.pathname) 
     {
@@ -945,29 +941,19 @@ setInterval (function () {
 
         console.log("[Modmail++] %cNew page detected!", "color: gold");
 
-        run = true;
+        if($(".NoThreadMessage__generic")) // add confetti explosion if no mail
+        {
+            console.log("[Modmail++] %cNo modmail!", "color: lime");
 
-        let interval = setInterval (() => {
-            if($(".NoThreadMessage__generic") && run) // add confetti explosion if no mail
-            {
-                clearInterval(interval);
-                run = false;
+            party.confetti($(".NoThreadMessage__generic"), {
+                    count: 15,
+                    spread: 50
+            });
+        }
 
-                console.log("[Modmail++] %cNo modmail!", "color: lime");
-
-                party.confetti($(".NoThreadMessage__generic"), {
-                        count: 15,
-                        spread: 50
-                });
-            }
-
-            if($(".InfoBar__username") && run) // user is on modmail "chat" page
-            {
-                clearInterval(interval);
-                run = false;
-
-                if($("body")) __main__();
-            }
-        }, 5);
+        if($(".InfoBar__username")) // user is on modmail "chat" page
+        {
+            if($("body")) __main__();
+        }
     }
 }, 100);
