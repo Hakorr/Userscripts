@@ -935,33 +935,38 @@ const __main__ = async () => {
     console.log("[Modmail++] %cLoaded!", "color: lime");
 };
 
-setInterval (() => {
-    /* Detects page changes, checks if its a modmail chat, runs the main function */
-    // If you know a more clean solution, please pull...
-  
+let run = false;
+
+setInterval (function () {
     if (this.lastPathStr !== location.pathname) 
     {
         this.lastPathStr = location.pathname;
-      
+
         console.log("[Modmail++] %cNew page detected!", "color: gold");
 
-        if($(".NoThreadMessage__generic")) // add confetti explosion if no mail
-        {
-            console.log("[Modmail++] %cNo modmail!", "color: lime");
+        run = true;
 
-            party.confetti($(".NoThreadMessage__generic"), {
-                    count: 15,
-                    spread: 50
-            });
-        }
-
-        const waitForElement = setInterval(() => {
-            if($(".InfoBar__username"))
+        let waitForElements = setInterval (() => {
+            if($(".NoThreadMessage__generic") && run) // add confetti explosion if no mail
             {
-                clearInterval(waitForElement);
+                clearInterval(waitForElements);
+                run = false;
 
-                if($("body") && !$("#realTextarea")) __main__(); // check if Modmail++ is already injected
+                console.log("[Modmail++] %cNo modmail!", "color: lime");
+
+                party.confetti($(".NoThreadMessage__generic"), {
+                        count: 15,
+                        spread: 50
+                });
             }
-        }, 50);
+
+            if($(".InfoBar__username") && run) // user is on modmail "chat" page
+            {
+                clearInterval(waitForElements);
+                run = false;
+
+                if($("body") && !$("#CustomMetadata")) __main__();
+            }
+        }, 5);
     }
 }, 100);
