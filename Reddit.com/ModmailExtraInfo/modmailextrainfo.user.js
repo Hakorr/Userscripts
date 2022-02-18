@@ -3,12 +3,13 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     2.8
+// @version     2.9
 // @author      HKR
 // @description Additional tools and information to Reddit's Modmail
 // @icon        https://www.redditstatic.com/modmail/favicon/favicon-32x32.png
 // @supportURL  https://github.com/Hakorr/Userscripts/issues
 // @require     https://cdn.jsdelivr.net/npm/party-js@2.1.2/bundle/party.js
+// @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
 // ==/UserScript==
 
 console.log("[Modmail++] %cScript started!", "color: green");
@@ -934,11 +935,14 @@ const __main__ = async () => {
     console.log("[Modmail++] %cLoaded!", "color: lime");
 };
 
-setInterval (function () {
+setInterval (() => {
+    /* Detects page changes, checks if its a modmail chat, runs the main function */
+    // If you know a more clean solution, please pull...
+  
     if (this.lastPathStr !== location.pathname) 
     {
         this.lastPathStr = location.pathname;
-
+      
         console.log("[Modmail++] %cNew page detected!", "color: gold");
 
         if($(".NoThreadMessage__generic")) // add confetti explosion if no mail
@@ -951,9 +955,13 @@ setInterval (function () {
             });
         }
 
-        if($(".InfoBar__username")) // user is on modmail "chat" page
-        {
-            if($("body")) __main__();
-        }
+        const waitForElement = setInterval(() => {
+            if($(".InfoBar__username"))
+            {
+                clearInterval(waitForElement);
+
+                if($("body") && !$("#realTextarea")) __main__(); // check if Modmail++ is already injected
+            }
+        }, 50);
     }
 }, 100);
