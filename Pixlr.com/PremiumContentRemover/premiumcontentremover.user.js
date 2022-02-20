@@ -11,6 +11,7 @@
 // @grant        GM_addStyle
 // ==/UserScript==
 
+(() => {
 const userScriptName = "[Premium Content Remover]";
 let count = 1;
 console.log(`${userScriptName} Started!`);
@@ -73,3 +74,4 @@ function remove(elem) {
 removeList.forEach(elem => {
     remove(elem);
 });
+})();
