@@ -12,6 +12,7 @@
 // @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
 // ==/UserScript==
 
+(() => {
 console.log("[Modmail++] %cScript started!", "color: green");
 
 const $ = document.querySelector.bind(document);
@@ -970,3 +971,4 @@ setInterval (function () {
         }, 5);
     }
 }, 100);
+})();
