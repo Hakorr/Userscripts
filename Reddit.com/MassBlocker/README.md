@@ -26,6 +26,10 @@ Automatically block users that are shown on the page
     "reason": "BLOCK_RATE_LIMIT"
 }
 ```
+## Dependecies
+
+* [AttributeDeobfuscator](https://github.com/Hakorr/AttributeDeobfuscator)
+   * The userscript won't function without AttributeDeobfuscator
 
 ## Note
 
