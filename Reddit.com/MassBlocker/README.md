@@ -6,7 +6,7 @@ Automatically block users that are shown on the page
 
 ## How to use
 
-1. Install userscript
+1. Install the userscript
 2. Visit any page with usernames
 3. Scroll or `CTRL + B` to scrape & block users
     * If you visit a post, use the shortcut instead of scrolling
@@ -26,3 +26,7 @@ Automatically block users that are shown on the page
     "reason": "BLOCK_RATE_LIMIT"
 }
 ```
+
+## Note
+
+Please keep in mind that I can't be held liable if your Reddit account faces any backlash from using this userscript.
