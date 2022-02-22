@@ -2,6 +2,8 @@
 
 Automatically block users that are shown on the page
 
+![](https://raw.githubusercontent.com/Hakorr/Userscripts/main/Reddit.com/MassBlocker/src/example.gif)
+
 ## How to use
 
 1. Install userscript
