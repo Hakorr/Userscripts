@@ -1,4 +1,4 @@
-# [Flightradar24] Bypass timeout
+# [Flightradar24] Bypass Timeout
 
 Bypasses the 15-min timeout
 
