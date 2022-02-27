@@ -12,6 +12,10 @@
 (() => {
     setInterval(() => {
         blackoutMapForTimeout = () => console.log("Bypassed 15-min timeout!");
-        dispatcher.userFeatures['map.timeout.mins'] = -1
+        try {
+            dispatcher.userFeatures['map.timeout.mins'] = -1;
+        } catch {
+            // nothing
+        }
     }, 1000);
 })();
