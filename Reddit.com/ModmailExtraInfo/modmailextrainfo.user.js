@@ -553,6 +553,9 @@ const applyCSS = (Settings) => {
     .ThreadViewer__threadContainer.m-has-infobar {
         height: min-content;
     }
+    .ThreadViewer__infobar {
+        width: 300px;
+    }
     #CustomMetadata {
         font-size: 13px;
         line-height: 1.5;
