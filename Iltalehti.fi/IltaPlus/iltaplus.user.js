@@ -3,7 +3,7 @@
 // @namespace   HKR
 // @match       https://www.iltalehti.fi/*
 // @grant       none
-// @version     2.0
+// @version     2.1
 // @author      HKR
 // @description Iltalehden "Plus-Tilaus" ilmaiseksi
 // @run-at      document-load
@@ -57,6 +57,26 @@ class ElementGenerator {
                     let generatedContent = this.content(item.items);
 
                     generatedHTML += `<a href="${item.url}">${generatedContent}</a>`;
+                    break;
+                
+                case "italic":
+                    let italicText = "";
+
+                    item.items.forEach(item => {
+                        italicText += item.text;
+                    });
+
+                    generatedHTML += `<i>${italicText}</i>`;
+                    break;
+                
+                default:
+                    let text= "";
+
+                    item.items.forEach(item => {
+                        text += item.text;
+                    });
+
+                    generatedHTML += text;
                     break;
             }
         });
