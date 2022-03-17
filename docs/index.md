@@ -13,6 +13,7 @@
 | Pixlr.com | [PremiumContentRemover](https://github.com/Hakorr/Userscripts/tree/main/Pixlr.com/PremiumContentRemover) | Removes all the premium content so they're not in your way | [Install](https://github.com/Hakorr/Userscripts/raw/main/Pixlr.com/PremiumContentRemover/premiumcontentremover.user.js) | |
 | Pixlr.com | [RemoveBlackSidebar](https://github.com/Hakorr/Userscripts/tree/main/Pixlr.com/RemoveBlackSidebar)  | Removes the sidebar adblockers didn't remove | [Install](https://github.com/Hakorr/Userscripts/raw/main/Pixlr.com/RemoveBlackSidebar/removeblacksidebar.user.js) | |
 | Reddit.com | [Modmail++](https://github.com/Hakorr/Userscripts/tree/main/Reddit.com/ModmailExtraInfo) | Additional tools and information to Reddit's Modmail | [Install](https://github.com/Hakorr/Userscripts/raw/main/Reddit.com/ModmailExtraInfo/modmailextrainfo.user.js) | |
+| Reddit.com | [MassBlocker](https://github.com/Hakorr/Userscripts/tree/main/Reddit.com/MassBlocker) | Automatically block users that are shown on the page | [Visit](https://github.com/Hakorr/Userscripts/tree/main/Reddit.com/MassBlocker) | |
 
 ---
 
