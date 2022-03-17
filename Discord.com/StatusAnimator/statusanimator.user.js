@@ -12,7 +12,7 @@
 // @match        https://discord.com/channels/*
 // @match        https://discord.com/app
 // @supportURL   https://github.com/Hakorr/Userscripts/issues
-// @run-at		 document-start
+// @run-at	 document-start
 // ==/UserScript==
 
 (() => {
