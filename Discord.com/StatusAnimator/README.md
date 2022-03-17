@@ -16,10 +16,7 @@ A **dead simple** manually editable status animator for Discord (Browser)
 <details>
 <summary>Open for instructions</summary><br>
   
-  * You can add the script manually by opening the console with CTRL + SHIFT + I and pasting the script there.
- 
-Your status won't be cleared after you exit Discord.
-
+  * Not supported
 ---
 </details>
 
