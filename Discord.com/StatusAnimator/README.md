@@ -1,11 +1,7 @@
 # Discord Status Animator
 A **dead simple** manually editable status animator for Discord (Browser)
 
-https://greasyfork.org/en/scripts/427960-discord-status-animator-manual-edit-non-ui
-
-**This is a personal project, the code is not meant to be clean, the repo is public so I can share it with friends.**
-
-## How to install?
+## Installation
 
 * *Using the **Browser** version of Discord*
 <details>
@@ -74,15 +70,15 @@ await blank();
 ```
 Set status's state - There are four options: invisible, dnd, idle and online
 ```js
-await setstate("state");
+await state("state");
 ```
 Set status's emoji - This will clear the text
 ```js
-await setemoji("emoji");
+await emoji("emoji");
 ```
 Set status's text - This will clear the emoji
 ```js
-await settext("text");
+await text("text");
 ```
 Edit the status
 ```js
@@ -132,19 +128,19 @@ await scroll("emoji","text",timeout,center_amount,reversed);
 Gives a random number between min and max
 
 ```js
-random_number(min,max)
+randomNumber(min,max)
 ```
 Gives a random emoji
 ```js
-random_emoji()
+randomEmoji()
 ```
 Gives the date and time - XX/XX/XX @ XX:XX:XX
 ```js
-getDateTime()
+getTime("full")
 ```
 Gives the exact time - XX:XX:XX
 ```js
-getExactTime()
+getTime("exact")
 ```
 Gives the time - XX:XX
 ```js
@@ -154,75 +150,64 @@ getTime()
 
 #### Examples
 
-##### Do remember that Discord doesn't update your status as fast for others
+Do remember that Discord doesn't update your status as fast for others. Many of the examples you see here do not show up to others. Please slow them down if you want others to properly see every change.
 
 <details open>
 <summary>Animations</summary><br>
 
 010101010101
 ```js
-await glitch("","010101010101",2,1000);
+await glitch("","010101010101", 2, 1000);
 ```
 You're fabulous
 ```js
-await typewriter("","You're fabulous",250);
-await typewriter("","You're fabulous",250,true);
+await typewriter("", "You're fabulous", 250);
+await typewriter("", "You're fabulous", 250, true);
 await wait(5000);
 ```
 Display your time
 ```js
-await status("","My local time is " + getExactTime());
+await status("", "My local time is " + getTime("exact"));
 await wait(1000);
 ```
-Advertisement (My personal script)
+Random advertisement
 ```js
-await settext(getExactTime());
+await settext(getTime("exact"));
 await wait(1000);
 
 if(await skip(10,"unique")) return;
   
-await typewriter("","github.com/Hakorr",50);
+await typewriter("", "github.com/Hakorr", 50);
 await wait(3000);
 
-await activity("","Am I currently on the Discord tab: Yes","","","Am I currently on the Discord tab: No","");
+await activity("", "Am I currently on the Discord tab: Yes", "", "", "Am I currently on the Discord tab: No", "");
 await wait(2000);
 
-await glitch("","0̴͕̰͙̈́:̴̞̊͆͒ͅ0̷͈̇ͅ0̷̧̺͆̇:̴̞̊͆͒ͅ0̷͈̇ͅ0̷̧̺͆̇",5,25);
+await glitch("", "0̴͕̰͙̈́:̴̞̊͆͒ͅ0̷͈̇ͅ0̷̧̺͆̇:̴̞̊͆͒ͅ0̷͈̇ͅ0̷̧̺͆̇", 5, 25);
 
-await glitchtype("",getExactTime(),25,1);
+await glitchtype("", getTime("exact"), 25, 1);
 ```
 Stage test
 ```js
-await blink("🟦","Stage 1",500,1);
+await blink("🟦", "Stage 1", 500, 1);
 
-if(await skip(3,"unique")) return;
+if(await skip(3, "unique")) return;
 
-await blink("🟩","Stage 2",500,1);
+await blink("🟩", "Stage 2", 500, 1);
 
 if(await skip(3,"unique2")) return;
 
-await blink("🟪","Stage 3",500,1);
+await blink("🟪", "Stage 3", 500, 1);
 
-if(await skip(2,"unique")) return;
+if(await skip(2, "unique3")) return;
 
-await blink("🟧","Stage 4",500,1);
+await blink("🟧", "Stage 4", 500,1 );
 ```
 Activity
 ```js
-await activity("","I am active","online","","I am not active","dnd");
+await activity("", "I am active","online", "", "I am not active", "dnd");
 await wait(500);
 ```
 </details>
-
-## Todo
-
-* New effects(?)
-
-## ⚠️Warning
-
-* The script creates a cookie with your Discord token. This cookie could help bad authors to get your token.
-* Do not share the cookie with anyone, as it's your Discord token which can be used to do anything.
-
-*Protip: If your token has been stolen, change your password, it will reset it.*
 
 *The author is not responsible for any harm caused by this script.*
