@@ -169,7 +169,7 @@ await wait(1000);
 ```
 Random advertisement
 ```js
-await settext(getTime("exact"));
+await text(getTime("exact"));
 await wait(1000);
 
 if(await skip(10,"unique")) return;
