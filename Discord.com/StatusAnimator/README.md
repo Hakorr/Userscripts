@@ -48,6 +48,8 @@ A **dead simple** manually editable status animator for Discord (Browser)
 
 ## How to use?
 
+[Download](https://github.com/Hakorr/Userscripts/blob/main/Discord.com/StatusAnimator/tutorial.mp4?raw=true) a tutorial video. Background music by [Prod. Riddiman](https://www.youtube.com/channel/UCdSuKogXJOZld5Dzw_9285w).
+
 Below, you can see all the animation "blocks" you can use to construct your "animation script". Manually edit the script's ```loop()``` function and construct your animation using the blocks. (Copy & paste a block, edit the values inside its parenthesis) 
 
 *(See example animations at the bottom)*
