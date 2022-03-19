@@ -1,4 +1,4 @@
-# Discord Status Animator
+# [[Discord] Status Animator](https://greasyfork.org/en/scripts/427960-discord-status-animator-manual-edit-non-ui)
 A **dead simple** manually editable status animator for Discord (Browser)
 
 ## Installation
