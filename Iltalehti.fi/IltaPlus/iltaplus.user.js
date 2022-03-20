@@ -284,9 +284,9 @@ const bypassPaywall = async () => {
 let lastID = "";
 
 setInterval(() => {
-    let currentID = digitalData.page.attributes?.content.cid;
+    let currentID = digitalData.page.attributes?.content?.cid;
 
-    if(lastID != currentID)
+    if(typeof currentID == "string" && lastID != currentID)
     {
         lastID = currentID;
         bypassPaywall();
