@@ -3,13 +3,13 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     2.9
+// @version     3.0
 // @author      HKR
 // @description Additional tools and information to Reddit's Modmail
 // @icon        https://www.redditstatic.com/modmail/favicon/favicon-32x32.png
 // @supportURL  https://github.com/Hakorr/Userscripts/issues
-// @require     https://cdn.jsdelivr.net/npm/party-js@2.1.2/bundle/party.js
-// @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js
+// @require     https://cdn.jsdelivr.net/npm/party-js@2.1.2/bundle/party.js#sha256-J9/UDCn536lyy03NDKIUT6WX3DU9FqZZ9ydg++UVUC0=
+// @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js#sha256-rm9QEHHY91BwX6A/HHIkqMjpw/tHEuI8X2VBe4K8RIw=
 // ==/UserScript==
 
 (() => {
@@ -38,7 +38,7 @@ function __settings__() {
     /* Responses - Edit to your own liking, remove whatever you don't like!
     - name | The name of the response that will show on the listbox. (Example value: "Hello!")
     - replace | Replace all messagebox text if true, otherwise just add. (Example value: true)
-    - subreddit | Visible only while on this subreddit's modmail. (Example value: "r/subreddit") 
+    - subreddit | Visible only while on this subreddit's modmail. (Example value: "r/subreddit")
     - content | This text will be added to the messagebox once selected (Example value: "Hello world!")*/
     this.responses = [
         {
@@ -157,11 +157,11 @@ function __settings__() {
 
 const Get = async (url) => {
     let response = await fetch(url);
-  
+
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
     }
-  
+
     let text = await response.text();
     return text;
 };
@@ -177,9 +177,9 @@ const unixToDate = UNIX_timestamp => {
     let year = d.getFullYear(),
     monthNum = d.getMonth() + 1,
     month = months[d.getMonth()],
-    date = d.getDate(), 
-    hour = fixnumber(d.getHours()), 
-    min = fixnumber(d.getMinutes()), 
+    date = d.getDate(),
+    hour = fixnumber(d.getHours()),
+    min = fixnumber(d.getMinutes()),
     sec = fixnumber(d.getSeconds());
 
     return `${date}.${monthNum}.${year} ${hour}:${min}:${sec}`; // (DD/MM/YY HH/MM/SS)
@@ -217,7 +217,7 @@ const applyCSS = (Settings) => {
         color: #6e6e6e;
     }
     .InfoBar__metadata, .InfoBar__recents {
-        margin: 6px 0; 
+        margin: 6px 0;
         margin-left: 10px;
     }
     .value {
@@ -229,19 +229,15 @@ const applyCSS = (Settings) => {
     .InfoBar__username, .InfoBar__username:visited {
         padding-left: 10px;
     }
-    .ThreadViewer__infobarContainer {
-        display: table;
-        width: 300px;
-    }
     .dataText {
-        color: ${Settings.textColor}; 
+        color: ${Settings.textColor};
         font-size: 13px;
         padding-left: 10px;
     }
     .dataTitle {
         color: ${Settings.titleColor};
-        font-size: 15px; 
-        margin-bottom: 3px; 
+        font-size: 15px;
+        margin-bottom: 3px;
         margin-top: 5px;
     }
     .responseListbox {
@@ -316,10 +312,10 @@ const applyCSS = (Settings) => {
         width: 10px;
     }
     ::-webkit-scrollbar-track {
-        background: ${Settings.listBoxColor}; 
+        background: ${Settings.listBoxColor};
     }
     ::-webkit-scrollbar-thumb {
-        background: #888; 
+        background: #888;
     }
     ::-webkit-scrollbar-thumb:hover {
         background: #555;
@@ -550,12 +546,6 @@ const applyCSS = (Settings) => {
     .StyledHtml td {
         color: ${Settings.textColor};
     }
-    .ThreadViewer__threadContainer.m-has-infobar {
-        height: min-content;
-    }
-    .ThreadViewer__infobar {
-        width: 300px;
-    }
     #CustomMetadata {
         font-size: 13px;
         line-height: 1.5;
@@ -589,18 +579,18 @@ const appendHeadScript = (Settings) => {
     {
         const ELEMENT_headJS = () => {
             let responses = `const responses = ${JSON.stringify(Settings.responses)};`;
-    
+
             // this function will be turned into a string and appended into the head
             // you can't use variables outside of this function, they won't load
             const f = () => {
                 let ruleListActivator = "<open-rulelist-dialog>";
-    
+
                 function listBoxChanged(message) {
                     if(message == ruleListActivator)
                     {
                         let ruleDiv = document.getElementsByClassName("ruleDiv")[0];
                         ruleDiv.style.visibility = "visible";
-                    } 
+                    }
                     else
                     {
                         let messageBox = document.getElementById("realTextarea");
@@ -609,58 +599,58 @@ const appendHeadScript = (Settings) => {
                         console.log("[Modmail++] Updated the message: %c" + messageBox.value,"color: orange");
                     }
                 }
-        
+
                 // implement listbox select highlight
                 function selected(element) {
                     let selectColor = "#79797959";
                     let selectedElem = document.getElementById("currentlySelected");
-    
+
                     // if an element already selected, reset the id and set its background color to nothing
                     if(selectedElem)
                     {
                         selectedElem.style.backgroundColor = "";
-                        selectedElem.id = ""; 
+                        selectedElem.id = "";
                     }
-            
+
                     element.parentElement.style.backgroundColor = selectColor;
                     element.parentElement.id = "currentlySelected";
                     document.getElementsByClassName("selectButton")[0].disabled = false;
                 }
-        
+
                 const removeBreaks = text => text.replace(/(\r\n|\n|\r)/gm, "");
-        
+
                 function selectButtonClicked() {
                     let selectedElem = document.getElementById("currentlySelected");
                     let messageBox = document.getElementById("realTextarea");
-    
+
                     if(selectedElem)
                     {
                         let fixedDescription = atob(selectedElem.getAttribute('value')).replaceAll("\n","\n> ") + '\n\n';
                         let message = `> [**${selectedElem.children[1].textContent}**]\n>\n> ${fixedDescription}`;
-        
+
                         let response = responses.find(x => x.content == ruleListActivator);
                         response.replace ? messageBox.value = message : messageBox.value += message;
-        
+
                         console.log("[Modmail++] New messageBox value: %c" + messageBox.value,"color: orange");
-    
+
                         closeIconClicked();
                     }
                 }
-        
+
                 function closeIconClicked() {
                     let ruleDiv = document.getElementsByClassName("ruleDiv")[0];
                     ruleDiv.style.visibility = "hidden";
                 }
             };
-    
+
             return `${responses} \n ${f.toString().slice(7).slice(0, -1)}`;
         };
-        
+
         // script element
         let headJS = document.createElement('script');
         headJS.classList.add("CustomHeadJS");
         headJS.innerHTML = ELEMENT_headJS();
-    
+
         $("head").appendChild(headJS); // if it doesn't already exist, append to head
     }
 };
@@ -729,7 +719,7 @@ const appendUserInfo = async (Settings) => {
         {
             return await await Get(`https://www.reddit.com/user/${username}/about.json`);
         }
-        catch 
+        catch
         {
             console.log("[Modmail++] %cFailed to load user information.", "color: red");
             return 0;
@@ -755,10 +745,10 @@ const appendUserInfo = async (Settings) => {
         if(!$("#CustomMetadata")) {
             $(".InfoBar").insertBefore(userDetails, $(".InfoBar__username")); // append user information on top of the sidebar
             $(".InfoBar").insertBefore($(".InfoBar__modActions"), $(".InfoBar__recents")); // move modActions on top of recent posts
-    
+
             if($(".InfoBar__banText"))
                 $(".InfoBar").insertBefore($(".InfoBar__banText"), $("#CustomMetadata"));
-    
+
             $(".InfoBar__username").outerHTML = ""; // delete the original username element
             $(".InfoBar__metadata").outerHTML = ""; // delete the original metadata
         }
@@ -788,37 +778,37 @@ const replaceReplyForm = (Settings) => {
 const appendResponseTemplateBox = async (Settings) => {
     if(!$("#responseListbox"))
     {
-        const responseTemplateElement = 
+        const responseTemplateElement =
         `<h2 class="dataTitle">Response Templates</h2>
         <select id="responseListbox" onchange="listBoxChanged(this.value);" onfocus="this.selectedIndex = -1;"/>
             <option selected disabled hidden>Select a template</option>
         <span class="focus"></span>`;
-    
+
         const responseTemplateParent = document.createElement('div');
         responseTemplateParent.classList.add("select");
         responseTemplateParent.innerHTML = responseTemplateElement;
-    
+
         $(".ThreadViewer__replyContainer").prepend(responseTemplateParent);
         $(".ThreadViewer__replyContainer").insertBefore($(".ThreadViewer__typingIndicator"), $(".select")); // append typing indicator before listbox
-    
+
         // populates the response template listbox
         const populateListbox = (_query, _settings) => {
             const select = $(_query);
-    
+
             for(let i = 0; i < _settings.responses.length; i++)
             {
                 let sameSubreddit = keepPrefix(_settings.responses[i].subreddit.toLowerCase(), true) == keepPrefix(_settings.subTag.toLowerCase(), true);
                 if(sameSubreddit || _settings.responses[i].subreddit == "")
                 {
                     select.options[select.options.length] = new Option(_settings.responses[i].name, _settings.responses[i].content);
-                }  
+                }
             }
         };
-    
+
         populateListbox("#responseListbox", Settings); // add all the responses to the response template listbox
-    
+
         // add response template's rule description elements
-    
+
         const ELEMENT_ruleList = listContent => {
             return `<div class="ruleDiv" style="background-color: rgba(26, 26, 27, 0.6); visibility: hidden">
                         <div aria-modal="true" class="dialogWindow" role="dialog" tabindex="-1">
@@ -842,40 +832,40 @@ const appendResponseTemplateBox = async (Settings) => {
                         </div>
                     </div>`;
         };
-    
+
         // creates and returns a list element
         const makeListValue = (name, description) => {
             let encodedName = btoa(name);
             let encodedDesc = btoa(description);
             return `<div class="listValue" value='${encodedDesc}'><input onclick="selected(this)" name="subredditRule" type="radio" id='${encodedName}' value='${encodedName}'><label for='${encodedName}'>${name}</label></div>`;
         };
-    
+
         const getRules = async () => {
             try
             {
                 return await Get(Settings.rules + ".json");
             }
-            catch 
+            catch
             {
                 console.log("[Modmail++] %cFailed to load subreddit rules, possibly a private subreddit?", "color: red");
                 return 0;
             }
         };
-    
+
         let rules = await getRules();
-    
+
         if(rules)
         {
             const ruleJSON = JSON.parse(rules);
             $$(".subredditRuleList").forEach(elem => elem.remove()); // remove all subredditRuleList elements
-    
+
             let ruleListElements = "";
-    
+
             for(let i = 0; i < ruleJSON.rules.length; i++)
             {
                 ruleListElements += makeListValue(ruleJSON.rules[i].short_name, ruleJSON.rules[i].description);
             }
-    
+
             // (Append) Div ruleList element to body
             const ruleList = document.createElement('div');
             ruleList.classList.add("subredditRuleList");
@@ -899,12 +889,12 @@ const fixQuoteButtons = () => {
 
             let originalValue = originalForm.value;
             let text = "";
-    
+
             if(originalValue.includes("\n\n"))
                 text = originalValue.split("\n\n").filter(x => x.length > 0).pop();
-            else 
+            else
                 text = originalValue;
-            
+
             if(text.indexOf("\n") == 0) text = text.slice(1);
 
             if(text && text.includes("said:"))
@@ -922,7 +912,7 @@ const __main__ = async () => {
     console.log("[Modmail++] %cMain function ran!", "color: grey");
 
     const Settings = new __settings__();
-    
+
     appendHeadScript(Settings);
     appendUserInfo(Settings);
     replaceReplyForm(Settings);
@@ -942,7 +932,7 @@ const __main__ = async () => {
 let run = false;
 
 setInterval (function () {
-    if (this.lastPathStr !== location.pathname) 
+    if (this.lastPathStr !== location.pathname)
     {
         this.lastPathStr = location.pathname;
 
@@ -969,7 +959,8 @@ setInterval (function () {
                 clearInterval(waitForElements);
                 run = false;
 
-                if($("body") && !$("#CustomMetadata")) __main__();
+                if($("body") && !$("#CustomMetadata")) 
+                    __main__();
             }
         }, 5);
     }
