@@ -566,6 +566,9 @@ const applyCSS = (Settings) => {
         border-top: 1px solid var(--color-tone-6);
         margin-top: 16px;
         margin-bottom: 16px;
+    }
+    .ThreadViewer__infobarContainer {
+        display: table;
     }`;
 
     let styleSheet = document.createElement("style");
