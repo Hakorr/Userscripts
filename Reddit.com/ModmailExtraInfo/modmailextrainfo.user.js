@@ -567,6 +567,7 @@ const applyCSS = (Settings) => {
         margin-top: 16px;
         margin-bottom: 16px;
     }
+    @media (min-width: 768px)
     .ThreadViewer__infobarContainer {
         display: table;
     }`;
