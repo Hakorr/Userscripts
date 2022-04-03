@@ -19,7 +19,7 @@
  * */
 const ZOOM_LEVEL = 0.75;
 
-const CALC_INVERSE_ZOOM = 1.9 - 1.64 * Math.log(ZOOM_LEVEL);
+const CALC_INVERSE_ZOOM = 1.5 - Math.log(ZOOM_LEVEL);
 const TOOLTIP_ZOOM_LEVEL = CALC_INVERSE_ZOOM <= 0.5
     ? 1
     : CALC_INVERSE_ZOOM;
