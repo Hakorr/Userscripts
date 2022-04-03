@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        [Reddit r/Place] ExtraUserInformation
 // @namespace   HKR
-// @match       https://www.reddit.com/*
+// @match       https://www.reddit.com/r/place/*
 // @match       https://hot-potato.reddit.com/embed
 // @grant       none
 // @version     1.0
