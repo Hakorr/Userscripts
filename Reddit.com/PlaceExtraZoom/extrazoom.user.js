@@ -19,6 +19,11 @@
  * */
 const ZOOM_LEVEL = 0.75;
 
+const CALC_INVERSE_ZOOM = 1.9 - 1.64 * Math.log(ZOOM_LEVEL);
+const TOOLTIP_ZOOM_LEVEL = CALC_INVERSE_ZOOM <= 0.5
+    ? 1
+    : CALC_INVERSE_ZOOM;
+
 const app = document.querySelector("mona-lisa-app");
 
 if(typeof app != "null") {
@@ -34,9 +39,17 @@ if(typeof app != "null") {
 
 const start = () => { // start script when iframe loaded properly
     const container01 = document.querySelector("mona-lisa-embed").shadowRoot;
-    const container02 = container01.querySelector("mona-lisa-camera");
+    const container02 = container01.querySelector("mona-lisa-camera").shadowRoot;
+    const container03 = container01.querySelector("mona-lisa-camera");
 
-    container02.setAttribute("style", `
+    const pixel = container02.querySelector(".pixel");
+    const tooltip = pixel.querySelector("mona-lisa-tooltip");
+  
+    tooltip.setAttribute("style", `
+        zoom: ${TOOLTIP_ZOOM_LEVEL}
+    `);
+  
+    container03.setAttribute("style", `
         zoom: ${ZOOM_LEVEL}
     `);
 };
