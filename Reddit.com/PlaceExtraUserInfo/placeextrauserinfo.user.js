@@ -83,7 +83,11 @@ if (window.top === window.self) {
                       
                         clearInterval(waitForValue);
                       
-                        const extraInfo = `Karma: ${userData.data.total_karma} | Verified: ${userData.data.verified == true ? "Yes": "No"} | Admin: ${userData.data.is_employee == true ? "Yes": "No"} | Created: ${unixToDate(userData.data.created)}`;
+                        const extraInfo = `Karma: ${userData.data.total_karma}`
+                        + ` | Verified: ${userData.data.verified == true ? "Yes": "No"}`
+                        + ` | Admin: ${userData.data.is_employee == true ? "Yes": "No"}`
+                        + ` | Created: ${unixToDate(userData.data.created)}`
+                        + ` | <a href="https://www.reddit.com/user/${username}" target="_blank" rel="noopener noreferrer">Profile</a>`;
                       
                         const userDetails = document.createElement('button');
                         userDetails.classList.add("profile-button-extra-info-section");
@@ -98,7 +102,7 @@ if (window.top === window.self) {
                             padding: 5px 16px;
                             cursor: pointer;
                             pointer-events: all;`;
-                        userDetails.innerText = extraInfo;
+                        userDetails.innerHTML = extraInfo;
                       
                         [...pixelBtn.parentElement.querySelectorAll(".profile-button-extra-info-section")].forEach(x => {
                             x.remove();
