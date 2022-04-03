@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name        [Reddit r/Place] User Extra Info
+// @name        [Reddit r/Place] ExtraUserInformation
 // @namespace   HKR
 // @match       https://www.reddit.com/*
 // @match       https://hot-potato.reddit.com/embed
