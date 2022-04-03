@@ -13,7 +13,7 @@
 // ==/UserScript==
 
 /* ZOOM_LEVEL
- * Default: 1
+ * Regular zoom value: 1
  * Smaller the number, the more you can zoom outwards
  * It's recommended to set it back to 1 when you don't need the extra zoom
  * */
