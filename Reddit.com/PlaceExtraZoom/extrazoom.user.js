@@ -17,7 +17,7 @@
  * Smaller the number, the more you can zoom outwards
  * It's recommended to set it back to 1 when you don't need the extra zoom
  * */
-const ZOOM_LEVEL = 0.5;
+const ZOOM_LEVEL = 0.75;
 
 const app = document.querySelector("mona-lisa-app");
 
