@@ -6,7 +6,7 @@
 // @grant       none
 // @version     1.0
 // @author      HKR
-// @description Opens the user's profile on a new page
+// @description Adds additional info about the user to the usertag
 // @run-at      document-load
 // @grant       unsafeWindow
 // @grant       GM_setValue
