@@ -7,6 +7,6 @@ Adds additional info about the user to the usertag
 
 # [Install](https://github.com/Hakorr/Userscripts/raw/main/Reddit.com/PlaceExtraUserInfo/placeextrauserinfo.user.js)
 
-![](example_image.jpg)
+![](content/example_img.jpg)
 
-![](example2.gif)
+![](content/example2.gif)
