@@ -83,6 +83,23 @@ if (window.top === window.self) {
                       
                         clearInterval(waitForValue);
                       
+                        pixelBtn.setAttribute("style", `
+                            font-family: var(--mona-lisa-font-sans);
+                            font-weight: 700;
+                            background: rgb(75, 0, 255);
+                            color: rgb(255 255 255);
+                            border: 0px;
+                            outline: 0px;
+                            font-size: 14px;
+                            padding: 5px 16px;
+                            cursor: pointer;
+                            pointer-events: all;
+                            position: absolute;
+                            transform: translateY(-80%);
+                            border-radius: 100px;
+                            box-shadow: 0px 2px 10px #00000085;
+                        `);
+                      
                         const extraInfo = `Karma: ${userData.data.total_karma}`
                         + ` | Verified: ${userData.data.verified == true ? "Yes": "No"}`
                         + ` | Admin: ${userData.data.is_employee == true ? "Yes": "No"}`
