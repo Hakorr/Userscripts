@@ -87,7 +87,8 @@ if (window.top === window.self) {
                         + ` | Verified: ${userData.data.verified == true ? "Yes": "No"}`
                         + ` | Admin: ${userData.data.is_employee == true ? "Yes": "No"}`
                         + ` | Created: ${unixToDate(userData.data.created)}`
-                        + ` | <a href="https://www.reddit.com/user/${username}" target="_blank" rel="noopener noreferrer">Profile</a>`;
+                        + ` | <a href="https://www.reddit.com/user/${username}" target="_blank" rel="noopener noreferrer">Profile</a>`
+                        + ` | <a href="https://www.reddit.com/message/compose/?to=${username}&subject=About%20your%20pixel%20placement%20on%20r%2Fplace..." target="_blank" rel="noopener noreferrer">Message</a>`;
                       
                         const userDetails = document.createElement('button');
                         userDetails.classList.add("profile-button-extra-info-section");
