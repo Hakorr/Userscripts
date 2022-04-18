@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        LiveuamapEnchantments
 // @namespace   HKR
-// @match       *://liveuamap.com/*
+// @match       *://*liveuamap.com/*
 // @grant       none
 // @version     1.0
 // @author      HKR
