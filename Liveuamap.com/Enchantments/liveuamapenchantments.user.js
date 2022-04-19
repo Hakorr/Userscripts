@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name        LiveuamapEnchantments
+// @name        [Liveuamap] Enchantments
 // @namespace   HKR
 // @match       *://*liveuamap.com/*
 // @grant       none
