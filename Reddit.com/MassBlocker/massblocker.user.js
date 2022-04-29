@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        MassBlocker (Alpha)
 // @namespace   HKR
-// @match       https://www*.reddit.com/*
-// @exclude     https://www*.reddit.com/settings/*
+// @match       *.reddit.com/*
+// @exclude     *.reddit.com/settings/*
 // @grant       GM_setValue
 // @grant       GM_getValue
 // @grant       GM_addStyle
