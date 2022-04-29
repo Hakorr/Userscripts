@@ -15,6 +15,24 @@ Automatically block users that are shown on the page
 
 **Pro-tip: Do not keep the script active, disable it when you don't use it.**
 
+## Troubleshooting
+
+### Doesn't show up
+
+* Make sure to use new Reddit (don't use new.reddit.com or old Reddit)
+* Enable message/alert/notification boxes for the site
+* Try using a Chromium based browser
+* Try using Violentmonkey
+
+### No token found error
+
+* Refresh the page multiple times
+   * If that doesn't work, make a new issue
+
+### Ratelimit
+
+* Reddit has a strict ratelimit on the amount of blocked users a day, we cannot do anything about it.
+
 ## Limitations
 
 #### Daily block limit (~50/day)
