@@ -107,13 +107,14 @@
         })();
 
         function handleDataElement(innerText) {
-            innerText = innerText.replace("window.___r = ", "");
-            innerText = innerText.slice(0, -1);
+            const pattern = new RegExp(/(?<=window.___r = ).*(?=;)/); // match in between two strings
+            const innerTextJSON = innerText.match(pattern);
 
             try {
-                const secretObj = JSON.parse(innerText);
+                const secretObj = JSON.parse(innerTextJSON[0]);
                 callback(secretObj); // call main function with the secret JSON object
             } catch {
+                console.log("[MassBlocker] Invalid JSON string! (secretObj)");
                 callback(false); // call main function with false, execution will be stopped
             }
         }
