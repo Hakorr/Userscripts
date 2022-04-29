@@ -82,7 +82,7 @@
          * - the object contains the token for the http request
          * - the object is removed right after DOM has loaded, so it's hard to get
          * Functionality is as follows,
-         * - observer script loads -> if the innertext has the JSON object, parse it
+         * - observe script loads -> if the inner text has the JSON object, parse it
          * 
          * (If MassBlocker is returning a token error, fix this function)
          * */
