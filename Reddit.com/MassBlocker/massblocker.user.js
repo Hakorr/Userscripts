@@ -1,12 +1,12 @@
 // ==UserScript==
-// @name        MassBlocker (Pre-Alpha)
+// @name        MassBlocker (Alpha)
 // @namespace   HKR
 // @match       https://www.reddit.com/*
 // @exclude     https://www.reddit.com/settings/*
 // @grant       GM_setValue
 // @grant       GM_getValue
 // @grant       GM_addStyle
-// @version     0.1
+// @version     0.2
 // @author      HKR
 // @description Automatically block users that are shown on the page
 // @require     https://raw.githubusercontent.com/Hakorr/AttributeDeobfuscator/main/attributedeobfuscator.js
@@ -78,29 +78,45 @@
     };
 
     const getSecrets = callback => {
-        let success = false;
+        /* This function is responsible for retrieving a JSON object from the document
+         * - the object contains the token for the http request
+         * - the object is removed right after DOM has loaded, so it's hard to get
+         * Functionality is as follows,
+         * - observer script loads -> if the innertext has the JSON object, parse it
+         * 
+         * (If MassBlocker is returning a token error, fix this function)
+         * */
+        
+        (() => {
+            'use strict';
 
-        document.addEventListener("DOMContentLoaded", async () => {
-            Object.keys(unsafeWindow).forEach(key => {
-                if(key.includes("___"))
-                {
-                    const secretObj = unsafeWindow[key];
+            const observerCallback = (mutationsList) => {
+                for (let mutationRecord of mutationsList) {
+                    for (let node of mutationRecord.addedNodes) {
+                        if (node.tagName !== 'SCRIPT') continue;
 
-                    if(Object.keys(secretObj).includes("user"))
-                    {
-                        success = true;
-                        callback(secretObj);
-                    }
-                }
-            });
-        });
+                        if(node.innerText.includes("data")) {
+                            handleDataElement(node.innerText);
+                        }
+                    };
+                };
+            };
 
-        window.addEventListener("load", async () => {
-            if(!success)
-            {
-                callback(false);
+            const mutObvsr = new MutationObserver(observerCallback);
+            mutObvsr.observe(document, { childList: true, subtree: true });
+        })();
+
+        function handleDataElement(innerText) {
+            innerText = innerText.replace("window.___r = ", "");
+            innerText = innerText.slice(0, -1);
+
+            try {
+                const secretObj = JSON.parse(innerText);
+                callback(secretObj); // call main function with the secret JSON object
+            } catch {
+                callback(false); // call main function with false, execution will be stopped
             }
-        });
+        }
     };
 
     let secrets = {};
