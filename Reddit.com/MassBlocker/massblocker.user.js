@@ -21,7 +21,16 @@
 
     // show the alert before executing MassBlocker
     const SHOW_WARNING = true;
-
+  
+    // activate scraping and blocking by scrolling
+    const SCRAPE_BY_SCROLLING = true;
+  
+    // activate scraping and blocking by keybind
+    const SCRAPE_BY_KEYBIND = true;
+  
+    // keybind to activate scraping and blocking (Default: CTRL + B)
+    const SCRAPE_KEYBIND = (event) => event.ctrlKey && event.keyCode == 66;
+  
     // usernames not to block - case sensitive
     let USER_EXCLUSIONS = [
         // your account's already here
@@ -542,6 +551,7 @@
             UI.setStatus.blocking(blockedDatabase.length, scrapedDatabase.length);
         };
 
+        if(SCRAPE_BY_SCROLLING)
         document.addEventListener('scroll', (() => {
             if(unsafeWindow.scrollY % 5 == 0)
             {
@@ -549,11 +559,12 @@
             }
         }));
 
+        if(SCRAPE_BY_KEYBIND)
         document.addEventListener("keydown", event => {
             event.stopPropagation();
             event.preventDefault();
 
-            if(event.ctrlKey && event.keyCode == 66)
+            if(SCRAPE_KEYBIND(event))
             {
                 scrapeAndBlock();
             }
