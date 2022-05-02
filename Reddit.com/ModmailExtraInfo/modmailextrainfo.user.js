@@ -3,7 +3,7 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     3.1
+// @version     3.2
 // @author      HKR
 // @description Additional tools and information to Reddit's Modmail
 // @icon        https://www.redditstatic.com/modmail/favicon/favicon-32x32.png
@@ -124,6 +124,13 @@ function __settings__() {
             "replace":false,
             "subreddit":"",
             "content":`[link](https://www.youtube.com/watch?v=dQw4w9WgXcQ)`
+        },
+        {
+            "name":"Invitation (New Message)",
+            "replace":true,
+            "subreddit":"",
+            "subject": `Invitation to become a moderator of ${this.subTag}`,
+            "content":`${randItem(["Greetings","Hello","Hi"])},\n\nWould you like to moderate ${this.subTag} with us? Please let us know as soon as possible!`
         }
     ];
 
@@ -608,8 +615,14 @@ const appendHeadScript = (Settings) => {
                             : document.getElementById("realTextarea");
 
                         let response = document.responses.find(x => x.content == message);
+                        
 
                         response.replace ? messageBox.value = message : messageBox.value += message;
+                        
+                        if(response.subject) {
+                            document.querySelector(".NewThread__subject").value = response.subject;
+                        }
+                      
                         console.log("[Modmail++] Updated the message: %c" + messageBox.value,"color: orange");
                     }
                 }
@@ -831,7 +844,17 @@ const appendResponseTemplateBox = async (Settings) => {
                 let sameSubreddit = keepPrefix(_settings.responses[i].subreddit.toLowerCase(), true) == keepPrefix(_settings.subTag.toLowerCase(), true);
                 if(sameSubreddit || _settings.responses[i].subreddit == "")
                 {
-                    select.options[select.options.length] = new Option(_settings.responses[i].name, i);
+                    if(userVisitingCreatePostPage)
+                    {
+                        select.options[select.options.length] = new Option(_settings.responses[i].name, i);
+                    } 
+                    else
+                    {
+                        if(!_settings.responses[i].subject)
+                        {
+                            select.options[select.options.length] = new Option(_settings.responses[i].name, i);
+                        }
+                    }
                 }
             }
         };
@@ -959,6 +982,10 @@ const handleCreateMessagePage = () => {
                         const defaultLastUsername = "u/undefined";
 
                         document.responses.forEach(response => {
+                            if(response.subject) {
+                                response.subject = response.subject.replaceAll(lastUsername || defaultLastUsername, username);
+                            }
+                                
                             response.content = response.content.replaceAll(lastUsername || defaultLastUsername, username);
                         })
 
@@ -982,6 +1009,10 @@ const handleCreateMessagePage = () => {
 
             if(subreddit != lastSubreddit && subreddit != 'r/') {
                 document.responses.forEach(response => {
+                    if(response.subject) {
+                        response.subject = response.subject.replaceAll(lastSubreddit || defaultLastSubreddit, subreddit);
+                    }
+                  
                     response.content = response.content.replaceAll(lastSubreddit || defaultLastSubreddit, subreddit);
                 })
 
