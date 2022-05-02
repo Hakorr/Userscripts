@@ -117,7 +117,7 @@ function __settings__() {
             "name":"Add Admin Modmail",
             "replace":false,
             "subreddit":"",
-            "content":`[Admins](https://old.reddit.com/message/compose?to=%2Fr%2Freddit.com)`
+            "content":`[Admins](https://www.reddit.com/message/compose?to=%2Fr%2Freddit.com)`
         },
         {
             "name":"Add Rickroll",
