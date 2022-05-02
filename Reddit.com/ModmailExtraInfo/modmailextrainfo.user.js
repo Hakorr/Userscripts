@@ -3,7 +3,7 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     3.0
+// @version     3.1
 // @author      HKR
 // @description Additional tools and information to Reddit's Modmail
 // @icon        https://www.redditstatic.com/modmail/favicon/favicon-32x32.png
@@ -30,8 +30,8 @@ const keepPrefix = (username, subreddit) => ["r/","u/"].some(tag => username.inc
 function __settings__() {
     "use strict";
 
-    this.subTag = $(".ThreadTitle__community").href.slice(23); //Format r/subreddit
-    this.userTag = "u/" + $(".InfoBar__username").innerText; //Format u/username
+    this.subTag = $(".ThreadTitle__community")?.href?.slice(23) || "r/subreddit"; //Format r/subreddit
+    this.userTag = "u/" + $(".InfoBar__username")?.innerText || "u/username"; //Format u/username
     this.modmail = `[modmail](https://www.reddit.com/message/compose?to=/${keepPrefix(this.subTag, true)})`;
     this.rules = `https://www.reddit.com/${keepPrefix(this.subTag,true)}/about/rules`;
 
@@ -574,22 +574,26 @@ const applyCSS = (Settings) => {
 
     let styleSheet = document.createElement("style");
     styleSheet.type = "text/css";
+    styleSheet.id = "modmailPlusSheet";
     styleSheet.innerText = css;
-    document.head.appendChild(styleSheet);
+  
+    if($$("#modmailPlusSheet").length == 0)
+      document.head.appendChild(styleSheet);
 };
 
 const appendHeadScript = (Settings) => {
-    if(!$(".CustomHeadJS"))
-    {
+    document.responses = Settings.responses;
+  
+    if(!$$(".CustomHeadJS").length) {
         const ELEMENT_headJS = () => {
-            let responses = `const responses = ${JSON.stringify(Settings.responses)};`;
-
             // this function will be turned into a string and appended into the head
             // you can't use variables outside of this function, they won't load
             const f = () => {
                 let ruleListActivator = "<open-rulelist-dialog>";
 
-                function listBoxChanged(message) {
+                function listBoxChanged(responseIndex) {
+                    const message = document.responses[responseIndex].content;
+                  
                     if(message == ruleListActivator)
                     {
                         let ruleDiv = document.getElementsByClassName("ruleDiv")[0];
@@ -597,8 +601,14 @@ const appendHeadScript = (Settings) => {
                     }
                     else
                     {
-                        let messageBox = document.getElementById("realTextarea");
-                        let response = responses.find(x => x.content == message);
+                        const userVisitingCreatePostPage = document.querySelectorAll(".NewThread").length;
+
+                        let messageBox = userVisitingCreatePostPage
+                            ? document.querySelector(".Textarea, NewThread__message")
+                            : document.getElementById("realTextarea");
+
+                        let response = document.responses.find(x => x.content == message);
+
                         response.replace ? messageBox.value = message : messageBox.value += message;
                         console.log("[Modmail++] Updated the message: %c" + messageBox.value,"color: orange");
                     }
@@ -625,14 +635,19 @@ const appendHeadScript = (Settings) => {
 
                 function selectButtonClicked() {
                     let selectedElem = document.getElementById("currentlySelected");
-                    let messageBox = document.getElementById("realTextarea");
+
+                    const userVisitingCreatePostPage = document.querySelectorAll(".NewThread").length;
+
+                    let messageBox = userVisitingCreatePostPage
+                        ? document.querySelector(".Textarea, NewThread__message")
+                        : document.getElementById("realTextarea");
 
                     if(selectedElem)
                     {
                         let fixedDescription = atob(selectedElem.getAttribute('value')).replaceAll("\n","\n> ") + '\n\n';
                         let message = `> [**${selectedElem.children[1].textContent}**]\n>\n> ${fixedDescription}`;
 
-                        let response = responses.find(x => x.content == ruleListActivator);
+                        let response = document.responses.find(x => x.content == ruleListActivator);
                         response.replace ? messageBox.value = message : messageBox.value += message;
 
                         console.log("[Modmail++] New messageBox value: %c" + messageBox.value,"color: orange");
@@ -647,7 +662,7 @@ const appendHeadScript = (Settings) => {
                 }
             };
 
-            return `${responses} \n ${f.toString().slice(7).slice(0, -1)}`;
+            return f.toString().slice(7).slice(0, -1);
         };
 
         // script element
@@ -662,7 +677,7 @@ const appendHeadScript = (Settings) => {
 const appendChatProfileIcons = async () => {
     if(!$(".chatProfileIcon"))
         {
-        const username = removePrefix($(".InfoBar__username").innerText);
+        const username = removePrefix($(".InfoBar__username")?.innerText || "u/username");
         const response = await Get(`https://www.reddit.com/user/${username}/about.json`);
         const user = JSON.parse(response);
 
@@ -716,7 +731,7 @@ const appendUserInfo = async (Settings) => {
                 </div>`;
     };
 
-    const username = removePrefix($(".InfoBar__username").innerText);
+    const username = removePrefix($(".InfoBar__username")?.innerText || "u/username");
 
     const getUserInfo = async () => {
         try
@@ -732,7 +747,7 @@ const appendUserInfo = async (Settings) => {
 
     const userInfo = await getUserInfo();
 
-    if(userInfo)
+    if(userInfo && !$(".NewThread"))
     {
         const userJSON = JSON.parse(userInfo);
 
@@ -760,7 +775,7 @@ const appendUserInfo = async (Settings) => {
 };
 
 const replaceReplyForm = (Settings) => {
-    if(!$("#realTextarea"))
+    if(!$("#realTextarea") && !$(".NewThread"))
     {
         // hide the original replyform textarea
         $(".ThreadViewerReplyForm__replyText").style.cssText += 'display: none';
@@ -789,11 +804,23 @@ const appendResponseTemplateBox = async (Settings) => {
         <span class="focus"></span>`;
 
         const responseTemplateParent = document.createElement('div');
-        responseTemplateParent.classList.add("select");
+        responseTemplateParent.classList.add("select", "customResponseBox");
         responseTemplateParent.innerHTML = responseTemplateElement;
 
-        $(".ThreadViewer__replyContainer").prepend(responseTemplateParent);
-        $(".ThreadViewer__replyContainer").insertBefore($(".ThreadViewer__typingIndicator"), $(".select")); // append typing indicator before listbox
+        const userVisitingCreatePostPage = document.querySelectorAll(".NewThread").length;
+      
+        if(userVisitingCreatePostPage) // user visited mod.reddit.com/mail/create
+        {
+            // append the template box to the site
+            $(".NewThread__fields").prepend(responseTemplateParent);
+            $(".NewThread__fields").insertBefore($(".customResponseBox"), $(".Textarea, .NewThread__message"));
+        }
+        else // user visited modmail chat
+        {
+            // append the template box to the site
+            $(".ThreadViewer__replyContainer").prepend(responseTemplateParent);
+            $(".ThreadViewer__replyContainer").insertBefore($(".ThreadViewer__typingIndicator"), $(".select")); // append typing indicator before listbox
+        }
 
         // populates the response template listbox
         const populateListbox = (_query, _settings) => {
@@ -804,7 +831,7 @@ const appendResponseTemplateBox = async (Settings) => {
                 let sameSubreddit = keepPrefix(_settings.responses[i].subreddit.toLowerCase(), true) == keepPrefix(_settings.subTag.toLowerCase(), true);
                 if(sameSubreddit || _settings.responses[i].subreddit == "")
                 {
-                    select.options[select.options.length] = new Option(_settings.responses[i].name, _settings.responses[i].content);
+                    select.options[select.options.length] = new Option(_settings.responses[i].name, i);
                 }
             }
         };
@@ -911,6 +938,58 @@ const fixQuoteButtons = () => {
             elem.setAttribute("onclick", onClickFunc.toString().slice(7).slice(0, -1));
     });
 };
+  
+const handleCreateMessagePage = () => {
+    /* Handle change of username
+     * change the response usernames to the changed username
+     * */
+    let toUser = document.querySelector(".Radio__input[value=user]");
+    if(toUser) {
+        toUser.onclick = () => {
+            let lastUsername = null;
+
+            const waitForTextbox = setInterval(() => {
+                const newThreadTextbox = document.querySelector(".NewThread__username");
+
+                if(newThreadTextbox) {
+                    clearInterval(waitForTextbox);
+
+                    newThreadTextbox.onchange = e => {
+                        const username = "u/" + e.target.value;
+                        const defaultLastUsername = "u/undefined";
+
+                        document.responses.forEach(response => {
+                            response.content = response.content.replaceAll(lastUsername || defaultLastUsername, username);
+                        })
+
+                        lastUsername = username;
+                    }
+                }
+            }, 100);
+        }
+    }
+  
+    /* Handle change of subreddit
+     * change the response subreddits to the changed subreddit
+     * */
+    const srName = document.querySelector("[name=srName]");
+    let lastSubreddit = null;
+    let defaultLastSubreddit = "r/subreddit";
+
+    if(srName) {
+        const postToChanges = setInterval(() => {
+            const subreddit = "r/" + srName.value;
+
+            if(subreddit != lastSubreddit && subreddit != 'r/') {
+                document.responses.forEach(response => {
+                    response.content = response.content.replaceAll(lastSubreddit || defaultLastSubreddit, subreddit);
+                })
+
+                lastSubreddit = subreddit;
+            }
+        }, 500)
+    }
+};
 
 const __main__ = async () => {
     console.log("[Modmail++] %cMain function ran!", "color: grey");
@@ -921,9 +1000,10 @@ const __main__ = async () => {
     appendUserInfo(Settings);
     replaceReplyForm(Settings);
     applyCSS(Settings);
-
+  
     fixQuoteButtons();
-
+    handleCreateMessagePage();
+  
     if(Settings.chatProfileIcons)
         appendChatProfileIcons();
 
@@ -965,6 +1045,13 @@ setInterval (function () {
 
                 if($("body") && !$("#CustomMetadata")) 
                     __main__();
+            }
+          
+            if($(".NewThread") && run) {
+                clearInterval(waitForElements);
+                run = false;
+                
+                __main__();
             }
         }, 5);
     }
