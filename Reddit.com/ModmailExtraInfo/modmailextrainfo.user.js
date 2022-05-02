@@ -130,7 +130,7 @@ function __settings__() {
             "replace":true,
             "subreddit":"",
             "subject": `Invitation to become a moderator of ${this.subTag}`,
-            "content":`${randItem(["Greetings","Hello","Hi"])},\n\nWould you like to moderate ${this.subTag} with us? Please let us know as soon as possible!`
+            "content":`${randItem(["Greetings","Hello","Hi"])} ${this.userTag},\n\nWould you like to moderate ${this.subTag} with us? Please let us know as soon as possible!`
         }
     ];
 
