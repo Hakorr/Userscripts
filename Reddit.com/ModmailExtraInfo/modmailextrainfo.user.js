@@ -9,7 +9,6 @@
 // @icon        https://www.redditstatic.com/modmail/favicon/favicon-32x32.png
 // @supportURL  https://github.com/Hakorr/Userscripts/issues
 // @require     https://cdn.jsdelivr.net/npm/party-js@2.1.2/bundle/party.js#sha256-J9/UDCn536lyy03NDKIUT6WX3DU9FqZZ9ydg++UVUC0=
-// @require     https://greasyfork.org/scripts/21927-arrive-js/code/arrivejs.js#sha256-rm9QEHHY91BwX6A/HHIkqMjpw/tHEuI8X2VBe4K8RIw=
 // ==/UserScript==
 
 (() => {
