@@ -3,7 +3,7 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     3.2
+// @version     3.3
 // @author      HKR
 // @description Additional tools and information to Reddit's Modmail
 // @icon        https://www.redditstatic.com/modmail/favicon/favicon-32x32.png
@@ -15,32 +15,18 @@
 (() => {
 console.log("[Modmail++] %cScript started!", "color: green");
 
-const $ = document.querySelector.bind(document);
-const $$ = document.querySelectorAll.bind(document);
-
-// returns a random item from array
-const randItem = itemArr => itemArr[Math.floor(Math.random() * itemArr.length)];
-
-// removes the Reddit prefix
-const removePrefix = username => ["r/","u/"].some(tag => username.includes(tag)) ? username.slice(2) : username;
-
-// adds the Reddit prefix if nonexistant
-const keepPrefix = (username, subreddit) => ["r/","u/"].some(tag => username.includes(tag)) ? username : subreddit ? `r/${username}` : `u/${username}`;
-
-function __settings__() {
-    "use strict";
-
-    this.subTag = $(".ThreadTitle__community")?.href?.slice(23) || "r/subreddit"; //Format r/subreddit
-    this.userTag = "u/" + $(".InfoBar__username")?.innerText || "u/username"; //Format u/username
-    this.modmail = `[modmail](https://www.reddit.com/message/compose?to=/${keepPrefix(this.subTag, true)})`;
-    this.rules = `https://www.reddit.com/${keepPrefix(this.subTag,true)}/about/rules`;
-
+class __settings__ {
+    subTag = $(".ThreadTitle__community")?.href?.slice(23) || "r/subreddit"; //Format r/subreddit
+    userTag = "u/" + $(".InfoBar__username")?.innerText || "u/username"; //Format u/username
+    modmail = `[modmail](https://www.reddit.com/message/compose?to=/${keepPrefix(this.subTag, true)})`;
+    rules = `https://www.reddit.com/${keepPrefix(this.subTag, true)}/about/rules`;
+  
     /* Responses - Edit to your own liking, remove whatever you don't like!
     - name | The name of the response that will show on the listbox. (Example value: "Hello!")
     - replace | Replace all messagebox text if true, otherwise just add. (Example value: true)
     - subreddit | Visible only while on this subreddit's modmail. (Example value: "r/subreddit")
     - content | This text will be added to the messagebox once selected (Example value: "Hello world!")*/
-    this.responses = [
+    responses = [
         {
             "name":"Default Approved",
             "replace":true,
@@ -134,18 +120,18 @@ function __settings__() {
         }
     ];
 
-    const themeMode = $$(".theme-dark").length ? true : false;
-    this.textColor = themeMode ? "#757575" : "#6e6e6e"; // dark hex : light hex
-    this.titleColor = themeMode ? "#a7a7a7" : "#2c2c2c"; // dark hex : light hex
-    this.listBoxColor = themeMode ? "#242424" : "#f1f3f5"; // dark hex : light hex
+    themeMode = $$(".theme-dark").length ? true : false;
+    textColor = this.themeMode ? "#757575" : "#6e6e6e"; // dark hex : light hex
+    titleColor = this.themeMode ? "#a7a7a7" : "#2c2c2c"; // dark hex : light hex
+    listBoxColor = this.themeMode ? "#242424" : "#f1f3f5"; // dark hex : light hex
 
-    this.dataColor = "#0079d3"; // data (numbers etc.) color
+    dataColor = "#0079d3"; // data (numbers etc.) color
 
-    this.enableCustomResponses = true; // if to append the custom response box
+    enableCustomResponses = true; // if to append the custom response box
 
-    this.chatProfileIcons = true; // if to append chat profile icons
+    chatProfileIcons = true; // if to append chat profile icons
 
-    this.placeholderMessage = randItem([
+    placeholderMessage = randItem([
         "Message...",
         "Look, a bird! Message...",
         "What have you been up to today? Message...",
@@ -161,8 +147,28 @@ function __settings__() {
         "(✿◠‿◠) Message...",
     ]);
 }
+  
+/*/////////////////////////////////////////////////
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+DO NOT PROCEED IF YOU DO NOT KNOW WHAT YOU'RE DOING
+///////////////////////////////////////////////////
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*/
+  
+const $ = document.querySelector.bind(document);
+const $$ = document.querySelectorAll.bind(document);
 
-const Get = async (url) => {
+// returns a random item from array
+const randItem = itemArr => itemArr[Math.floor(Math.random() * itemArr.length)];
+  
+// removes the Reddit prefix
+const removePrefix = username => ["r/","u/"].some(tag => username.includes(tag)) ? username.slice(2) : username;
+  
+// adds the Reddit prefix if nonexistant
+const keepPrefix = (username, subreddit) => ["r/","u/"].some(tag => username.includes(tag)) ? username : subreddit ? `r/${username}` : `u/${username}`;
+
+const parseUsername = () => removePrefix($(".InfoBar__username")?.innerText || "u/username");
+  
+async function Get(url) {
     let response = await fetch(url);
 
     if (!response.ok) {
@@ -173,11 +179,37 @@ const Get = async (url) => {
     return text;
 };
 
+async function getUserInfo() {
+    try
+    {
+        const about = await Get(`https://www.reddit.com/user/${parseUsername()}/about.json`);
+        return JSON.parse(about);
+    }
+    catch
+    {
+        console.log("[Modmail++] %cFailed to load user information.", "color: red");
+        return 0;
+    }
+};
+  
+async function getRules(Settings) {
+    try
+    {
+        const rules = await Get(Settings.rules + ".json");
+        return JSON.parse(rules);
+    }
+    catch
+    {
+        console.log("[Modmail++] %cFailed to load subreddit rules, possibly a private subreddit?", "color: red");
+        return 0;
+    }
+};
+
 // adds a zero suffix if x < 10
-const fixnumber = number => number < 10 ? "0" + number : number;
+const fixNumber = number => number < 10 ? "0" + number : number;
 
 // returns a date string from UNIX timestamp
-const unixToDate = UNIX_timestamp => {
+function unixToDate(UNIX_timestamp) {
     const d = new Date(UNIX_timestamp * 1000);
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
@@ -185,15 +217,15 @@ const unixToDate = UNIX_timestamp => {
     monthNum = d.getMonth() + 1,
     month = months[d.getMonth()],
     date = d.getDate(),
-    hour = fixnumber(d.getHours()),
-    min = fixnumber(d.getMinutes()),
-    sec = fixnumber(d.getSeconds());
+    hour = fixNumber(d.getHours()),
+    min = fixNumber(d.getMinutes()),
+    sec = fixNumber(d.getSeconds());
 
     return `${date}.${monthNum}.${year} ${hour}:${min}:${sec}`; // (DD/MM/YY HH/MM/SS)
 };
 
 // returns a string without evil HTML elements
-const sanitize = evilstring => {
+function sanitize(evilstring) {
     const decoder = document.createElement('div');
     decoder.innerHTML = evilstring;
     return decoder.textContent;
@@ -206,7 +238,7 @@ sidebarTitle.setAttribute("style","cursor: pointer");
 sidebarTitle.innerText = "Modmail++";
 
 // apply the custom css
-const applyCSS = (Settings) => {
+function applyCSS(Settings) {
     //Took advice for the listbox CSS from moderncss.dev/custom-select-styles-with-pure-css, thanks!
     const css = `.profileIcon:hover {
         -ms-transform: scale(6);
@@ -588,136 +620,155 @@ const applyCSS = (Settings) => {
       document.head.appendChild(styleSheet);
 };
 
-const appendHeadScript = (Settings) => {
-    document.responses = Settings.responses;
+function initializeCore(Settings) {
+    class Core {
+        ruleListActivator = "<open-rulelist-dialog>";
+
+        listBoxChanged(responseIndex) {
+            const message = document.ModmailPlus.responses[responseIndex].content;
+
+            if(message == this.ruleListActivator)
+            {
+                let ruleDiv = document.getElementsByClassName("ruleDiv")[0];
+                ruleDiv.style.visibility = "visible";
+            }
+            else
+            {
+                const userVisitingCreatePostPage = document.querySelectorAll(".NewThread").length;
+
+                let messageBox = userVisitingCreatePostPage
+                    ? document.querySelector(".Textarea, NewThread__message")
+                    : document.getElementById("realTextarea");
+
+                let response = document.ModmailPlus.responses.find(x => x.content == message);
+
+
+                response.replace ? messageBox.value = message : messageBox.value += message;
+
+                if(response.subject) {
+                    document.querySelector(".NewThread__subject").value = response.subject;
+                }
+
+                console.log("[Modmail++] Updated the message: %c" + messageBox.value,"color: orange");
+            }
+        }
+
+        // implement listbox select highlight
+        selected(element) {
+            let selectColor = "#79797959";
+            let selectedElem = document.getElementById("currentlySelected");
+
+            // if an element already selected, reset the id and set its background color to nothing
+            if(selectedElem)
+            {
+                selectedElem.style.backgroundColor = "";
+                selectedElem.id = "";
+            }
+
+            element.parentElement.style.backgroundColor = selectColor;
+            element.parentElement.id = "currentlySelected";
+            document.getElementsByClassName("selectButton")[0].disabled = false;
+        }
+
+        removeBreaks = text => text.replace(/(\r\n|\n|\r)/gm, "");
+
+        selectButtonClicked() {
+            let selectedElem = document.getElementById("currentlySelected");
+
+            const userVisitingCreatePostPage = document.querySelectorAll(".NewThread").length;
+
+            let messageBox = userVisitingCreatePostPage
+                ? document.querySelector(".Textarea, NewThread__message")
+                : document.getElementById("realTextarea");
+
+            if(selectedElem)
+            {
+                let fixedDescription = atob(selectedElem.getAttribute('value')).replaceAll("\n","\n> ") + '\n\n';
+                let message = `> [**${selectedElem.children[1].textContent}**]\n>\n> ${fixedDescription}`;
+
+                let response = document.ModmailPlus.responses.find(x => x.content == this.ruleListActivator);
+                response.replace ? messageBox.value = message : messageBox.value += message;
+
+                console.log("[Modmail++] New messageBox value: %c" + messageBox.value,"color: orange");
+
+                this.closeIconClicked();
+            }
+        }
+
+        closeIconClicked() {
+            let ruleDiv = document.getElementsByClassName("ruleDiv")[0];
+            ruleDiv.style.visibility = "hidden";
+        }
+      
+        divertQuoteText() {
+            console.log("[Modmail++] %cDiverting quote text from original textbox to Modmail++'s", "color: orange");
+            setTimeout(() => {
+                const originalForm = document.querySelector(".Textarea, .ThreadViewerReplyForm__replyText");
+
+                let originalValue = originalForm.value;
+                let text = "";
+
+                if(originalValue.includes("\n\n"))
+                    text = originalValue.split("\n\n").filter(x => x.length > 0).pop();
+                else
+                    text = originalValue;
+
+                if(text.indexOf("\n") == 0) text = text.slice(1);
+
+                if(text && text.includes("said:"))
+                    document.querySelector("#realTextarea").value += text + "\n\n";
+            }, 50);
+        }
+      
+        clearReplyForm() {
+            setTimeout(() => {
+                document.getElementById("realTextarea").value = "";
+                console.log("[Modmail++] Cleared the textarea!");
+              
+                // set onclick variable again because the button refreshes itself
+                document.querySelector(".ThreadViewerReplyForm__replyButton")
+                    .setAttribute("onclick", "document.ModmailPlus.Core.clearReplyForm()")
+            }, 500);
+        }
+    };
   
-    if(!$$(".CustomHeadJS").length) {
-        const ELEMENT_headJS = () => {
-            // this function will be turned into a string and appended into the head
-            // you can't use variables outside of this function, they won't load
-            const f = () => {
-                let ruleListActivator = "<open-rulelist-dialog>";
-
-                function listBoxChanged(responseIndex) {
-                    const message = document.responses[responseIndex].content;
-                  
-                    if(message == ruleListActivator)
-                    {
-                        let ruleDiv = document.getElementsByClassName("ruleDiv")[0];
-                        ruleDiv.style.visibility = "visible";
-                    }
-                    else
-                    {
-                        const userVisitingCreatePostPage = document.querySelectorAll(".NewThread").length;
-
-                        let messageBox = userVisitingCreatePostPage
-                            ? document.querySelector(".Textarea, NewThread__message")
-                            : document.getElementById("realTextarea");
-
-                        let response = document.responses.find(x => x.content == message);
-                        
-
-                        response.replace ? messageBox.value = message : messageBox.value += message;
-                        
-                        if(response.subject) {
-                            document.querySelector(".NewThread__subject").value = response.subject;
-                        }
-                      
-                        console.log("[Modmail++] Updated the message: %c" + messageBox.value,"color: orange");
-                    }
-                }
-
-                // implement listbox select highlight
-                function selected(element) {
-                    let selectColor = "#79797959";
-                    let selectedElem = document.getElementById("currentlySelected");
-
-                    // if an element already selected, reset the id and set its background color to nothing
-                    if(selectedElem)
-                    {
-                        selectedElem.style.backgroundColor = "";
-                        selectedElem.id = "";
-                    }
-
-                    element.parentElement.style.backgroundColor = selectColor;
-                    element.parentElement.id = "currentlySelected";
-                    document.getElementsByClassName("selectButton")[0].disabled = false;
-                }
-
-                const removeBreaks = text => text.replace(/(\r\n|\n|\r)/gm, "");
-
-                function selectButtonClicked() {
-                    let selectedElem = document.getElementById("currentlySelected");
-
-                    const userVisitingCreatePostPage = document.querySelectorAll(".NewThread").length;
-
-                    let messageBox = userVisitingCreatePostPage
-                        ? document.querySelector(".Textarea, NewThread__message")
-                        : document.getElementById("realTextarea");
-
-                    if(selectedElem)
-                    {
-                        let fixedDescription = atob(selectedElem.getAttribute('value')).replaceAll("\n","\n> ") + '\n\n';
-                        let message = `> [**${selectedElem.children[1].textContent}**]\n>\n> ${fixedDescription}`;
-
-                        let response = document.responses.find(x => x.content == ruleListActivator);
-                        response.replace ? messageBox.value = message : messageBox.value += message;
-
-                        console.log("[Modmail++] New messageBox value: %c" + messageBox.value,"color: orange");
-
-                        closeIconClicked();
-                    }
-                }
-
-                function closeIconClicked() {
-                    let ruleDiv = document.getElementsByClassName("ruleDiv")[0];
-                    ruleDiv.style.visibility = "hidden";
-                }
-            };
-
-            return f.toString().slice(7).slice(0, -1);
-        };
-
-        // script element
-        let headJS = document.createElement('script');
-        headJS.classList.add("CustomHeadJS");
-        headJS.innerHTML = ELEMENT_headJS();
-
-        $("head").appendChild(headJS); // if it doesn't already exist, append to head
-    }
+    document.ModmailPlus.Core = new Core;
+    document.ModmailPlus.responses = Settings.responses;
 };
 
-const appendChatProfileIcons = async () => {
-    if(!$(".chatProfileIcon"))
+async function appendChatProfileIcons() {
+    const response = await Get(`https://www.reddit.com/user/${parseUsername()}/about.json`);
+    const user = JSON.parse(response);
+
+    // icon element
+    const chatProfileIcon = document.createElement('div');
+    chatProfileIcon.innerHTML = `<img class="chatProfileIcon" src="${user.data.icon_img}" width="25">`;
+
+    for(let i = 0; i < $$(".ThreadPreview__author").length; i++) // loop trough every username on chat
+    {
+        // get username (u/xxxxxx)
+        let name = $$(".Author__text")[i].innerText;
+
+        // check if there is an icon appended already
+        let exists = $$(".ThreadPreview__author")[i].childNodes.length == 1 ? false : true;
+
+        if(removePrefix(name) == parseUsername() && !exists) // if the username is the user (non-mod)
         {
-        const username = removePrefix($(".InfoBar__username")?.innerText || "u/username");
-        const response = await Get(`https://www.reddit.com/user/${username}/about.json`);
-        const user = JSON.parse(response);
-
-        // icon element
-        const chatProfileIcon = document.createElement('div');
-        chatProfileIcon.innerHTML = `<img class="chatProfileIcon" src="${user.data.icon_img}" width="25">`;
-
-        for(let i = 0; i < $$(".ThreadPreview__author").length; i++) // loop trough every username on chat
-        {
-            // get username (u/xxxxxx)
-            let name = $$(".Author__text")[i].innerText;
-
-            // check if there is an icon appended already
-            let exists = $$(".ThreadPreview__author")[i].childNodes.length == 1 ? false : true;
-
-            if(removePrefix(name) == username && !exists) // if the username is the user (non-mod)
-            {
-                // append the icon next to the username -> [icon] u/username
-                $$(".ThreadPreview__author")[i].insertBefore(chatProfileIcon.cloneNode(true), $$(".ThreadPreview__author")[i].firstChild);
-            }
+            // append the icon next to the username -> [icon] u/username
+            $$(".ThreadPreview__author")[i].insertBefore(chatProfileIcon.cloneNode(true), $$(".ThreadPreview__author")[i].firstChild);
         }
     }
 };
 
-const appendUserInfo = async (Settings) => {
-    const ELEMENT_userInformation = user => {
-        return `<img class="profileIcon" src="${user.data.icon_img}" width="25"/>
+async function appendUserInfo(Settings) {
+    const user = await getUserInfo();
+
+    if(user)
+    {
+        // userinfo element
+        const userDetails = document.createElement('div');
+        userDetails.id = "CustomMetadata";
+        userDetails.innerHTML = `<img class="profileIcon" src="${user.data.icon_img}" width="25"/>
                 <a class="CustomInfoBar__username" href="https://www.reddit.com/user/${user.data.name}" target="_blank">${removePrefix(user.data.subreddit.display_name_prefixed)}</a>
                 <h1 style="color: ${Settings.textColor} ; font-size: 11px; margin-top: 17px; margin-bottom: 10px;">${sanitize(user.data.subreddit.public_description)}</h1>
                 <h1 class="dataTitle">Main</h1>
@@ -741,40 +792,14 @@ const appendUserInfo = async (Settings) => {
                     <a class="InfoBar__recent" href="https://redditmetis.com/user/${user.data.name}" target="_blank">Redditmetis</a>
                     <a class="InfoBar__recent" href="https://www.reddit.com/search?q=${user.data.name}" target="_blank">Reddit Search</a>
                     <a class="InfoBar__recent" href="https://www.google.com/search?q=%22${user.data.name}%22" target="_blank">Google Search</a>
-                </div>`;
-    };
-
-    const username = removePrefix($(".InfoBar__username")?.innerText || "u/username");
-
-    const getUserInfo = async () => {
-        try
-        {
-            return await await Get(`https://www.reddit.com/user/${username}/about.json`);
-        }
-        catch
-        {
-            console.log("[Modmail++] %cFailed to load user information.", "color: red");
-            return 0;
-        }
-    };
-
-    const userInfo = await getUserInfo();
-
-    if(userInfo && !$(".NewThread"))
-    {
-        const userJSON = JSON.parse(userInfo);
-
-        // userinfo element
-        const userDetails = document.createElement('div');
-        userDetails.id = "CustomMetadata";
-        userDetails.innerHTML = ELEMENT_userInformation(userJSON);
+                </div>`
 
         // seperator element
         const seperator = document.createElement('div');
         seperator.classList.add("CustomSeperator");
-
-        // append the elements
+        
         if(!$("#CustomMetadata")) {
+            // append the elements
             $(".InfoBar").insertBefore(userDetails, $(".InfoBar__username")); // append user information on top of the sidebar
             $(".InfoBar").insertBefore($(".InfoBar__modActions"), $(".InfoBar__recents")); // move modActions on top of recent posts
 
@@ -787,149 +812,124 @@ const appendUserInfo = async (Settings) => {
     }
 };
 
-const replaceReplyForm = (Settings) => {
-    if(!$("#realTextarea") && !$(".NewThread"))
-    {
-        // hide the original replyform textarea
-        $(".ThreadViewerReplyForm__replyText").style.cssText += 'display: none';
+function replaceReplyForm(Settings) {
+    // hide the original replyform textarea
+    $(".ThreadViewerReplyForm__replyText").style.cssText += 'display: none';
 
-        // create and append a new replyform textarea
-        const newReplyForm = document.createElement("textarea");
-        newReplyForm.setAttribute('class', 'Textarea ThreadViewerReplyForm__replyText ');
-        newReplyForm.setAttribute('id', 'realTextarea');
-        newReplyForm.setAttribute('name', 'body');
-        newReplyForm.setAttribute('placeholder', `${Settings.placeholderMessage}`);
-        $(".ThreadViewerReplyForm").insertBefore(newReplyForm, $(".ThreadViewerReplyForm__replyFooter"));
+    // create and append a new replyform textarea
+    const newReplyForm = document.createElement("textarea");
+    newReplyForm.setAttribute('class', 'Textarea ThreadViewerReplyForm__replyText ');
+    newReplyForm.setAttribute('id', 'realTextarea');
+    newReplyForm.setAttribute('name', 'body');
+    newReplyForm.setAttribute('placeholder', `${Settings.placeholderMessage}`);
+  
+    $(".ThreadViewerReplyForm").insertBefore(newReplyForm, $(".ThreadViewerReplyForm__replyFooter"));
 
-        // make the reply button clear the new replyform
-        const clearBoxJS = `setTimeout(function(){document.getElementById("realTextarea").value = ""; console.log("[Modmail++] Cleared the textarea!");}, 500)`;
-        $(".ThreadViewerReplyForm__replyButton").setAttribute("onclick", clearBoxJS);
-    }
+    // make the reply button clear the new replyform
+    $(".ThreadViewerReplyForm__replyButton").setAttribute("onclick", "document.ModmailPlus.Core.clearReplyForm()");
 };
 
-const appendResponseTemplateBox = async (Settings) => {
-    if(!$("#responseListbox"))
+async function appendResponseTemplateBox(Settings) {
+    const responseTemplateElement =
+    `<h2 class="dataTitle">Response Templates</h2>
+    <select id="responseListbox" onchange="document.ModmailPlus.Core.listBoxChanged(this.value);" onfocus="this.selectedIndex = -1;"/>
+        <option selected disabled hidden>Select a template</option>
+    <span class="focus"></span>`;
+
+    const responseTemplateParent = document.createElement('div');
+    responseTemplateParent.classList.add("select", "customResponseBox");
+    responseTemplateParent.innerHTML = responseTemplateElement;
+
+    const userVisitingCreatePostPage = document.querySelectorAll(".NewThread").length;
+
+    if(userVisitingCreatePostPage) // user visited mod.reddit.com/mail/create
     {
-        const responseTemplateElement =
-        `<h2 class="dataTitle">Response Templates</h2>
-        <select id="responseListbox" onchange="listBoxChanged(this.value);" onfocus="this.selectedIndex = -1;"/>
-            <option selected disabled hidden>Select a template</option>
-        <span class="focus"></span>`;
+        // append the template box to the site
+        $(".NewThread__fields").prepend(responseTemplateParent);
+        $(".NewThread__fields").insertBefore($(".customResponseBox"), $(".Textarea, .NewThread__message"));
+    }
+    else // user visited modmail chat
+    {
+        // append the template box to the site
+        $(".ThreadViewer__replyContainer").prepend(responseTemplateParent);
+        $(".ThreadViewer__replyContainer").insertBefore($(".ThreadViewer__typingIndicator"), $(".select")); // append typing indicator before listbox
+    }
 
-        const responseTemplateParent = document.createElement('div');
-        responseTemplateParent.classList.add("select", "customResponseBox");
-        responseTemplateParent.innerHTML = responseTemplateElement;
+    // populates the response template listbox
+    function populateListbox(_query, _settings) {
+        const select = $(_query);
 
-        const userVisitingCreatePostPage = document.querySelectorAll(".NewThread").length;
-      
-        if(userVisitingCreatePostPage) // user visited mod.reddit.com/mail/create
+        for(let i = 0; i < _settings.responses.length; i++)
         {
-            // append the template box to the site
-            $(".NewThread__fields").prepend(responseTemplateParent);
-            $(".NewThread__fields").insertBefore($(".customResponseBox"), $(".Textarea, .NewThread__message"));
-        }
-        else // user visited modmail chat
-        {
-            // append the template box to the site
-            $(".ThreadViewer__replyContainer").prepend(responseTemplateParent);
-            $(".ThreadViewer__replyContainer").insertBefore($(".ThreadViewer__typingIndicator"), $(".select")); // append typing indicator before listbox
-        }
-
-        // populates the response template listbox
-        const populateListbox = (_query, _settings) => {
-            const select = $(_query);
-
-            for(let i = 0; i < _settings.responses.length; i++)
+            let sameSubreddit = keepPrefix(_settings.responses[i].subreddit.toLowerCase(), true) == keepPrefix(_settings.subTag.toLowerCase(), true);
+            if(sameSubreddit || _settings.responses[i].subreddit == "")
             {
-                let sameSubreddit = keepPrefix(_settings.responses[i].subreddit.toLowerCase(), true) == keepPrefix(_settings.subTag.toLowerCase(), true);
-                if(sameSubreddit || _settings.responses[i].subreddit == "")
+                if(userVisitingCreatePostPage)
                 {
-                    if(userVisitingCreatePostPage)
+                    select.options[select.options.length] = new Option(_settings.responses[i].name, i);
+                } 
+                else
+                {
+                    if(!_settings.responses[i].subject)
                     {
                         select.options[select.options.length] = new Option(_settings.responses[i].name, i);
-                    } 
-                    else
-                    {
-                        if(!_settings.responses[i].subject)
-                        {
-                            select.options[select.options.length] = new Option(_settings.responses[i].name, i);
-                        }
                     }
                 }
             }
-        };
+        }
+    };
 
-        populateListbox("#responseListbox", Settings); // add all the responses to the response template listbox
+    populateListbox("#responseListbox", Settings); // add all the responses to the response template listbox
 
-        // add response template's rule description elements
+    // creates and returns a list element
+    const makeListValue = (name, description) => {
+        let encodedName = btoa(name);
+        let encodedDesc = btoa(description);
+        return `<div class="listValue" value='${encodedDesc}'><input onclick="document.ModmailPlus.Core.selected(this)" name="subredditRule" type="radio" id='${encodedName}' value='${encodedName}'><label for='${encodedName}'>${name}</label></div>`;
+    };
 
-        const ELEMENT_ruleList = listContent => {
-            return `<div class="ruleDiv" style="background-color: rgba(26, 26, 27, 0.6); visibility: hidden">
-                        <div aria-modal="true" class="dialogWindow" role="dialog" tabindex="-1">
-                            <div class="listWindow">
-                                <div class="ruleList">
-                                    <div class="ruleHeader">Select a rule<svg onclick="closeIconClicked()" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="closeIconSVG"><polygon fill="inherit" points="11.649 9.882 18.262 3.267 16.495 1.5 9.881 8.114 3.267 1.5 1.5 3.267 8.114 9.883 1.5 16.497 3.267 18.264 9.881 11.65 16.495 18.264 18.262 16.497"></polygon></svg></div>
-                                    <fieldset class="fieldSet">
-                                        <div class="title"><span>Which community rule did the user violate?</span></div>
-                                        <div class="listBox">
-                                            ${listContent}
+    let rules = await getRules(Settings);
+
+    if(rules)
+    {
+        $$(".subredditRuleList").forEach(elem => elem.remove()); // remove all subredditRuleList elements
+
+        let listContent = "";
+
+        for(let i = 0; i < rules.rules.length; i++)
+        {
+            listContent += makeListValue(rules.rules[i].short_name, rules.rules[i].description);
+        }
+
+        // (Append) Div ruleList element to body
+        const ruleList = document.createElement('div');
+        ruleList.classList.add("subredditRuleList");
+        ruleList.innerHTML = `<div class="ruleDiv" style="background-color: rgba(26, 26, 27, 0.6); visibility: hidden">
+                    <div aria-modal="true" class="dialogWindow" role="dialog" tabindex="-1">
+                        <div class="listWindow">
+                            <div class="ruleList">
+                                <div class="ruleHeader">Select a rule<svg onclick="document.ModmailPlus.Core.closeIconClicked()" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="closeIconSVG"><polygon fill="inherit" points="11.649 9.882 18.262 3.267 16.495 1.5 9.881 8.114 3.267 1.5 1.5 3.267 8.114 9.883 1.5 16.497 3.267 18.264 9.881 11.65 16.495 18.264 18.262 16.497"></polygon></svg></div>
+                                <fieldset class="fieldSet">
+                                    <div class="title"><span>Which community rule did the user violate?</span></div>
+                                    <div class="listBox">
+                                        ${listContent}
+                                    </div>
+                                    <div class="infoIcon"><svg class="infoIconSVG" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><g><path d="M10,8.5 C10.553,8.5 11,8.948 11,9.5 L11,13.5 C11,14.052 10.553,14.5 10,14.5 C9.447,14.5 9,14.052 9,13.5 L9,9.5 C9,8.948 9.447,8.5 10,8.5 Z M10.7002,5.79 C10.8012,5.89 10.8702,6 10.9212,6.12 C10.9712,6.24 11.0002,6.37 11.0002,6.5 C11.0002,6.57 10.9902,6.63 10.9802,6.7 C10.9712,6.76 10.9502,6.82 10.9212,6.88 C10.9002,6.94 10.8702,7 10.8302,7.05 C10.7902,7.11 10.7502,7.16 10.7002,7.21 C10.6602,7.25 10.6102,7.29 10.5512,7.33 C10.5002,7.37 10.4402,7.4 10.3812,7.42 C10.3202,7.45 10.2612,7.47 10.1902,7.48 C10.1312,7.49 10.0602,7.5 10.0002,7.5 C9.7402,7.5 9.4802,7.39 9.2902,7.21 C9.1102,7.02 9.0002,6.77 9.0002,6.5 C9.0002,6.37 9.0302,6.24 9.0802,6.12 C9.1312,5.99 9.2002,5.89 9.2902,5.79 C9.5202,5.56 9.8702,5.46 10.1902,5.52 C10.2612,5.53 10.3202,5.55 10.3812,5.58 C10.4402,5.6 10.5002,5.63 10.5512,5.67 C10.6102,5.71 10.6602,5.75 10.7002,5.79 Z M10,16 C6.691,16 4,13.309 4,10 C4,6.691 6.691,4 10,4 C13.309,4 16,6.691 16,10 C16,13.309 13.309,16 10,16 M10,2 C5.589,2 2,5.589 2,10 C2,14.411 5.589,18 10,18 C14.411,18 18,14.411 18,10 C18,5.589 14.411,2 10,2"></path></g></svg>
+                                        <div class="infoBox">
+                                            <p><span>Not sure? </span><a href="https://www.reddit.com/${keepPrefix(Settings.subTag)}/about/rules" target="_blank" rel="noopener noreferrer">Read ${Settings.subTag}'s rules</a></p>
                                         </div>
-                                        <div class="infoIcon"><svg class="infoIconSVG" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><g><path d="M10,8.5 C10.553,8.5 11,8.948 11,9.5 L11,13.5 C11,14.052 10.553,14.5 10,14.5 C9.447,14.5 9,14.052 9,13.5 L9,9.5 C9,8.948 9.447,8.5 10,8.5 Z M10.7002,5.79 C10.8012,5.89 10.8702,6 10.9212,6.12 C10.9712,6.24 11.0002,6.37 11.0002,6.5 C11.0002,6.57 10.9902,6.63 10.9802,6.7 C10.9712,6.76 10.9502,6.82 10.9212,6.88 C10.9002,6.94 10.8702,7 10.8302,7.05 C10.7902,7.11 10.7502,7.16 10.7002,7.21 C10.6602,7.25 10.6102,7.29 10.5512,7.33 C10.5002,7.37 10.4402,7.4 10.3812,7.42 C10.3202,7.45 10.2612,7.47 10.1902,7.48 C10.1312,7.49 10.0602,7.5 10.0002,7.5 C9.7402,7.5 9.4802,7.39 9.2902,7.21 C9.1102,7.02 9.0002,6.77 9.0002,6.5 C9.0002,6.37 9.0302,6.24 9.0802,6.12 C9.1312,5.99 9.2002,5.89 9.2902,5.79 C9.5202,5.56 9.8702,5.46 10.1902,5.52 C10.2612,5.53 10.3202,5.55 10.3812,5.58 C10.4402,5.6 10.5002,5.63 10.5512,5.67 C10.6102,5.71 10.6602,5.75 10.7002,5.79 Z M10,16 C6.691,16 4,13.309 4,10 C4,6.691 6.691,4 10,4 C13.309,4 16,6.691 16,10 C16,13.309 13.309,16 10,16 M10,2 C5.589,2 2,5.589 2,10 C2,14.411 5.589,18 10,18 C14.411,18 18,14.411 18,10 C18,5.589 14.411,2 10,2"></path></g></svg>
-                                            <div class="infoBox">
-                                                <p><span>Not sure? </span><a href="https://www.reddit.com/${keepPrefix(Settings.subTag)}/about/rules" target="_blank" rel="noopener noreferrer">Read ${Settings.subTag}'s rules</a></p>
-                                            </div>
-                                        </div>
-                                        <footer class="bottomFooter"><button type="button" disabled="" onclick="selectButtonClicked()" class="selectButton">Select</button></footer>
-                                    </fieldset>
-                                </div>
+                                    </div>
+                                    <footer class="bottomFooter"><button type="button" disabled="" onclick="document.ModmailPlus.Core.selectButtonClicked()" class="selectButton">Select</button></footer>
+                                </fieldset>
                             </div>
                         </div>
-                    </div>`;
-        };
-
-        // creates and returns a list element
-        const makeListValue = (name, description) => {
-            let encodedName = btoa(name);
-            let encodedDesc = btoa(description);
-            return `<div class="listValue" value='${encodedDesc}'><input onclick="selected(this)" name="subredditRule" type="radio" id='${encodedName}' value='${encodedName}'><label for='${encodedName}'>${name}</label></div>`;
-        };
-
-        const getRules = async () => {
-            try
-            {
-                return await Get(Settings.rules + ".json");
-            }
-            catch
-            {
-                console.log("[Modmail++] %cFailed to load subreddit rules, possibly a private subreddit?", "color: red");
-                return 0;
-            }
-        };
-
-        let rules = await getRules();
-
-        if(rules)
-        {
-            const ruleJSON = JSON.parse(rules);
-            $$(".subredditRuleList").forEach(elem => elem.remove()); // remove all subredditRuleList elements
-
-            let ruleListElements = "";
-
-            for(let i = 0; i < ruleJSON.rules.length; i++)
-            {
-                ruleListElements += makeListValue(ruleJSON.rules[i].short_name, ruleJSON.rules[i].description);
-            }
-
-            // (Append) Div ruleList element to body
-            const ruleList = document.createElement('div');
-            ruleList.classList.add("subredditRuleList");
-            ruleList.innerHTML = ELEMENT_ruleList(ruleListElements);
-            $("body").appendChild(ruleList);
-        }
+                    </div>
+                </div>`;
+        $("body").appendChild(ruleList);
     }
 };
 
-const fixQuoteButtons = () => {
+function fixQuoteButtons() {
     /* On click, do this
         1) take the text from the original form
         2) split it by two new lines
@@ -937,36 +937,18 @@ const fixQuoteButtons = () => {
         4) paste the last result to the new form
     */
 
-    const onClickFunc = () => {
-        setTimeout(() => {
-            const originalForm = document.querySelector(".Textarea, .ThreadViewerReplyForm__replyText");
-
-            let originalValue = originalForm.value;
-            let text = "";
-
-            if(originalValue.includes("\n\n"))
-                text = originalValue.split("\n\n").filter(x => x.length > 0).pop();
-            else
-                text = originalValue;
-
-            if(text.indexOf("\n") == 0) text = text.slice(1);
-
-            if(text && text.includes("said:"))
-                document.querySelector("#realTextarea").value += text + "\n\n";
-        }, 50);
-    };
-
     $$(".Message__quote").forEach(elem => {
         if(!elem.getAttribute("onclick"))
-            elem.setAttribute("onclick", onClickFunc.toString().slice(7).slice(0, -1));
+            elem.setAttribute("onclick", "document.ModmailPlus.Core.divertQuoteText()");
     });
 };
   
-const handleCreateMessagePage = () => {
+function handleCreateMessagePage() {
     /* Handle change of username
      * change the response usernames to the changed username
      * */
     let toUser = document.querySelector(".Radio__input[value=user]");
+  
     if(toUser) {
         toUser.onclick = () => {
             let lastUsername = null;
@@ -981,7 +963,7 @@ const handleCreateMessagePage = () => {
                         const username = "u/" + e.target.value;
                         const defaultLastUsername = "u/undefined";
 
-                        document.responses.forEach(response => {
+                        document.ModmailPlus.responses.forEach(response => {
                             if(response.subject) {
                                 response.subject = response.subject.replaceAll(lastUsername || defaultLastUsername, username);
                             }
@@ -1008,7 +990,7 @@ const handleCreateMessagePage = () => {
             const subreddit = "r/" + srName.value;
 
             if(subreddit != lastSubreddit && subreddit != 'r/') {
-                document.responses.forEach(response => {
+                document.ModmailPlus.responses.forEach(response => {
                     if(response.subject) {
                         response.subject = response.subject.replaceAll(lastSubreddit || defaultLastSubreddit, subreddit);
                     }
@@ -1018,48 +1000,65 @@ const handleCreateMessagePage = () => {
 
                 lastSubreddit = subreddit;
             }
-        }, 500)
+        }, 500);
     }
 };
 
 const __main__ = async () => {
     console.log("[Modmail++] %cMain function ran!", "color: grey");
-
     const Settings = new __settings__();
+    document.ModmailPlus = {};
 
-    appendHeadScript(Settings);
-    appendUserInfo(Settings);
-    replaceReplyForm(Settings);
+    // These will be executed in any page //
+  
+    if(!document.ModmailPlus.length)
+        initializeCore(Settings);
+    
+    if(Settings.enableCustomResponses && !$("#responseListbox"))
+        appendResponseTemplateBox(Settings);
+  
     applyCSS(Settings);
   
-    fixQuoteButtons();
-    handleCreateMessagePage();
+    ////////////////////////////////////////
   
-    if(Settings.chatProfileIcons)
-        appendChatProfileIcons();
-
-    if(Settings.enableCustomResponses && $("#responseListbox") == null)
-        appendResponseTemplateBox(Settings);
+    if(!$(".NewThread")) // execute in chat page only
+    {
+        appendUserInfo(Settings); // if the element already exists will be checked before appending
+  
+        if(Settings.chatProfileIcons && !$(".chatProfileIcon"))
+            appendChatProfileIcons();
+      
+        if(!$("#realTextarea"))
+            replaceReplyForm(Settings);
+      
+        fixQuoteButtons();
+    } 
+    else // execute in create message page only
+    {
+        handleCreateMessagePage();
+    }
 
     console.log("[Modmail++] %cLoaded!", "color: lime");
+    console.log("[Modmail++]", document.ModmailPlus);
 };
 
-let run = false;
+let URLChangeDetectorActive = false;
 
-setInterval (function () {
-    if (this.lastPathStr !== location.pathname)
+// this is a hot mess, please help me
+setInterval (() => {
+    if(this.lastPathStr != location.pathname)
     {
         this.lastPathStr = location.pathname;
 
         console.log("[Modmail++] %cNew page detected!", "color: gold");
 
-        run = true;
+        URLChangeDetectorActive = true;
 
-        let waitForElements = setInterval (() => {
-            if($(".NoThreadMessage__generic") && run) // add confetti explosion if no mail
+        const waitForElements = setInterval (() => {
+            if($(".NoThreadMessage__generic") && URLChangeDetectorActive) // add confetti explosion if no mail
             {
                 clearInterval(waitForElements);
-                run = false;
+                URLChangeDetectorActive = false;
 
                 console.log("[Modmail++] %cNo modmail!", "color: lime");
 
@@ -1069,18 +1068,19 @@ setInterval (function () {
                 });
             }
 
-            if($(".InfoBar__username") && run) // user is on modmail "chat" page
+            if($(".InfoBar") && URLChangeDetectorActive) // user is on modmail "chat" page
             {
                 clearInterval(waitForElements);
-                run = false;
+                URLChangeDetectorActive = false;
 
-                if($("body") && !$("#CustomMetadata")) 
+                if($("body") && !$("#CustomMetadata"))
                     __main__();
             }
           
-            if($(".NewThread") && run) {
+            if($(".NewThread") && URLChangeDetectorActive) // user is on the create new message page
+            { 
                 clearInterval(waitForElements);
-                run = false;
+                URLChangeDetectorActive = false;
                 
                 __main__();
             }
