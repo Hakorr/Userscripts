@@ -3,7 +3,7 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     3.3
+// @version     3.4
 // @author      HKR
 // @description Additional tools and information to Reddit's Modmail
 // @icon        https://www.redditstatic.com/modmail/favicon/favicon-32x32.png
@@ -608,6 +608,13 @@ function applyCSS(Settings) {
     @media (min-width: 768px)
     .ThreadViewer__infobarContainer {
         display: table;
+    }
+    #currentlySelected {
+        background-color: rgba(121, 121, 121, 0.35);
+    }
+    .ruleDiv {
+        background-color: rgba(26, 26, 27, 0.6); 
+        visibility: hidden;
     }`;
 
     let styleSheet = document.createElement("style");
@@ -654,17 +661,12 @@ function initializeCore(Settings) {
 
         // implement listbox select highlight
         selected(element) {
-            let selectColor = "#79797959";
             let selectedElem = document.getElementById("currentlySelected");
 
             // if an element already selected, reset the id and set its background color to nothing
             if(selectedElem)
-            {
-                selectedElem.style.backgroundColor = "";
-                selectedElem.id = "";
-            }
+                selectedElem.removeAttribute("id");
 
-            element.parentElement.style.backgroundColor = selectColor;
             element.parentElement.id = "currentlySelected";
             document.getElementsByClassName("selectButton")[0].disabled = false;
         }
@@ -672,21 +674,27 @@ function initializeCore(Settings) {
         removeBreaks = text => text.replace(/(\r\n|\n|\r)/gm, "");
 
         selectButtonClicked() {
-            let selectedElem = document.getElementById("currentlySelected");
-
+            const selectedElem = document.getElementById("currentlySelected");
             const userVisitingCreatePostPage = document.querySelectorAll(".NewThread").length;
 
-            let messageBox = userVisitingCreatePostPage
+            const messageBox = userVisitingCreatePostPage
                 ? document.querySelector(".Textarea, NewThread__message")
                 : document.getElementById("realTextarea");
 
             if(selectedElem)
             {
-                let fixedDescription = atob(selectedElem.getAttribute('value')).replaceAll("\n","\n> ") + '\n\n';
-                let message = `> [**${selectedElem.children[1].textContent}**]\n>\n> ${fixedDescription}`;
+                const selectedRule = document.ModmailPlus.rules[selectedElem.getAttribute('value')];
+                const ruleName = selectedRule.short_name;
+                const ruleDescription = selectedRule.description;
+                const fixedDescription = ruleDescription.replaceAll("\n","\n> ") + '\n\n';
+              
+                const message = `> [**${ruleName}**]\n>\n> ${fixedDescription}`;
 
-                let response = document.ModmailPlus.responses.find(x => x.content == this.ruleListActivator);
-                response.replace ? messageBox.value = message : messageBox.value += message;
+                const response = document.ModmailPlus.responses.find(x => x.content == this.ruleListActivator);
+              
+                response.replace // if to replace or add text to the messagebox
+                    ? messageBox.value = message 
+                    : messageBox.value += message;
 
                 console.log("[Modmail++] New messageBox value: %c" + messageBox.value,"color: orange");
 
@@ -695,7 +703,7 @@ function initializeCore(Settings) {
         }
 
         closeIconClicked() {
-            let ruleDiv = document.getElementsByClassName("ruleDiv")[0];
+            let ruleDiv = document.querySelector(".ruleDiv");
             ruleDiv.style.visibility = "hidden";
         }
       
@@ -881,29 +889,31 @@ async function appendResponseTemplateBox(Settings) {
     populateListbox("#responseListbox", Settings); // add all the responses to the response template listbox
 
     // creates and returns a list element
-    const makeListValue = (name, description) => {
-        let encodedName = btoa(name);
-        let encodedDesc = btoa(description);
-        return `<div class="listValue" value='${encodedDesc}'><input onclick="document.ModmailPlus.Core.selected(this)" name="subredditRule" type="radio" id='${encodedName}' value='${encodedName}'><label for='${encodedName}'>${name}</label></div>`;
+    function makeListValue(index, rule) {
+        document.ModmailPlus.rules.push(rule);
+      
+        return `<div value='${index}' class="listValue">
+                    <input onclick="document.ModmailPlus.Core.selected(this)" name="subredditRule" id='${"input_" + index}' type="radio">
+                    <label for='${"input_" + index}'>${rule.short_name}</label>
+                </div>`;
     };
 
-    let rules = await getRules(Settings);
+    let ruleObj = await getRules(Settings);
 
-    if(rules)
+    if(ruleObj)
     {
         $$(".subredditRuleList").forEach(elem => elem.remove()); // remove all subredditRuleList elements
 
         let listContent = "";
 
-        for(let i = 0; i < rules.rules.length; i++)
-        {
-            listContent += makeListValue(rules.rules[i].short_name, rules.rules[i].description);
-        }
+        ruleObj.rules.forEach((rule, index) => {
+            listContent += makeListValue(index, rule)
+        });
 
         // (Append) Div ruleList element to body
         const ruleList = document.createElement('div');
         ruleList.classList.add("subredditRuleList");
-        ruleList.innerHTML = `<div class="ruleDiv" style="background-color: rgba(26, 26, 27, 0.6); visibility: hidden">
+        ruleList.innerHTML = `<div class="ruleDiv">
                     <div aria-modal="true" class="dialogWindow" role="dialog" tabindex="-1">
                         <div class="listWindow">
                             <div class="ruleList">
@@ -1005,8 +1015,10 @@ function handleCreateMessagePage() {
 
 const __main__ = async () => {
     console.log("[Modmail++] %cMain function ran!", "color: grey");
+  
     const Settings = new __settings__();
     document.ModmailPlus = {};
+    document.ModmailPlus.rules = [];
 
     // These will be executed in any page //
   
