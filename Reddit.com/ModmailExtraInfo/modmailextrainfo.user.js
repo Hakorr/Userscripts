@@ -3,7 +3,7 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     3.4
+// @version     3.5
 // @author      HKR
 // @description Additional tools and information to Reddit's Modmail
 // @icon        https://www.redditstatic.com/modmail/favicon/favicon-32x32.png
@@ -165,23 +165,36 @@ const removePrefix = username => ["r/","u/"].some(tag => username.includes(tag))
 // adds the Reddit prefix if nonexistant
 const keepPrefix = (username, subreddit) => ["r/","u/"].some(tag => username.includes(tag)) ? username : subreddit ? `r/${username}` : `u/${username}`;
 
-const parseUsername = () => removePrefix($(".InfoBar__username")?.innerText || "u/username");
+const recipientUsername = () => {
+    const defaultUsernameElem = $(".InfoBar__username");
+    const ModmailPlusPlusUsernameElem = $(".CustomInfoBar__username");
+    
+    if(defaultUsernameElem) {
+        return removePrefix(defaultUsernameElem?.innerText);
+    } 
+    else if (ModmailPlusPlusUsernameElem) {
+        return removePrefix(ModmailPlusPlusUsernameElem?.innerText);
+    }
+    else {
+        return undefined;
+    }
+};
   
 async function Get(url) {
-    let response = await fetch(url);
+    const response = await fetch(url);
 
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    let text = await response.text();
+    const text = await response.text();
     return text;
 };
 
 async function getUserInfo() {
     try
     {
-        const about = await Get(`https://www.reddit.com/user/${parseUsername()}/about.json`);
+        const about = await Get(`https://www.reddit.com/user/${recipientUsername()}/about.json`);
         return JSON.parse(about);
     }
     catch
@@ -212,7 +225,7 @@ function unixToDate(UNIX_timestamp) {
     const d = new Date(UNIX_timestamp * 1000);
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-    let year = d.getFullYear(),
+    const year = d.getFullYear(),
     monthNum = d.getMonth() + 1,
     month = months[d.getMonth()],
     date = d.getDate(),
@@ -617,7 +630,7 @@ function applyCSS(Settings) {
         visibility: hidden;
     }`;
 
-    let styleSheet = document.createElement("style");
+    const styleSheet = document.createElement("style");
     styleSheet.type = "text/css";
     styleSheet.id = "modmailPlusSheet";
     styleSheet.innerText = css;
@@ -627,6 +640,10 @@ function applyCSS(Settings) {
 };
 
 function initializeCore(Settings) {
+    /*  About the core
+     *  - it contains functions required for handling different in-page-actions, such as hiding a div
+     *  - references to variables outside the core and the document will not be recognized
+     * */
     class Core {
         ruleListActivator = "<open-rulelist-dialog>";
 
@@ -635,19 +652,18 @@ function initializeCore(Settings) {
 
             if(message == this.ruleListActivator)
             {
-                let ruleDiv = document.getElementsByClassName("ruleDiv")[0];
+                const ruleDiv = document.getElementsByClassName("ruleDiv")[0];
                 ruleDiv.style.visibility = "visible";
             }
             else
             {
                 const userVisitingCreatePostPage = document.querySelectorAll(".NewThread").length;
 
-                let messageBox = userVisitingCreatePostPage
+                const messageBox = userVisitingCreatePostPage
                     ? document.querySelector(".Textarea, NewThread__message")
                     : document.getElementById("realTextarea");
 
-                let response = document.ModmailPlus.responses.find(x => x.content == message);
-
+                const response = document.ModmailPlus.responses.find(x => x.content == message);
 
                 response.replace ? messageBox.value = message : messageBox.value += message;
 
@@ -661,7 +677,7 @@ function initializeCore(Settings) {
 
         // implement listbox select highlight
         selected(element) {
-            let selectedElem = document.getElementById("currentlySelected");
+            const selectedElem = document.getElementById("currentlySelected");
 
             // if an element already selected, reset the id and set its background color to nothing
             if(selectedElem)
@@ -703,7 +719,7 @@ function initializeCore(Settings) {
         }
 
         closeIconClicked() {
-            let ruleDiv = document.querySelector(".ruleDiv");
+            const ruleDiv = document.querySelector(".ruleDiv");
             ruleDiv.style.visibility = "hidden";
         }
       
@@ -711,8 +727,8 @@ function initializeCore(Settings) {
             console.log("[Modmail++] %cDiverting quote text from original textbox to Modmail++'s", "color: orange");
             setTimeout(() => {
                 const originalForm = document.querySelector(".Textarea, .ThreadViewerReplyForm__replyText");
-
-                let originalValue = originalForm.value;
+                const originalValue = originalForm.value;
+              
                 let text = "";
 
                 if(originalValue.includes("\n\n"))
@@ -744,26 +760,28 @@ function initializeCore(Settings) {
 };
 
 async function appendChatProfileIcons() {
-    const response = await Get(`https://www.reddit.com/user/${parseUsername()}/about.json`);
-    const user = JSON.parse(response);
+    const user = await getUserInfo();
 
     // icon element
     const chatProfileIcon = document.createElement('div');
     chatProfileIcon.innerHTML = `<img class="chatProfileIcon" src="${user.data.icon_img}" width="25">`;
 
-    for(let i = 0; i < $$(".ThreadPreview__author").length; i++) // loop trough every username on chat
-    {
-        // get username (u/xxxxxx)
-        let name = $$(".Author__text")[i].innerText;
+    const authors = $$(".ThreadPreview__author");
+  
+    if(authors) {
+        authors.forEach((author, index) => {
+            // get username (u/xxxxxx)
+            const name = $$(".Author__text")[index].innerText;
 
-        // check if there is an icon appended already
-        let exists = $$(".ThreadPreview__author")[i].childNodes.length == 1 ? false : true;
+            // check if there is an icon appended already
+            const exists = author.childNodes.length == 1 ? false : true;
 
-        if(removePrefix(name) == parseUsername() && !exists) // if the username is the user (non-mod)
-        {
-            // append the icon next to the username -> [icon] u/username
-            $$(".ThreadPreview__author")[i].insertBefore(chatProfileIcon.cloneNode(true), $$(".ThreadPreview__author")[i].firstChild);
-        }
+            if(removePrefix(name) == recipientUsername() && !exists) // if the username is the user (non-mod)
+            {
+                // append the icon next to the username -> [icon] u/username
+                author.insertBefore(chatProfileIcon.cloneNode(true), author.firstChild);
+            }
+        });
     }
 };
 
@@ -863,30 +881,32 @@ async function appendResponseTemplateBox(Settings) {
     }
 
     // populates the response template listbox
-    function populateListbox(_query, _settings) {
-        const select = $(_query);
+    function populateListbox(listBoxId) {
+        const listBox = $(listBoxId);
 
-        for(let i = 0; i < _settings.responses.length; i++)
-        {
-            let sameSubreddit = keepPrefix(_settings.responses[i].subreddit.toLowerCase(), true) == keepPrefix(_settings.subTag.toLowerCase(), true);
-            if(sameSubreddit || _settings.responses[i].subreddit == "")
+        Settings.responses.forEach((response, i) => {
+            const responseSubreddit = keepPrefix(response.subreddit.toLowerCase(), true);
+            const currentSubreddit = keepPrefix(Settings.subTag.toLowerCase(), true);
+            const sameSubreddit = currentSubreddit == responseSubreddit;
+          
+            if(sameSubreddit || response.subreddit.length == 0)
             {
                 if(userVisitingCreatePostPage)
                 {
-                    select.options[select.options.length] = new Option(_settings.responses[i].name, i);
+                    listBox.options[listBox.options.length] = new Option(response.name, i);
                 } 
                 else
                 {
-                    if(!_settings.responses[i].subject)
+                    if(!response.subject)
                     {
-                        select.options[select.options.length] = new Option(_settings.responses[i].name, i);
+                        listBox.options[listBox.options.length] = new Option(response.name, i);
                     }
                 }
             }
-        }
+        });
     };
 
-    populateListbox("#responseListbox", Settings); // add all the responses to the response template listbox
+    populateListbox("#responseListbox"); // add all the responses to the response template listbox
 
     // creates and returns a list element
     function makeListValue(index, rule) {
@@ -898,7 +918,7 @@ async function appendResponseTemplateBox(Settings) {
                 </div>`;
     };
 
-    let ruleObj = await getRules(Settings);
+    const ruleObj = await getRules(Settings);
 
     if(ruleObj)
     {
@@ -956,7 +976,7 @@ function handleCreateMessagePage() {
     /* Handle change of username
      * change the response usernames to the changed username
      * */
-    let toUser = document.querySelector(".Radio__input[value=user]");
+    const toUser = document.querySelector(".Radio__input[value=user]");
   
     if(toUser) {
         toUser.onclick = () => {
@@ -991,8 +1011,8 @@ function handleCreateMessagePage() {
      * change the response subreddits to the changed subreddit
      * */
     const srName = document.querySelector("[name=srName]");
+    const defaultLastSubreddit = "r/subreddit";
     let lastSubreddit = null;
-    let defaultLastSubreddit = "r/subreddit";
 
     if(srName) {
         const postToChanges = setInterval(() => {
