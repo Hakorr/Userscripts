@@ -3,7 +3,7 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     3.5
+// @version     3.6
 // @author      HKR
 // @description Additional tools and information to Reddit's Modmail
 // @icon        https://www.redditstatic.com/modmail/favicon/favicon-32x32.png
@@ -867,43 +867,49 @@ async function appendResponseTemplateBox(Settings) {
 
     const userVisitingCreatePostPage = document.querySelectorAll(".NewThread").length;
 
-    if(userVisitingCreatePostPage) // user visited mod.reddit.com/mail/create
+    if(typeof Settings.responses == "object" && Settings.responses.length) // if the responses variable exists and has responses
     {
-        // append the template box to the site
-        $(".NewThread__fields").prepend(responseTemplateParent);
-        $(".NewThread__fields").insertBefore($(".customResponseBox"), $(".Textarea, .NewThread__message"));
+        if(userVisitingCreatePostPage) // user visited mod.reddit.com/mail/create
+        {
+            // append the template box to the site
+            $(".NewThread__fields").prepend(responseTemplateParent);
+            $(".NewThread__fields").insertBefore($(".customResponseBox"), $(".Textarea, .NewThread__message"));
+        }
+        else // user visited modmail chat
+        {
+            // append the template box to the site
+            $(".ThreadViewer__replyContainer").prepend(responseTemplateParent);
+            $(".ThreadViewer__replyContainer").insertBefore($(".ThreadViewer__typingIndicator"), $(".select")); // append typing indicator before listbox
+        }
     }
-    else // user visited modmail chat
-    {
-        // append the template box to the site
-        $(".ThreadViewer__replyContainer").prepend(responseTemplateParent);
-        $(".ThreadViewer__replyContainer").insertBefore($(".ThreadViewer__typingIndicator"), $(".select")); // append typing indicator before listbox
-    }
-
+    
     // populates the response template listbox
     function populateListbox(listBoxId) {
         const listBox = $(listBoxId);
 
-        Settings.responses.forEach((response, i) => {
-            const responseSubreddit = keepPrefix(response.subreddit.toLowerCase(), true);
-            const currentSubreddit = keepPrefix(Settings.subTag.toLowerCase(), true);
-            const sameSubreddit = currentSubreddit == responseSubreddit;
-          
-            if(sameSubreddit || response.subreddit.length == 0)
-            {
-                if(userVisitingCreatePostPage)
+        if(typeof Settings.responses == "object" && Settings.responses.length) // if the responses variable exists and has responses
+        {
+            Settings.responses.forEach((response, i) => {
+                const responseSubreddit = keepPrefix(response.subreddit.toLowerCase(), true);
+                const currentSubreddit = keepPrefix(Settings.subTag.toLowerCase(), true);
+                const sameSubreddit = currentSubreddit == responseSubreddit;
+
+                if(sameSubreddit || response.subreddit.length == 0)
                 {
-                    listBox.options[listBox.options.length] = new Option(response.name, i);
-                } 
-                else
-                {
-                    if(!response.subject)
+                    if(userVisitingCreatePostPage)
                     {
                         listBox.options[listBox.options.length] = new Option(response.name, i);
+                    } 
+                    else
+                    {
+                        if(!response.subject)
+                        {
+                            listBox.options[listBox.options.length] = new Option(response.name, i);
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
     };
 
     populateListbox("#responseListbox"); // add all the responses to the response template listbox
@@ -973,64 +979,99 @@ function fixQuoteButtons() {
 };
   
 function handleCreateMessagePage() {
-    /* Handle change of username
-     * change the response usernames to the changed username
-     * */
-    const toUser = document.querySelector(".Radio__input[value=user]");
+    // e.g. wait for an input change, then update the template strings to have that subreddit or username
   
-    if(toUser) {
-        toUser.onclick = () => {
-            let lastUsername = null;
-
-            const waitForTextbox = setInterval(() => {
-                const newThreadTextbox = document.querySelector(".NewThread__username");
-
-                if(newThreadTextbox) {
-                    clearInterval(waitForTextbox);
-
-                    newThreadTextbox.onchange = e => {
-                        const username = "u/" + e.target.value;
-                        const defaultLastUsername = "u/undefined";
-
-                        document.ModmailPlus.responses.forEach(response => {
-                            if(response.subject) {
-                                response.subject = response.subject.replaceAll(lastUsername || defaultLastUsername, username);
-                            }
-                                
-                            response.content = response.content.replaceAll(lastUsername || defaultLastUsername, username);
-                        })
-
-                        lastUsername = username;
-                    }
-                }
-            }, 100);
-        }
-    }
-  
-    /* Handle change of subreddit
-     * change the response subreddits to the changed subreddit
-     * */
-    const srName = document.querySelector("[name=srName]");
-    const defaultLastSubreddit = "r/subreddit";
-    let lastSubreddit = null;
-
-    if(srName) {
-        const postToChanges = setInterval(() => {
-            const subreddit = "r/" + srName.value;
-
-            if(subreddit != lastSubreddit && subreddit != 'r/') {
-                document.ModmailPlus.responses.forEach(response => {
-                    if(response.subject) {
-                        response.subject = response.subject.replaceAll(lastSubreddit || defaultLastSubreddit, subreddit);
-                    }
-                  
-                    response.content = response.content.replaceAll(lastSubreddit || defaultLastSubreddit, subreddit);
-                })
-
-                lastSubreddit = subreddit;
+    function updateResponseTemplate(isPostFrom, lastValue, newValue) {
+        const defaultValue = isPostFrom
+            ? "r/subreddit"
+            : "u/undefined";
+              
+        document.ModmailPlus.responses.forEach(response => {
+            
+            // update subject string
+            if(response.subject) {
+                response.subject = response.subject.replaceAll(
+                    lastValue || defaultValue,
+                    newValue
+                );
             }
-        }, 500);
+
+            // update content string
+            response.content = response.content.replaceAll(
+                lastValue || defaultValue,
+                newValue
+            );
+        });
     }
+  
+    (() => {
+        let lastUsername = null;
+
+        // Handle change of "To User"
+        const toUser = document.querySelector(".Radio__input[value=user]");
+
+        if(toUser) {
+            toUser.onclick = () => {
+                const waitForTextbox = setInterval(() => {
+                    const newThreadTextbox = document.querySelector(".NewThread__username");
+
+                    if(newThreadTextbox) {
+                        clearInterval(waitForTextbox);
+
+                        newThreadTextbox.onchange = e => {
+                            const username = "u/" + e.target.value;
+
+                            updateResponseTemplate(false, lastUsername, username);
+
+                            lastUsername = username;
+                        }
+                    }
+                }, 100);
+            }
+        }
+
+        // Handle change of "To Subreddit"
+        const toSubreddit = document.querySelector(".Radio__input[value=subreddit]");
+
+        if(toSubreddit) {
+            toSubreddit.onclick = () => {
+                const waitForTextbox = setInterval(() => {
+                    const newThreadTextbox = document.querySelector(".NewThread__subreddit");
+
+                    if(newThreadTextbox) {
+                        clearInterval(waitForTextbox);
+
+                        newThreadTextbox.onchange = e => {
+                            const subreddit = "r/" + e.target.value;
+
+                            updateResponseTemplate(false, lastUsername, subreddit);
+
+                            lastUsername = subreddit;
+                        }
+                    }
+                }, 100);
+            }
+        }
+    })();
+    
+    (() => {
+        // Handle change of "Post from"
+        const srName = document.querySelector("[name=srName]");
+
+        if(srName) {
+            let lastSubreddit = null;
+
+            const postToChanges = setInterval(() => {
+                const subreddit = "r/" + srName.value;
+
+                if(subreddit != lastSubreddit && subreddit != 'r/') {
+                    updateResponseTemplate(true, lastSubreddit, subreddit);
+
+                    lastSubreddit = subreddit;
+                }
+            }, 500);
+        }
+    })();
 };
 
 const __main__ = async () => {
