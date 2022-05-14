@@ -6,7 +6,7 @@
 */
 
 (function () {
-    var EveryElementInvisible = true;
+    var UserUsingAdblocker = true;
     let atStartThisNumWasZero = 0;
     //Window loaded
     $(window).on("load", function () {
@@ -55,7 +55,7 @@
 
                                                                                   //If every obfuscated element's display is something else than "none" or generally set on (If every element is visible or has values)
 
-                                                                                  EveryElementInvisible = false; 
+                                                                                  UserUsingAdblocker = false; 
 
 
                                                                                 } else {
@@ -178,7 +178,7 @@
 
       //Once window loaded and the random element checks have been completed run these
       enableAntiAdblock();
-      if (!EveryElementInvisible) {
+      if (!UserUsingAdblocker) {
         $("#start").each(function () {
           this._ready = true;
         });
@@ -206,7 +206,7 @@
     hiddenPageContentPlaceholderElement.style.cssText = "height:0; width:0; overflow:hidden;";
 
     function enableAntiAdblock() {
-      if (EveryElementInvisible) {
+      if (UserUsingAdblocker) {
         $(".counterElem").next().text("#" + atStartThisNumWasZero);
         $(".NCUhtaRVmVvtKVKkHgHXbhDVKyYS").removeClass("NCUhtaRVmVvtKVKkHgHXbhDVKyYS").addClass("fa-sad-tear");
         $("#mainAntiBlockElem").show().css("opacity", window.scriptRanAlready ? 0 : 1);
@@ -234,7 +234,7 @@
       if (window.boolVariableThingy && Date.now() - window.boolVariableThingy > 6e4) { //60000
         return;
       }
-      EveryElementInvisible = true;
+      UserUsingAdblocker = true;
       enableAntiAdblock();
     }
     let t, c;
