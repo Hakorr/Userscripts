@@ -47,35 +47,27 @@ Anyway, where were we... Ah yes, the [Base64 encoded file](https://github.com/Ha
 Here's a code snippet.
 
 ```js
-/* onbeforescriptexecute - https://github.com/Ray-Adams/beforeScriptExecute-Polyfill */
-const ChangeMe = Math.random().toString(36).substring(2, Math.floor(Math.random() * 40) + 5);
+// @run-at      document-start
 
 (() => {
     'use strict';
-
-    const BseEvent = new Event(ChangeMe, {
-        bubbles: true,
-        cancelable: true
-    });
 
     const observerCallback = (mutationsList) => {
         for (let mutationRecord of mutationsList) {
             for (let node of mutationRecord.addedNodes) {
                 if (node.tagName !== 'SCRIPT') continue;
 
-                // Adds functionality to document.onbeforescriptexecute
-                if (typeof document.ChangeMe === 'function') {
-                    document.addEventListener(
-                        ChangeMe,
-                        document.ChangeMe,
-                        { once: true }
-                    );
-                };
+                 /* Example keywords: 
+                 - 'data:text/javascript;base64
+                 - 'base64'
+                 - 'jquery' */
 
-                // Returns false if preventDefault() was called
-                if (!node.dispatchEvent(BseEvent)) {
+                if (node.src.includes('data:text/javascript;base64') 
+                    || node.outerHTML.includes('data:text/javascript;base64') 
+                    || node.innerHTML.includes('data:text/javascript;base64')) {
+                    // Remove the element
                     node.remove();
-                };
+                }
             };
         };
     };
@@ -83,26 +75,9 @@ const ChangeMe = Math.random().toString(36).substring(2, Math.floor(Math.random(
     const mutObvsr = new MutationObserver(observerCallback);
     mutObvsr.observe(document, { childList: true, subtree: true });
 })();
-
-//A new web request initiated
-document.ChangeMe = (e) => {
-    /* Example keywords: 
-     - 'data:text/javascript;base64
-     - 'base64'
-     - 'jquery' */
-  
-    if (e.target.src.includes('data:text/javascript;base64') 
-        || e.target.outerHTML.includes('data:text/javascript;base64') 
-        || e.target.innerHTML.includes('data:text/javascript;base64')) {
-        //Block it
-        e.preventDefault();
-    }
-}
 ```
 
-If the loaded script's source has the `data:text/javascript;base64` tag, it'll block it. If you're going to use the code in your own script, do remember to change the ```beforeScriptExecute``` event's name, otherwise the Aternos' developers might have made that variable null, like they did to one of my older variables. Screenshot of that below.
-
-![](https://raw.githubusercontent.com/Hakorr/Userscripts/main/Aternos.com/Images/blockedVariable.jpg)
+If the loaded script's source has the `data:text/javascript;base64` tag, it'll block it.
 
 Great, so we've stopped the [Anti-Adblock's JS file](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Other/Anti-Adblock-Obfuscated.js) from loading, we should be good now, right? Not quite, the [Base64 encoded JavaScript file](https://github.com/Hakorr/Userscripts/blob/main/Aternos.com/Other/Anti-Adblock-Obfuscated.js) has important pieces of code that return everything back to normal. No buttons work without it. It also hides the fullscreen red Anti-Adblock element. We'll need to copy some code from the script to our userscript.
 
