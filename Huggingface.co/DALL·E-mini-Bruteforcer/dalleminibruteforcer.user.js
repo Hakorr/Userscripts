@@ -6,7 +6,7 @@
 // @grant       none
 // @version     1.0
 // @author      HKR
-// @description Attempt to run until success
+// @description Clicks the run button until success
 // ==/UserScript==
 
 if(window.location.hostname == "hf.space") {
@@ -14,7 +14,7 @@ if(window.location.hostname == "hf.space") {
         const intervalMs = 5000;
 
         window.alert = txt => {
-            console.log(txt);
+            console.error(txt);
 
             if(txt.includes("Too much traffic")) {
                 console.warn(`\n\nWaiting ${intervalMs/1000} seconds and trying again...\n\n`);
