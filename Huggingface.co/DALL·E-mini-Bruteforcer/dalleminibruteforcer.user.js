@@ -9,8 +9,8 @@
 // @description Clicks the run button until success
 // ==/UserScript==
 
-if(window.location.hostname == "hf.space") {
-    (() => {
+(() => {
+    if(window.location.hostname == "hf.space") {
         const intervalMs = 5000;
 
         window.alert = txt => {
@@ -18,9 +18,9 @@ if(window.location.hostname == "hf.space") {
 
             if(txt.includes("Too much traffic")) {
                 console.warn(`\n\nWaiting ${intervalMs/1000} seconds and trying again...\n\n`);
-              
+
                 setTimeout(() => document.querySelector(".self-start").click(), intervalMs);
             }
         }
-    })();
-}
+    }
+})();
