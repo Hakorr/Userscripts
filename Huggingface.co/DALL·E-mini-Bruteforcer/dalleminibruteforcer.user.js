@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name        DALL·E mini Bruteforcer
+// @name        [Huggingface] DALL·E mini Bruteforcer
 // @namespace   HKR
 // @match       https://hf.space/static/dalle-mini/dalle-mini/index.html
 // @match       https://huggingface.co/spaces/dalle-mini/dalle-mini
