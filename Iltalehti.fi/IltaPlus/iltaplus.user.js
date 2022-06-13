@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name        IltaPlus
+// @name        [Iltalehti] IltaPlus
 // @namespace   HKR
 // @match       https://www.iltalehti.fi/*
 // @grant       none
