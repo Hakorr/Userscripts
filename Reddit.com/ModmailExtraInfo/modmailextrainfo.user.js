@@ -3,7 +3,7 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     3.6
+// @version     3.7
 // @author      HKR
 // @description Additional tools and information to Reddit's Modmail
 // @icon        https://www.redditstatic.com/modmail/favicon/favicon-32x32.png
@@ -16,7 +16,7 @@ console.log("[Modmail++] %cScript started!", "color: green");
 
 class __settings__ {
     subTag = $(".ThreadTitle__community")?.href?.slice(23) || "r/subreddit"; //Format r/subreddit
-    userTag = "u/" + $(".InfoBar__username")?.innerText || "u/username"; //Format u/username
+    userTag = "u/" + $(".ModIdCard__UserNameLink")?.innerText || "u/username"; //Format u/username
     modmail = `[modmail](https://www.reddit.com/message/compose?to=/${keepPrefix(this.subTag, true)})`;
     rules = `https://www.reddit.com/${keepPrefix(this.subTag, true)}/about/rules`;
   
@@ -166,14 +166,10 @@ const removePrefix = username => ["r/","u/"].some(tag => username.includes(tag))
 const keepPrefix = (username, subreddit) => ["r/","u/"].some(tag => username.includes(tag)) ? username : subreddit ? `r/${username}` : `u/${username}`;
 
 const recipientUsername = () => {
-    const defaultUsernameElem = $(".InfoBar__username");
-    const ModmailPlusPlusUsernameElem = $(".CustomInfoBar__username");
+    const defaultUsernameElem = $(".ModIdCard__UserNameLink");
     
     if(defaultUsernameElem) {
         return removePrefix(defaultUsernameElem?.innerText);
-    } 
-    else if (ModmailPlusPlusUsernameElem) {
-        return removePrefix(ModmailPlusPlusUsernameElem?.innerText);
     }
     else {
         return undefined;
@@ -252,17 +248,11 @@ sidebarTitle.innerText = "Modmail++";
 // apply the custom css
 function applyCSS(Settings) {
     //Took advice for the listbox CSS from moderncss.dev/custom-select-styles-with-pure-css, thanks!
-    const css = `.profileIcon:hover {
-        -ms-transform: scale(6);
-        -webkit-transform: scale(6);
-        transform: scale(6);
-    }
+    const css = `
     .profileIcon {
-        position: relative;
-        bottom: 4px;
         margin-bottom: 10px;
-        float: left; border-radius: 50%;
-        transition: transform .1s;
+        border-radius: 50%;
+        height: 100px !important;
     }
     .InfoBar__recentsNone {
         color: #6e6e6e;
@@ -597,27 +587,6 @@ function applyCSS(Settings) {
     .StyledHtml td {
         color: ${Settings.textColor};
     }
-    #CustomMetadata {
-        font-size: 13px;
-        line-height: 1.5;
-    }
-    .CustomInfoBar__username {
-        padding-left: 10px;
-        font-size: 18px;
-        line-height: 1;
-        padding-bottom: 4px;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        text-decoration: none;
-        color: var(--color-tone-1);
-    }
-    .CustomSeperator {
-        position: relative;
-        border-top: 1px solid var(--color-tone-6);
-        margin-top: 16px;
-        margin-bottom: 16px;
-    }
     @media (min-width: 768px)
     .ThreadViewer__infobarContainer {
         display: table;
@@ -628,7 +597,30 @@ function applyCSS(Settings) {
     .ruleDiv {
         background-color: rgba(26, 26, 27, 0.6); 
         visibility: hidden;
-    }`;
+    }
+    .ModmailPlusPlus__UserDescription {
+        font-size: 11px;
+        font-weight: 100;
+        font-style: italic;
+        line-height: 16px;
+        letter-spacing: 0em;
+        color: var(--color-tone-3);
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-pack: center;
+        justify-content: center;
+        -ms-flex-align: center;
+        align-items: center;
+        margin: 3;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+    .ModmailPlusPlus__Title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--color-tone-3);
+    }
+    `;
 
     const styleSheet = document.createElement("style");
     styleSheet.type = "text/css";
@@ -750,7 +742,7 @@ function initializeCore(Settings) {
               
                 // set onclick variable again because the button refreshes itself
                 document.querySelector(".ThreadViewerReplyForm__replyButton")
-                    .setAttribute("onclick", "document.ModmailPlus.Core.clearReplyForm()")
+                    .setAttribute("onclick", "document.ModmailPlus.Core.clearReplyForm()");
             }, 500);
         }
     };
@@ -790,50 +782,75 @@ async function appendUserInfo(Settings) {
 
     if(user)
     {
-        // userinfo element
         const userDetails = document.createElement('div');
         userDetails.id = "CustomMetadata";
-        userDetails.innerHTML = `<img class="profileIcon" src="${user.data.icon_img}" width="25"/>
-                <a class="CustomInfoBar__username" href="https://www.reddit.com/user/${user.data.name}" target="_blank">${removePrefix(user.data.subreddit.display_name_prefixed)}</a>
-                <h1 style="color: ${Settings.textColor} ; font-size: 11px; margin-top: 17px; margin-bottom: 10px;">${sanitize(user.data.subreddit.public_description)}</h1>
-                <h1 class="dataTitle">Main</h1>
-                <div class="dataText">
-                    <p>Created: <span class="value">${unixToDate(user.data.created)}</span></p>
-                    <p>UserID: <span class="value">${user.data.id}</span></p>
-                    <p>Verified: <span class="value">${user.data.verified}</span></p>
-                    <p>Employee: <span class="value">${user.data.is_employee}</span></p>
-                    <p>NSFW Profile: <span class="value">${user.data.subreddit.over_18}</span></p>
-                </div>
-                <h1 class="dataTitle">Karma</h1>
-                <div class="dataText">
-                    <p>Post: <span class="value">${user.data.link_karma}</span></p>
-                    <p>Comment: <span class="value">${user.data.comment_karma}</span></p>
-                    <p>Total: <span class="value">${user.data.total_karma}</span></p>
-                    <p>Awardee: <span class="value">${user.data.awardee_karma}</span></p>
-                    <p>Awarder: <span class="value">${user.data.awarder_karma}</span></p>
-                </div>
-                <h1 class="dataTitle">Links</h1>
-                    <div style="padding-left: 10px;">
-                    <a class="InfoBar__recent" href="https://redditmetis.com/user/${user.data.name}" target="_blank">Redditmetis</a>
-                    <a class="InfoBar__recent" href="https://www.reddit.com/search?q=${user.data.name}" target="_blank">Reddit Search</a>
-                    <a class="InfoBar__recent" href="https://www.google.com/search?q=%22${user.data.name}%22" target="_blank">Google Search</a>
-                </div>`
-
-        // seperator element
-        const seperator = document.createElement('div');
-        seperator.classList.add("CustomSeperator");
+        userDetails.classList.add("KarmaAndTrophies__userInfoGrid");
+        userDetails.innerHTML = `
+            <div class="KarmaAndTrophies__col"><span class="KarmaAndTrophies__count">${user.data.id}</span><span class="KarmaAndTrophies__label">User ID</span></div>
+            <div class="KarmaAndTrophies__col"><span class="KarmaAndTrophies__count">${user.data.verified ? "🟢" : "🔴"}</span><span class="KarmaAndTrophies__label">Verified</span></div>
+            <div class="KarmaAndTrophies__col"><span class="KarmaAndTrophies__count">${user.data.is_employee ? "🟢" : "🔴"}</span><span class="KarmaAndTrophies__label">Reddit Employee</span></div>
+            <div class="KarmaAndTrophies__col"><span class="KarmaAndTrophies__count">${user.data.subreddit.over_18 ? "🟢" : "🔴"}</span><span class="KarmaAndTrophies__label">NSFW Profile</span></div>
+            <div class="KarmaAndTrophies__col"><span class="KarmaAndTrophies__count">${user.data.subreddit.accept_followers ? "🟢" : "🔴"}</span><span class="KarmaAndTrophies__label">Accept Followers</span></div>
+            <div class="KarmaAndTrophies__col"><span class="KarmaAndTrophies__count">${user.data.subreddit.hide_from_robots ? "🟢" : "🔴"}</span><span class="KarmaAndTrophies__label">Hide from bots</span></div>`;
+      
+        const links = document.createElement('div');
+        links.classList.add("KarmaAndTrophies__userInfoGrid");
+        links.innerHTML = `
+            <div style="margin-bottom: 10px;">
+                <a class="InfoBar__recent" href="https://redditmetis.com/user/${user.data.name}" target="_blank">RedditMetis ⧉</a>
+                <a class="InfoBar__recent" href="https://www.reddit.com/search?q=${user.data.name}" target="_blank">Reddit Search ⧉</a>
+                <a class="InfoBar__recent" href="https://www.google.com/search?q=%22${user.data.name}%22" target="_blank">Google Search ⧉</a>
+            <div>`;
+      
+        const getTitleElement = titleText => {
+            const title = document.createElement('h1');
+            title.classList.add("KarmaAndTrophies__userInfoGrid");
+            title.classList.add("ModmailPlusPlus__Title");
+            title.innerText = titleText;
+          
+            return title;
+        };
         
         if(!$("#CustomMetadata")) {
-            // append the elements
-            $(".InfoBar").insertBefore(userDetails, $(".InfoBar__username")); // append user information on top of the sidebar
-            $(".InfoBar").insertBefore($(".InfoBar__modActions"), $(".InfoBar__recents")); // move modActions on top of recent posts
-
-            if($(".InfoBar__banText"))
-                $(".InfoBar").insertBefore($(".InfoBar__banText"), $("#CustomMetadata"));
-
-            $(".InfoBar__username").outerHTML = ""; // delete the original username element
-            $(".InfoBar__metadata").outerHTML = ""; // delete the original metadata
+            const userCard = $(".ModIdCard");
+            
+            if(userCard && user.data.subreddit.public_description && !$(".ModmailPlusPlus__UserDescription")) {
+                const description = document.createElement('h1');
+                description.classList.add("ModmailPlusPlus__UserDescription");
+                description.innerText = '“' + sanitize(user.data.subreddit.public_description) + '”';
+              
+                userCard.insertBefore(description, $(".ModIdCard__UserProfileLink"));
+            }
+          
+            const banStatus = $(".KarmaAndTrophies__BanStatus");
+           
+            if(banStatus) {
+                $(".KarmaAndTrophies").insertBefore(getTitleElement("Additional Information"), banStatus);
+                $(".KarmaAndTrophies").insertBefore(userDetails, banStatus);
+              
+                $(".KarmaAndTrophies").insertBefore(getTitleElement("Additional Links"), banStatus);
+                $(".KarmaAndTrophies").insertBefore(links, banStatus);
+            } else {
+                $(".KarmaAndTrophies").appendChild(getTitleElement("Additional Information"));
+                $(".KarmaAndTrophies").appendChild(userDetails);
+              
+                $(".KarmaAndTrophies").appendChild(getTitleElement("Additional Links"));
+                $(".KarmaAndTrophies").appendChild(links);
+            }
         }
+      
+        const observer = new MutationObserver(() => {
+            const overview = document.querySelector(".NewInfoBar__overviewContainer");
+            
+            if(overview) {
+                observer.disconnect();
+                appendUserInfo(Settings);
+            }
+        });
+      
+        observer.observe(document.querySelector(".NewInfoBar"), {
+            attributes: false, characterData: false, childList: true
+        });
     }
 };
 
@@ -1140,7 +1157,7 @@ setInterval (() => {
                 });
             }
 
-            if($(".InfoBar") && URLChangeDetectorActive) // user is on modmail "chat" page
+            if($(".NewInfoBar") && URLChangeDetectorActive) // user is on modmail "chat" page
             {
                 clearInterval(waitForElements);
                 URLChangeDetectorActive = false;
