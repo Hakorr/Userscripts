@@ -3,7 +3,7 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     3.7
+// @version     3.7.1
 // @author      HKR
 // @description Additional tools and information to Reddit's Modmail
 // @icon        https://www.redditstatic.com/modmail/favicon/favicon-32x32.png
@@ -249,32 +249,6 @@ sidebarTitle.innerText = "Modmail++";
 function applyCSS(Settings) {
     //Took advice for the listbox CSS from moderncss.dev/custom-select-styles-with-pure-css, thanks!
     const css = `
-    .profileIcon {
-        margin-bottom: 10px;
-        border-radius: 50%;
-        height: 100px !important;
-    }
-    .InfoBar__recentsNone {
-        color: #6e6e6e;
-    }
-    .InfoBar__metadata, .InfoBar__recents {
-        margin: 6px 0;
-        margin-left: 10px;
-    }
-    .value {
-        color: ${Settings.dataColor};
-    }
-    .InfoBar__banText {
-        padding-bottom: 15px;
-    }
-    .InfoBar__username, .InfoBar__username:visited {
-        padding-left: 10px;
-    }
-    .dataText {
-        color: ${Settings.textColor};
-        font-size: 13px;
-        padding-left: 10px;
-    }
     .dataTitle {
         color: ${Settings.titleColor};
         font-size: 15px;
@@ -289,11 +263,6 @@ function applyCSS(Settings) {
         --select-border: #0079d3;
         --select-focus: blue;
         --select-arrow: var(--select-border);
-    }
-    *,
-    *::before,
-    *::after {
-    box-sizing: border-box;
     }
     select {
         appearance: none;
@@ -378,14 +347,6 @@ function applyCSS(Settings) {
         padding: 0 24px 0 20px;
         background: var(--newRedditTheme-bodyTextAlpha03);
         max-height: 100%;
-    }
-    html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, button, cite, code, del, dfn, em, img, input, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
-        margin: 0;
-        padding: 0;
-        border: 0;
-        font-size: 100%;
-        font: inherit;
-        vertical-align: baseline;
     }
     .dialogWindow {
         pointer-events: auto;
@@ -485,6 +446,9 @@ function applyCSS(Settings) {
         text-transform: uppercase;
         letter-spacing: .05em;
         outline: none!important;
+        padding: initial;
+        cursor: pointer;
+        border: none;
     }
     .infoBox {
         -ms-flex: 0 1 auto;
@@ -496,48 +460,6 @@ function applyCSS(Settings) {
     }
     .infoBox a {
         color: #24a0ed;
-    }
-    button {
-        background: transparent;
-        border: none;
-        color: inherit;
-        cursor: pointer;
-        padding: initial;
-    }
-    input {
-        -webkit-writing-mode: horizontal-tb !important;
-        text-rendering: auto;
-        color: -internal-light-dark(black, white);
-        letter-spacing: normal;
-        word-spacing: normal;
-        text-transform: none;
-        text-indent: 0px;
-        text-shadow: none;
-        display: inline-block;
-        text-align: start;
-        appearance: auto;
-        background-color: -internal-light-dark(rgb(255, 255, 255), rgb(59, 59, 59));
-        -webkit-rtl-ordering: logical;
-        cursor: text;
-        margin: 0em;
-        font: 400 13.3333px Arial;
-        padding: 1px 2px;
-        border-width: 2px;
-        border-style: inset;
-        border-color: -internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
-        border-image: initial;
-    }
-    body {
-        min-height: calc(100vh - 48px);
-        line-height: 1;
-        font-family: IBMPlexSans, Arial, sans-serif;
-        -webkit-font-smoothing: antialiased;
-    }
-    ._3kEv5z1lDKGV8PQ5ijp4Uh {
-        background-size: 24px 24px;
-        background-position: 11px 6px;
-        padding-left: 42px!important;
-        background-repeat: no-repeat;
     }
     .title {
         margin-top: 16px;
@@ -580,16 +502,6 @@ function applyCSS(Settings) {
     .listValue input {
         visibility: hidden;
         display: none;
-    }
-    .StyledHtml tr {
-        color: ${Settings.titleColor};
-    }
-    .StyledHtml td {
-        color: ${Settings.textColor};
-    }
-    @media (min-width: 768px)
-    .ThreadViewer__infobarContainer {
-        display: table;
     }
     #currentlySelected {
         background-color: rgba(121, 121, 121, 0.35);
