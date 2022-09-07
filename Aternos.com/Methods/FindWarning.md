@@ -69,10 +69,10 @@ window.onload = function() { removeLayer() }
 
 #### Remove all elements with attribute names over a certain amount
 ```js
-function removeAttributesOver(attribute, length) {
+function removeAttributesOver(attribute, len) {
     Array.from(document.querySelectorAll(attribute)).forEach(div => {
         Array.from(div.attributes).forEach(atr => {
-            if(atr.name.length > 9) div.remove();
+            if(atr.name.length > len) div.remove();
         });
     });
 }
