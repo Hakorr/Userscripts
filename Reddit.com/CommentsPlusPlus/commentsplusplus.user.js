@@ -133,7 +133,14 @@ const modHash = r.config.modhash;
 const voteHash = r.config.vote_hash;
 const currentSubreddit = r.config.post_site;
 
-const seenCommentsDatabaseKey = 'seenComments_r_' + currentSubreddit;
+const databaseKeys = {
+    'seenComments': 'seenComments_r_' + currentSubreddit,
+    'pastComments': 'pastComments_r_' + currentSubreddit,
+    'lastSeenCommentID': 'lastSeenCommentID_r_' + currentSubreddit,
+    'isLoadingNewComments': 'isLoadingNewComments_r_' + currentSubreddit,
+    'liveUpdateActivated': 'liveUpdateActivated_r_' + currentSubreddit,
+    'collapsedComments': 'collapsedComments_r_' + currentSubreddit
+};
 
 const average = array => array.reduce((a, b) => a + b) / array.length;
 
@@ -807,23 +814,23 @@ function addControlPanel() {
     const liveIconElem = liveIconContainer.querySelector('.cpp-live-icon');
 
     function activateLiveFeed() {
-        GM_setValue('liveUpdateActivated', true);
+        GM_setValue(databaseKeys.liveUpdateActivated, true);
         liveIconElem.classList.add('cpp-live-animation');
         liveIconContainer.classList.add('cpp-live-active');
     }
 
     function disableLiveFeed() {
-        GM_setValue('liveUpdateActivated', false);
+        GM_setValue(databaseKeys.liveUpdateActivated, false);
         liveIconElem.classList.remove('cpp-live-animation');
         liveIconContainer.classList.remove('cpp-live-active');
     }
 
-    if(!GM_getValue('liveUpdateActivated')) {
+    if(!GM_getValue(databaseKeys.liveUpdateActivated)) {
         activateLiveFeed();
     }
 
     liveIconContainer.onclick = () => {
-        if(GM_getValue('liveUpdateActivated'))
+        if(GM_getValue(databaseKeys.liveUpdateActivated))
             disableLiveFeed();
         else
             activateLiveFeed();
@@ -879,7 +886,7 @@ function addControlPanel() {
         `;
 
     async function updateCommentsAmount() {
-        seenCommentsAmountContainer.querySelector('.cpp-infobox-bottom').innerText = (GM_getValue(seenCommentsDatabaseKey)?.length || 0) + ' comments';
+        seenCommentsAmountContainer.querySelector('.cpp-infobox-bottom').innerText = (GM_getValue(databaseKeys.seenComments)?.length || 0) + ' comments';
     }
 
     topContainerElem.appendChild(liveIconContainer);
@@ -900,7 +907,7 @@ function addControlPanel() {
         updateCommentsAmount();
     };
 
-    if(GM_getValue('liveUpdateActivated')) {
+    if(GM_getValue(databaseKeys.liveUpdateActivated)) {
         activateLiveFeed();
     }
 
@@ -931,7 +938,7 @@ function startCommentHoverLogic(commentElem) {
                     commentElem.classList.remove('cpp-new-comment-unseen');
                     commentElem.classList.add('cpp-seen-comment');
 
-                    databaseHelpers.array.addValue(seenCommentsDatabaseKey, commentElem.dataset.fullname);
+                    databaseHelpers.array.addValue(databaseKeys.seenComments, commentElem.dataset.fullname);
 
                     updateControlPanel();
                 }
@@ -948,8 +955,8 @@ function startCommentHoverLogic(commentElem) {
 async function createCommentElem(commentData) {
     const comment = createCommentDataObj(commentData);
 
-    const isCommentSeen = databaseHelpers.array.doesValueExist(seenCommentsDatabaseKey, comment.fullname);
-    const shouldBeCollapsed = databaseHelpers.array.doesValueExist('collapsedComments', comment.fullname);
+    const isCommentSeen = databaseHelpers.array.doesValueExist(databaseKeys.seenComments, comment.fullname);
+    const shouldBeCollapsed = databaseHelpers.array.doesValueExist(databaseKeys.collapsedComments, comment.fullname);
 
     const commentElem = document.createElement('div');
         if(commentData?.cppGhostComment) {
@@ -979,7 +986,7 @@ async function createCommentElem(commentData) {
     commentInfoContainer.classList.add('cpp-comment-info');
 
     function toggleCommentCollapse(collapseBtn) {
-        databaseHelpers.array.toggleValue('collapsedComments', comment.fullname);
+        databaseHelpers.array.toggleValue(databaseKeys.collapsedComments, comment.fullname);
 
         commentElem.classList.toggle('cpp-comment-collapsed');
 
@@ -1410,7 +1417,7 @@ async function loadExistingComments() {
 }
 
 async function loadNewComments() {
-    GM_setValue('isLoadingNewComments', true);
+    GM_setValue(databaseKeys.isLoadingNewComments, true);
 
     async function loadOneCommentBefore() {
         try {
@@ -1421,28 +1428,28 @@ async function loadNewComments() {
                 .catch(err => toast.error('Failed to update comments!', updateRateMs / 2));
 
             if(!commentsJSON) {
-                GM_setValue('isLoadingNewComments', false);
+                GM_setValue(databaseKeys.isLoadingNewComments, false);
                 return;
             }
 
             const commentData = commentsJSON.data.children[0]?.data;
 
             if(commentData) {
-                const isNewComment = !databaseHelpers.array.doesValueExist('pastComments', commentData.name);
+                const isNewComment = !databaseHelpers.array.doesValueExist(databaseKeys.pastComments, commentData.name);
 
                 if(isNewComment) {
                     await addNewCommentToTable(commentData);
-                    databaseHelpers.array.addValue('pastComments', commentData.name);
+                    databaseHelpers.array.addValue(databaseKeys.pastComments, commentData.name);
                     loadOneCommentBefore();
                 } else {
-                    GM_setValue('isLoadingNewComments', false);
+                    GM_setValue(databaseKeys.isLoadingNewComments, false);
                 }
             } else {
-                GM_setValue('isLoadingNewComments', false);
+                GM_setValue(databaseKeys.isLoadingNewComments, false);
             }
         } catch(err) {
             toast.error('Something went wrong while trying to load new comments!', updateRateMs / 2);
-            GM_setValue('isLoadingNewComments', false);
+            GM_setValue(databaseKeys.isLoadingNewComments, false);
         }
     }
 
@@ -1490,12 +1497,12 @@ function saveLastSeenComment() {
     const firstEntry = getCommentElems(document)[0];
 
     if(firstEntry) {
-        GM_setValue('lastSeenCommentID', firstEntry.dataset.fullname);
+        GM_setValue(databaseKeys.lastSeenCommentID, firstEntry.dataset.fullname);
     }
 }
 
 function addLastSeenCommentMarker() {
-    const lastSeenCommentID = GM_getValue('lastSeenCommentID');
+    const lastSeenCommentID = GM_getValue(databaseKeys.lastSeenCommentID);
     const lastLastSpotElem = document.querySelector('#cpp-last-spot');
 
     if(lastSeenCommentID) {
@@ -1547,7 +1554,7 @@ async function isFeedUpToDate() {
 }
 
 async function initialize() {
-    GM_setValue('isLoadingNewComments', false);
+    GM_setValue(databaseKeys.isLoadingNewComments, false);
 
     clearCommentTableElem();
     loadExistingComments();
@@ -1561,11 +1568,11 @@ async function initialize() {
     removeRedditUI();
 
     const feedLoop = setInterval(async () => {
-      if(GM_getValue('liveUpdateActivated')) {
+      if(GM_getValue(databaseKeys.liveUpdateActivated)) {
           const isUpToDate = await isFeedUpToDate();
 
           if(!isUpToDate) {
-              const isUpdating = GM_getValue('isLoadingNewComments');
+              const isUpdating = GM_getValue(databaseKeys.isLoadingNewComments);
 
               if(!isUpdating) {
                   console.info("[Comments++] %cNew comments found! Please wait, we'll send snoblins to gather them for you!", 'color: lightgreen');
