@@ -496,7 +496,6 @@ async function createBetterActionDetails(highlightClass, commentData, commentCon
     }
 
     else if(commentData.banned.by == 'AutoModerator') {
-        console.log(commentData);
         const betterActionReason = await commentActions.getBetterActionReason(commentData.fullname, 'AutoModerator');
 
         if(betterActionReason)  {
@@ -592,9 +591,14 @@ const commentActions = {
         'updateElem': async (commentElem, commentData, commentContentContainer, commentActionsContainer) => {
             commentElem.classList.add('cpp-comment-locked');
 
-            const betterDetails = await createBetterActionDetails('cpp-lock-highlight', commentData, commentContentContainer, 'lock');
+            const betterDetailsLock = await createBetterActionDetails('cpp-lock-highlight', commentData, commentContentContainer, 'lock');
+            const betterDetailsSticky = await createBetterActionDetails('cpp-lock-highlight', commentData, commentContentContainer, 'sticky');
 
-            commentActionsContainer.appendChild(createActionContainer('Locked', 'cpp-comment-action-lock', 'bi-lock-fill', betterDetails));
+            if(betterDetailsLock) {
+                commentActionsContainer.appendChild(createActionContainer('Locked', 'cpp-comment-action-lock', 'bi-lock-fill', betterDetailsLock));
+            } else {
+                commentActionsContainer.appendChild(createActionContainer('Locked', 'cpp-comment-action-lock', 'bi-lock-fill', betterDetailsSticky));
+            }
         }
     },
     'unlock': async id => await postCommentAction('https://www.reddit.com/api/unlock', {
