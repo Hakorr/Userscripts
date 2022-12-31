@@ -13,6 +13,7 @@ Enables a live-feed for subreddit comments, and various other things!
 - New comment notifications/sounds
 - Hide Reddit sidebar and other Reddit UI to bring focus to the comments
 - Dark theme for less strain on your eyes
+- Load more comments button, no need to switch pages
 - Easy language translate button
 - Ability to see deleted content after the user has deleted the comment
 - Various other changes and improvements
