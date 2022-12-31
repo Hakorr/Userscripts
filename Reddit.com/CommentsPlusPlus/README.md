@@ -18,4 +18,8 @@ Enables a live-feed for subreddit comments, and various other things!
 - Ability to see deleted content after the user has deleted the comment
 - Various other changes and improvements
 
-**Made by a moderator, for moderators, with ❤️**
+**Made with ❤️ for moderators, by a moderator!**
+
+## Preview
+
+![](content/commentsplusplus.png)
