@@ -687,7 +687,7 @@ const commentActions = {
                     commentData.author_fullname = oldData.author_fullname;
                     commentData.distinguished = oldData.distinguished;
 
-                    commentData.body_html = `<div id="${containerId}"><div class="${bodyToggleBtnClass} md" title="Reveal deleted content (This comment has deleted by the user or Reddit)"><p>[deleted]</p></div></div>`;
+                    commentData.body_html = `<div id="${containerId}"><div class="${bodyToggleBtnClass} md" title="Reveal deleted content (This comment was deleted by the user or Reddit)"><p>[deleted]</p></div></div>`;
 
                     const waitForGhost = setInterval(() => {
                         const container = document.querySelector(`#${containerId}`);
