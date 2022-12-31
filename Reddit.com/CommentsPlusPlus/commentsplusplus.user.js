@@ -691,7 +691,7 @@ const commentActions = {
 
                 // keep content if comment [deleted]
                 if(commentData.author == '[deleted]') {
-                    const containerId = `cpp-deleted-container_${weakSanitize(oldData.author_fullname)}`;
+                    const containerId = `cpp-deleted-container_${Date.now()}`;
                     const bodyToggleBtnClass = 'cpp-deleted-toggle-btn';
                     const hiddenBodyClass = 'cpp-deleted-hidden-body';
 
@@ -1431,7 +1431,7 @@ async function getNewestCommentFullname() {
     const getCommentElems = () => [...commentTableElem.querySelectorAll('.cpp-comment')];
     const attempts = getCommentElems().length;
 
-    let newestCommentFullName = null;
+    let newestCommentFullname = null;
 
     for(let i = 0; i < attempts; i++) {
         const newestFullname = getCommentElems()[0]?.dataset?.fullname;
@@ -1441,11 +1441,12 @@ async function getNewestCommentFullname() {
 
         if(!isGhost) {
             newestCommentFullname = newestFullname;
-            break;
+
+            return newestCommentFullname;
         }
     }
 
-    return newestCommentFullName;
+    return false;
 }
 
 async function loadNewComments() {
