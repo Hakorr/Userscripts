@@ -7,6 +7,7 @@ Enables a live-feed for subreddit comments, and various other things!
 - Live subreddit comment feed
 - Adds a visible marker to the feed to indicate where you left after changing tabs
 - Image links shown as actual images
+- Comments automatically update on hover
 - Calculates and tells the moderator their optimal break time
 - Keep track on how many comments the moderator has seen
 - Improved comment UI, less clutter, better visibility
