@@ -2,6 +2,8 @@
 
 Enables a live-feed for subreddit comments, and various other things!
 
+### [[Install]](https://github.com/Hakorr/Userscripts/raw/main/Reddit.com/CommentsPlusPlus/commentsplusplus.user.js)
+
 ## Features
 
 - Live subreddit comment feed
@@ -19,8 +21,15 @@ Enables a live-feed for subreddit comments, and various other things!
 - Ability to see deleted content after the user has deleted the comment
 - Various other changes and improvements
 
-**Made with ❤️ for moderators, by a moderator!**
+## How to use?
+
+1) Install [a userscript manager](https://violentmonkey.github.io/)
+2) Install [the script](https://github.com/Hakorr/Userscripts/raw/main/Reddit.com/CommentsPlusPlus/commentsplusplus.user.js)
+3) Head to `https://www.reddit.com/r/subreddit/comments/` (change the subreddit to yours)
+4) Enjoy!
 
 ## Preview
 
 ![](content/commentsplusplus.png)
+
+**Made with ❤️ for moderators, by a moderator!**
