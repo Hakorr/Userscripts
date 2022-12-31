@@ -10,6 +10,8 @@ Enables a live-feed for subreddit comments, and various other things!
 - Calculates and tells the moderator their optimal break time
 - Keep track on how many comments the moderator has seen
 - Improved comment UI, less clutter, better visibility
+- New comment notifications/sounds
+- Hide Reddit sidebar and other Reddit UI to bring focus to the comments
 - Dark theme for less strain on your eyes
 - Easy language translate button
 - Ability to see deleted content after the user has deleted the comment
