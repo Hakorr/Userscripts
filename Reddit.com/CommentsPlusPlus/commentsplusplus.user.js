@@ -164,6 +164,8 @@ const modActionLogURL = actionType => `${logURL}/.json?type=${actionType}&limit=
 let waitingForNextPanelUpdate = false;
 let updateControlPanel = () => { /* Not set yet */ };
 
+let globalCommentElems = [];
+
 const getNewRedditBody = obj => Object.keys(obj).map(key => `${key}=${obj[key]}`).join('&');
 
 let pageActive = true;
@@ -757,8 +759,7 @@ function newCommentNotifications(comment) {
                 GM_notification(
                     {
                         title: `${comment.author.name} commented`,
-                        text: comment.body,
-                        onclick: console.log
+                        text: comment.body
                     }
                 );
             }
@@ -956,31 +957,31 @@ function startCommentHoverLogic(commentElem) {
     commentElem.onmouseleave = () => hoveringComment = false;
 }
 
-async function createCommentElem(commentData) {
-    const comment = createCommentDataObj(commentData);
+async function createCommentElem(rawCommentDataObj) {
+    const commentDataObj = createCommentDataObj(rawCommentDataObj);
 
-    const isCommentSeen = databaseHelpers.array.doesValueExist(databaseKeys.seenComments, comment.fullname);
-    const shouldBeCollapsed = databaseHelpers.array.doesValueExist(databaseKeys.collapsedComments, comment.fullname);
+    const isCommentSeen = databaseHelpers.array.doesValueExist(databaseKeys.seenComments, commentDataObj.fullname);
+    const shouldBeCollapsed = databaseHelpers.array.doesValueExist(databaseKeys.collapsedComments, commentDataObj.fullname);
 
     const commentElem = document.createElement('div');
-        if(commentData?.cppGhostComment) {
+        if(rawCommentDataObj?.cppGhostComment) {
             commentElem.classList.add('cpp-ghost-comment');
         } else {
             commentElem.classList.add('cpp-comment');
         }
 
-        commentElem.id = 'thing_' + comment.fullname;
+        commentElem.id = 'thing_' + commentDataObj.fullname;
         commentElem.dataset.type = 'comment';
-        commentElem.dataset.gildings = comment.gildings;
-        commentElem.dataset.fullname = comment.fullname;
-        commentElem.dataset.subreddit = comment.subreddit.name;
-        commentElem.dataset.subredditFullname = comment.subreddit.id;
-        commentElem.dataset.subredditPrefixed = comment.subreddit.prefixed;
-        commentElem.dataset.subredditType = comment.subreddit.type;
-        commentElem.dataset.author = comment.author.name;
-        commentElem.dataset.authorFullname = comment.author.id;
-        commentElem.dataset.permalink = comment.permalink;
-        commentElem.dataset.parentFullname = comment.parent.fullname;
+        commentElem.dataset.gildings = commentDataObj.gildings;
+        commentElem.dataset.fullname = commentDataObj.fullname;
+        commentElem.dataset.subreddit = commentDataObj.subreddit.name;
+        commentElem.dataset.subredditFullname = commentDataObj.subreddit.id;
+        commentElem.dataset.subredditPrefixed = commentDataObj.subreddit.prefixed;
+        commentElem.dataset.subredditType = commentDataObj.subreddit.type;
+        commentElem.dataset.author = commentDataObj.author.name;
+        commentElem.dataset.authorFullname = commentDataObj.author.id;
+        commentElem.dataset.permalink = commentDataObj.permalink;
+        commentElem.dataset.parentFullname = commentDataObj.parent.fullname;
 
     ///////////////////////////////////////////////////////////
     // ADD COMMENT INFO (OP, Parent content, timestamp, etc) //
@@ -990,7 +991,7 @@ async function createCommentElem(commentData) {
     commentInfoContainer.classList.add('cpp-comment-info');
 
     function toggleCommentCollapse(collapseBtn) {
-        databaseHelpers.array.toggleValue(databaseKeys.collapsedComments, comment.fullname);
+        databaseHelpers.array.toggleValue(databaseKeys.collapsedComments, commentDataObj.fullname);
 
         commentElem.classList.toggle('cpp-comment-collapsed');
 
@@ -1017,14 +1018,14 @@ async function createCommentElem(commentData) {
 
     const authorLink = document.createElement('a');
         authorLink.classList.add('cpp-comment-author-link');
-        authorLink.innerText = comment.author.name;
-        authorLink.href = 'https://www.reddit.com/u/' + comment.author.name;
+        authorLink.innerText = commentDataObj.author.name;
+        authorLink.href = 'https://www.reddit.com/u/' + commentDataObj.author.name;
         authorLink.target = '_blank';
         authorLink.title = 'Comment author';
 
-    if(comment.author.distinction) {
+    if(commentDataObj.author.distinction) {
         const authorDistinction = document.createElement('div');
-            switch(comment.author.distinction) {
+            switch(commentDataObj.author.distinction) {
                 case 'moderator':
                     authorDistinction.classList.add('cpp-comment-distinction-mod');
                     authorDistinction.classList.add('bi-shield-fill');
@@ -1046,22 +1047,22 @@ async function createCommentElem(commentData) {
     }
 
     const commentedToText = document.createElement('div');
-        commentedToText.title = comment.author.name + ' commented to ' + comment.parent.title;
+        commentedToText.title = commentDataObj.author.name + ' commented to ' + commentDataObj.parent.title;
         commentedToText.innerText = '❯';
 
     const commentParentPostLink = document.createElement('a');
         commentParentPostLink.classList.add('cpp-comment-parent-link');
-        commentParentPostLink.href = comment.parent.permalink;
+        commentParentPostLink.href = commentDataObj.parent.permalink;
         commentParentPostLink.target = '_blank';
         commentParentPostLink.title = 'Comment parent';
-        commentParentPostLink.innerText = comment.parent.title;
+        commentParentPostLink.innerText = commentDataObj.parent.title;
 
     const commentTimestamp = document.createElement('time');
         commentTimestamp.classList.add('cpp-comment-timestamp');
-        commentTimestamp.title = new Date(comment.created * 1000).toDateString() + ' ' + new Date(comment.created * 1000).toTimeString();
+        commentTimestamp.title = new Date(commentDataObj.created * 1000).toDateString() + ' ' + new Date(commentDataObj.created * 1000).toTimeString();
 
     function updateTimeStamp() {
-        const timeSincePosted = simpleSecondsToReadableForm((Date.now() / 1000) - comment.created);
+        const timeSincePosted = simpleSecondsToReadableForm((Date.now() / 1000) - commentDataObj.created);
 
         commentTimestamp.innerText = `· ${timeSincePosted}`;
     }
@@ -1077,9 +1078,9 @@ async function createCommentElem(commentData) {
     }, timestampUpdateRateMs);
 
 
-    let cuttedBody = comment.body.replaceAll('\n','').slice(0, 50);
+    let cuttedBody = commentDataObj.body.replaceAll('\n','').slice(0, 50);
 
-    if(cuttedBody.length != comment.body.length) {
+    if(cuttedBody.length != commentDataObj.body.length) {
         cuttedBody = cuttedBody + '...';
     }
 
@@ -1104,12 +1105,12 @@ async function createCommentElem(commentData) {
 
     const commentContentContainer = document.createElement('div');
         commentContentContainer.classList.add('cpp-comment-content');
-        commentContentContainer.innerHTML = comment.body_html;
+        commentContentContainer.innerHTML = commentDataObj.body_html;
 
     const commentViewLink = document.createElement('a');
         commentViewLink.classList.add('cpp-comment-view-link');
         commentViewLink.target = '_blank';
-        commentViewLink.href = 'https://www.reddit.com' + comment.permalink + '?context=3';
+        commentViewLink.href = 'https://www.reddit.com' + commentDataObj.permalink + '?context=3';
         commentViewLink.innerText = 'View comment';
 
     commentContentContainer.appendChild(commentViewLink);
@@ -1139,20 +1140,20 @@ async function createCommentElem(commentData) {
     const commentActionsContainer = document.createElement('div');
         commentActionsContainer.classList.add('cpp-comment-actions');
 
-    if(comment.approved.by) {
-        await commentActions.approve.updateElem(commentElem, comment, commentContentContainer, commentActionsContainer);
+    if(commentDataObj.approved.by) {
+        await commentActions.approve.updateElem(commentElem, commentDataObj, commentContentContainer, commentActionsContainer);
     }
 
-    if(comment.removed || comment.banned.by) {
-        await commentActions.remove.updateElem(commentElem, comment, commentContentContainer, commentActionsContainer);
+    if(commentDataObj.removed || commentDataObj.banned.by) {
+        await commentActions.remove.updateElem(commentElem, commentDataObj, commentContentContainer, commentActionsContainer);
     }
 
-    if(comment.locked) {
-        await commentActions.lock.updateElem(commentElem, comment, commentContentContainer, commentActionsContainer);
+    if(commentDataObj.locked) {
+        await commentActions.lock.updateElem(commentElem, commentDataObj, commentContentContainer, commentActionsContainer);
     }
 
-    if(comment.reports?.length > 0) {
-        await commentActions.report.updateElem(commentElem, comment, commentContentContainer, commentActionsContainer);
+    if(commentDataObj.reports?.length > 0) {
+        await commentActions.report.updateElem(commentElem, commentDataObj, commentContentContainer, commentActionsContainer);
     }
 
     commentElem.appendChild(commentActionsContainer);
@@ -1172,8 +1173,8 @@ async function createCommentElem(commentData) {
         approveBtn.classList.add('bi-check-lg');
         approveBtn.title = 'Approve comment';
         approveBtn.onclick = async () => {
-            await commentActions.approve.sendRequest(comment.fullname);
-            updateComment(commentElem, commentData, true);
+            await commentActions.approve.sendRequest(commentDataObj.fullname);
+            updateComment(commentDataObj.fullname, true);
         }
 
     const removeBtn = document.createElement('div');
@@ -1182,8 +1183,8 @@ async function createCommentElem(commentData) {
     removeBtn.classList.add('bi-x');
     removeBtn.title = 'Remove comment';
     removeBtn.onclick = async () => {
-        await commentActions.remove.sendRequest(comment.fullname);
-        updateComment(commentElem, commentData, true);
+        await commentActions.remove.sendRequest(commentDataObj.fullname);
+        updateComment(commentDataObj.fullname, true);
     }
 
     const lockBtnUnlockedClass = 'bi-lock';
@@ -1198,15 +1199,15 @@ async function createCommentElem(commentData) {
             lockBtn.classList.toggle(lockBtnLockedClass);
 
             if(!lockBtn.classList.contains(lockBtnUnlockedClass)) {
-                await commentActions.lock.sendRequest(comment.fullname);
+                await commentActions.lock.sendRequest(commentDataObj.fullname);
             } else {
-                await commentActions.unlock(comment.fullname);
+                await commentActions.unlock(commentDataObj.fullname);
             }
 
-            updateComment(commentElem, commentData, true);
+            updateComment(commentDataObj.fullname, true);
         }
 
-    if(comment.locked) {
+    if(commentDataObj.locked) {
         lockBtn.classList.add(lockBtnLockedClass);
     } else {
         lockBtn.classList.add(lockBtnUnlockedClass);
@@ -1218,8 +1219,8 @@ async function createCommentElem(commentData) {
         spamBtn.classList.add('bi-trash2');
         spamBtn.title = 'Spam comment';
         spamBtn.onclick = async () => {
-            await commentActions.spam(comment.fullname);
-            updateComment(commentElem, commentData, true);
+            await commentActions.spam(commentDataObj.fullname);
+            updateComment(commentDataObj.fullname, true);
         }
 
     const reportBtn = document.createElement('div');
@@ -1228,8 +1229,8 @@ async function createCommentElem(commentData) {
         reportBtn.classList.add('bi-flag');
         reportBtn.title = 'Report comment';
         reportBtn.onclick = async () => {
-            await commentActions.report.openDialog(comment.author.name, comment.fullname);
-            updateComment(commentElem, commentData, true);
+            await commentActions.report.openDialog(commentDataObj.author.name, commentDataObj.fullname);
+            updateComment(commentDataObj.fullname, true);
         }
 
     const translateBtn = document.createElement('div');
@@ -1238,7 +1239,7 @@ async function createCommentElem(commentData) {
         translateBtn.classList.add('bi-translate');
         translateBtn.title = 'Translate comment';
         translateBtn.onclick = () => {
-            window.open(`https://translate.google.com/?sl=auto&tl=en&text=${comment.body}&op=translate`);
+            window.open(`https://translate.google.com/?sl=auto&tl=en&text=${commentDataObj.body}&op=translate`);
         }
 
     const copyPermalinkBtn = document.createElement('div');
@@ -1247,7 +1248,7 @@ async function createCommentElem(commentData) {
         copyPermalinkBtn.classList.add('bi-share');
         copyPermalinkBtn.title = 'Copy permalink to clipboard';
         copyPermalinkBtn.onclick = () => {
-            GM_setClipboard('https://www.reddit.com' + comment.permalink);
+            GM_setClipboard('https://www.reddit.com' + commentDataObj.permalink);
 
             toast.message('Comment link copied to clipboard!', 2e3);
         }
@@ -1269,8 +1270,8 @@ async function createCommentElem(commentData) {
             tbCommentContextPopupBtn.classList.add('cpp-comment-tb-context-btn');
             tbCommentContextPopupBtn.classList.add('tb-comment-context-popup');
             tbCommentContextPopupBtn.classList.add('bi-menu-up');
-            tbCommentContextPopupBtn.dataset.commentId = comment.fullname;
-            tbCommentContextPopupBtn.dataset.contextJsonUrl = comment.permalink + '.json?context=3';
+            tbCommentContextPopupBtn.dataset.commentId = commentDataObj.fullname;
+            tbCommentContextPopupBtn.dataset.contextJsonUrl = commentDataObj.permalink + '.json?context=3';
             tbCommentContextPopupBtn.title = 'Open Toolbox context popup';
 
         const tbUserModActionsBtn = document.createElement('div');
@@ -1278,9 +1279,9 @@ async function createCommentElem(commentData) {
             tbUserModActionsBtn.classList.add('cpp-comment-tb-mod-actions-btn');
             tbUserModActionsBtn.classList.add('global-mod-button');
             tbUserModActionsBtn.classList.add('bi-person-gear');
-            tbUserModActionsBtn.dataset.subreddit = comment.subreddit.name;
-            tbUserModActionsBtn.dataset.author = comment.author.name;
-            tbUserModActionsBtn.dataset.parentid = comment.subreddit.id;
+            tbUserModActionsBtn.dataset.subreddit = commentDataObj.subreddit.name;
+            tbUserModActionsBtn.dataset.author = commentDataObj.author.name;
+            tbUserModActionsBtn.dataset.parentid = commentDataObj.subreddit.id;
             tbUserModActionsBtn.title = 'Perform various mod actions on this user';
 
         const tbUserHistoryBtn = document.createElement('div');
@@ -1288,17 +1289,17 @@ async function createCommentElem(commentData) {
             tbUserHistoryBtn.classList.add('cpp-comment-tb-user-history-btn');
             tbUserHistoryBtn.classList.add('user-history-button');
             tbUserHistoryBtn.classList.add('bi-person-lines-fill');
-            tbUserHistoryBtn.dataset.subreddit = comment.subreddit.name;
-            tbUserHistoryBtn.dataset.author = comment.author.name;
+            tbUserHistoryBtn.dataset.subreddit = commentDataObj.subreddit.name;
+            tbUserHistoryBtn.dataset.author = commentDataObj.author.name;
             tbUserHistoryBtn.title = "View & analyze user's submission and comment history";
 
         const tbUserNoteBtn = document.createElement('div');
             //tbUserNoteBtn.id = 'add-user-tag';
             tbUserNoteBtn.classList.add('cpp-comment-btn');
-            tbUserNoteBtn.classList.add('add-usernote-' + comment.subreddit.name);
+            tbUserNoteBtn.classList.add('add-usernote-' + commentDataObj.subreddit.name);
             tbUserNoteBtn.classList.add('bi-person-exclamation');
-            tbUserNoteBtn.dataset.subreddit = comment.subreddit.name;
-            tbUserNoteBtn.dataset.author = comment.author.name;
+            tbUserNoteBtn.dataset.subreddit = commentDataObj.subreddit.name;
+            tbUserNoteBtn.dataset.author = commentDataObj.author.name;
             tbUserNoteBtn.title = "Manage user notes";
             tbUserNoteBtn.onclick = () => {
                 toast.warning('Toolbox user notes are not supported currently, sorry!', 8e3);
@@ -1310,8 +1311,8 @@ async function createCommentElem(commentData) {
             tbUserProfileBtn.classList.add('tb-user-profile');
             tbUserProfileBtn.classList.add('bi-person-vcard');
             tbUserProfileBtn.dataset.listing = "overview";
-            tbUserProfileBtn.dataset.subreddit = comment.subreddit.name;
-            tbUserProfileBtn.dataset.user = comment.author.name;
+            tbUserProfileBtn.dataset.subreddit = commentDataObj.subreddit.name;
+            tbUserProfileBtn.dataset.user = commentDataObj.author.name;
             tbUserProfileBtn.title = "View user profile";
 
         commentButtonsContainer.appendChild(separator);
@@ -1332,7 +1333,7 @@ async function createCommentElem(commentData) {
 
     // If the comment is totally new and unseen
     if(!isCommentSeen) {
-        console.info(`[Comments++] %cThe snoblins brought you back this comment by ${comment.author.name}:`, 'color: CornflowerBlue;', commentData);
+        console.info(`[Comments++] %cThe snoblins brought you back this comment by ${commentDataObj.author.name}:`, 'color: CornflowerBlue;', rawCommentDataObj);
 
         commentElem.classList.add('cpp-new-comment-unseen');
 
@@ -1340,7 +1341,7 @@ async function createCommentElem(commentData) {
     }
 
     async function update() {
-        const updated = await updateComment(commentElem, commentData);
+        const updated = await updateComment(commentDataObj.fullname);
 
         if(updated) {
             // Remove unnecessary listener since this comment elem doesn't exist anymore
@@ -1350,6 +1351,8 @@ async function createCommentElem(commentData) {
 
     commentElem.addEventListener('mouseenter', update);
 
+    globalCommentElems = globalCommentElems.filter(obj => obj.fullname != commentDataObj.fullname);
+    globalCommentElems.push({'fullname': commentDataObj.fullname, 'element': commentElem, 'rawData': rawCommentDataObj });
     return commentElem;
 }
 
@@ -1378,26 +1381,30 @@ async function addNewCommentToTable(rawCommentDataObj, isReverse, isStartup) {
     }
 }
 
-async function updateComment(commentElem, oldRawCommentDataObj, noEffect) {
-    const newRawDataObj = await commentActions.fetch(commentElem.dataset.fullname, oldRawCommentDataObj);
+async function updateComment(commentFullname, noNewCommentEffect) {
+    const commentObj = globalCommentElems.find(obj => obj.fullname == commentFullname);
 
-    if(newRawDataObj) {
-        const newCommentDataObj = createCommentDataObj(newRawDataObj);
-        const oldCommentDataObj = createCommentDataObj(oldRawCommentDataObj);
+    if(commentObj) {
+        const oldRawCommentDataObj = commentObj?.rawData;
+        const newRawDataObj = await commentActions.fetch(commentFullname, oldRawCommentDataObj);
 
-        if(JSON.stringify(newCommentDataObj) != JSON.stringify(oldCommentDataObj)) {
-            const newCommentElem = await createCommentElem(newRawDataObj);
+        const commentElem = commentObj?.element;
 
-            console.log(newCommentDataObj, oldCommentDataObj);
-            console.log(newCommentElem, commentElem);
+        if(newRawDataObj) {
+            const newCommentDataObj = createCommentDataObj(newRawDataObj);
+            const oldCommentDataObj = createCommentDataObj(oldRawCommentDataObj);
 
-            if(!noEffect) {
-                newCommentElem.classList.add('cpp-updated-comment');
+            if(JSON.stringify(newCommentDataObj) != JSON.stringify(oldCommentDataObj)) {
+                const newCommentElem = await createCommentElem(newRawDataObj);
+
+                if(!noNewCommentEffect) {
+                    newCommentElem.classList.add('cpp-updated-comment');
+                }
+
+                commentTableElem.replaceChild(newCommentElem, commentElem);
+
+                return true;
             }
-
-            commentTableElem.replaceChild(newCommentElem, commentElem);
-
-            return true;
         }
     }
 
@@ -1420,12 +1427,38 @@ async function loadExistingComments() {
     }
 }
 
+async function getNewestCommentFullname() {
+    const getCommentElems = () => [...commentTableElem.querySelectorAll('.cpp-comment')];
+    const attempts = getCommentElems().length;
+
+    let newestCommentFullName = null;
+
+    for(let i = 0; i < attempts; i++) {
+        const newestFullname = getCommentElems()[0]?.dataset?.fullname;
+        const updated = await updateComment(newestFullname);
+
+        const isGhost = getCommentElems()[0]?.dataset?.fullname != newestFullname;
+
+        if(!isGhost) {
+            newestCommentFullname = newestFullname;
+            break;
+        }
+    }
+
+    return newestCommentFullName;
+}
+
 async function loadNewComments() {
     GM_setValue(databaseKeys.isLoadingNewComments, true);
 
     async function loadOneCommentBefore() {
         try {
-            const newestCommentFullname = [...commentTableElem.querySelectorAll('.cpp-comment')][0]?.dataset?.fullname;
+            const newestCommentFullname = await getNewestCommentFullname();
+
+            if(!newestCommentFullname) {
+                GM_setValue(databaseKeys.isLoadingNewComments, false);
+                return;
+            }
 
             const commentsJSON = await fetch(commentsBeforeJsonURL(newestCommentFullname, 1), {cache: 'no-store'})
                 .then(res => res.json())
@@ -1453,6 +1486,8 @@ async function loadNewComments() {
             }
         } catch(err) {
             toast.error('Something went wrong while trying to load new comments!', updateRateMs / 2);
+            console.error(err);
+
             GM_setValue(databaseKeys.isLoadingNewComments, false);
         }
     }
