@@ -807,7 +807,7 @@ function addControlPanel() {
     const topContainerElem = document.createElement('div');
         topContainerElem.id = 'cpp-top-container';
         topContainerElem.innerHTML = `
-        <div id="cpp-title"><b>Comments++</b><br>v${GM_info.script.version} <u><a href="https://www.github.com/hakorr/userscripts" target="_blank">GitHub</a></u></div>
+        <div id="cpp-title"><b>Comments++</b><br>v${GM_info.script.version} <u><a href="https://github.com/Hakorr/Userscripts/tree/main/Reddit.com/CommentsPlusPlus" target="_blank">GitHub</a></u></div>
         <div class="cpp-vertical-line"></div>
         `;
 
