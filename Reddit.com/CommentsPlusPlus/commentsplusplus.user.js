@@ -123,6 +123,10 @@ const commentAudioEffect = false;
 /////////////////////////////////////////////////////////////////////
 // DO NOT ENTER ZONE - DO NOT PROCEED IF YOU DON'T KNOW WHAT TO DO //
 
+
+const appliedSubCSS = document.querySelector(`[ref="applied_subreddit_stylesheet"]`);
+if(appliedSubCSS) appliedSubCSS.remove();
+
 const isOldReddit = typeof r != 'undefined';
 const isTopWindow = window == window.top;
 
