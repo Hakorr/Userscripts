@@ -1874,8 +1874,8 @@ body {
     width: fit-content;
 }
 .cpp-parent-comment .md {
-    color: #969696;
-    background-color: #efefef;
+    color: rgb(0 0 0 / 55%);
+    background-color: rgb(0 0 0 / 8%);
     border-radius: 2px;
     padding: 5px;
     cursor: pointer;
@@ -2074,25 +2074,25 @@ body {
 .cpp-comment-approved {
     border-left: 5px solid #00a905 !important;
 }
-.cpp-comment-approved .cpp-comment-content .md {
+.cpp-comment-approved .cpp-comment-content > .md {
     color: #004c02 !important;
 }
 .cpp-comment-reported {
     border-left: 5px solid #a68a00 !important;
 }
-.cpp-comment-reported .cpp-comment-content .md {
+.cpp-comment-reported .cpp-comment-content > .md {
     color: #b79900 !important;
 }
 .cpp-comment-removed {
     border-left: 5px solid #870000 !important;
 }
-.cpp-comment-removed .cpp-comment-content .md {
+.cpp-comment-removed .cpp-comment-content > .md {
     color: #770c04 !important;
 }
 .cpp-comment-spammed {
     border-left: 5px solid #870000 !important;
 }
-.cpp-comment-spammed .cpp-comment-content .md {
+.cpp-comment-spammed .cpp-comment-content > .md {
     color: #770c04 !important;
 }
 .cpp-comment-locked {
@@ -2441,7 +2441,7 @@ body {
     border-bottom-color: rgb(255 255 255 / 10%);
     color: #a7a7a7;
 }
-.cpp-comment-content .md * {
+.cpp-comment-content > .md * {
     color: gainsboro !important;
 }
 .cpp-load-older-comments-btn {
@@ -2476,8 +2476,8 @@ body {
     color: #e4e4e4;
 }
 .cpp-parent-comment .md {
-    color: #858585;
-    background-color: #262626;
+    color: rgb(255 255 255 / 40%);
+    background-color: rgb(255 255 255 / 5%);
 }
 `);
 
