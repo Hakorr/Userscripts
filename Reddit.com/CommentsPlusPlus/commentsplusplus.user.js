@@ -718,6 +718,7 @@ const commentActions = {
 
                             const oldBody = document.createElement('div');
                                 oldBody.classList.add(hiddenBodyClass);
+                                oldBody.classList.add('cpp-deleted-body');
                                 oldBody.innerHTML = oldData.body_html;
 
                             container.appendChild(oldBody);
@@ -2443,6 +2444,12 @@ body {
 }
 .cpp-comment-content > .md * {
     color: gainsboro !important;
+}
+.cpp-deleted-toggle-btn {
+  color: gainsboro !important;
+}
+.cpp-deleted-body .md {
+  color: gainsboro !important;
 }
 .cpp-load-older-comments-btn {
     color: #cecece;
