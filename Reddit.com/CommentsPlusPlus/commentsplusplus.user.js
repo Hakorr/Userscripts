@@ -61,6 +61,10 @@ const toolboxActive = false;
 // Default: false
 const uiDarkmodeActivated = false;
 
+// [If to show the parent comment of the comment]
+// Default: true
+const displayCommentContext = true;
+
 // [In which interval do you want to check for new comments]
 // Default: 1000 (milliseconds) (...meaning; check for new comments every second)
 const updateRateMs = 1000;
@@ -146,7 +150,7 @@ const average = array => array.reduce((a, b) => a + b) / array.length;
 
 const contentElem = document.querySelector('.content[role="main"]');
 const commentTableElem = document.querySelector('#siteTable');
-const getCommentElems = (doc) => [...doc.querySelectorAll('[data-type="comment"]')];
+const getCommentElems = () => [...commentTableElem.querySelectorAll('.cpp-comment')];
 
 const subredditURL = 'https://www.reddit.com/r/' + currentSubreddit;
 const commentsURL = subredditURL + '/comments';
@@ -983,6 +987,51 @@ async function createCommentElem(rawCommentDataObj) {
         commentElem.dataset.permalink = commentDataObj.permalink;
         commentElem.dataset.parentFullname = commentDataObj.parent.fullname;
 
+    //////////////////////////
+    //  ADD COMMENT CONTEXT //
+    //////////////////////////
+
+    const commentContextContainer = document.createElement('div');
+    commentContextContainer.classList.add('cpp-comment-context');
+
+    const commentParent = commentDataObj.parent.fullname;
+
+    if(displayCommentContext && commentParent.includes('t1_')) {
+        const rawParentCommentData = await commentActions.fetch(commentParent);
+
+        if(rawParentCommentData) {
+            const commentData = createCommentDataObj(rawParentCommentData);
+
+            const commentContext = document.createElement('div');
+                commentContext.classList.add('cpp-parent-comment');
+                commentContext.innerHTML = commentData.body_html;
+                commentContext.title = `The parent comment of u/${commentDataObj.author.name}'s comment, made by u/${commentData.author.name}. Shown to give context.`;
+
+            commentContext.onclick = () => {
+                const commentGlobalData = globalCommentElems.find(obj => obj.fullname == commentData.fullname);
+
+                if(commentGlobalData) {
+                    const highlightClass = 'cpp-comment-highlight';
+
+                    commentGlobalData.element.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+
+                    commentGlobalData.element.classList.add(highlightClass);
+
+                    setTimeout(() => commentGlobalData.element.classList.remove(highlightClass), 3000);
+                } else {
+                    window.open(`${commentData.permalink}`);
+                }
+            };
+
+            commentContextContainer.appendChild(commentContext);
+        }
+    }
+
+    commentElem.appendChild(commentContextContainer);
+
     ///////////////////////////////////////////////////////////
     // ADD COMMENT INFO (OP, Parent content, timestamp, etc) //
     ///////////////////////////////////////////////////////////
@@ -1002,7 +1051,6 @@ async function createCommentElem(rawCommentDataObj) {
     function collapseComment(collapseBtn) {
         commentElem.classList.add('cpp-comment-collapsed');
 
-        collapseBtn.classList.add('bi-fullscreen-exit');
         collapseBtn.classList.add('bi-fullscreen');
     }
 
@@ -1398,7 +1446,7 @@ async function updateComment(commentFullname, noNewCommentEffect) {
                 const newCommentElem = await createCommentElem(newRawDataObj);
 
                 if(!noNewCommentEffect) {
-                    newCommentElem.classList.add('cpp-updated-comment');
+                    newCommentElem.classList.add('cpp-comment-updated');
                 }
 
                 commentTableElem.replaceChild(newCommentElem, commentElem);
@@ -1428,7 +1476,6 @@ async function loadExistingComments() {
 }
 
 async function getNewestCommentFullname() {
-    const getCommentElems = () => [...commentTableElem.querySelectorAll('.cpp-comment')];
     const attempts = getCommentElems().length;
 
     let newestCommentFullname = null;
@@ -1534,7 +1581,7 @@ function addLoadNewCommentsBtn() {
 }
 
 function saveLastSeenComment() {
-    const firstEntry = getCommentElems(document)[0];
+    const firstEntry = getCommentElems()[0];
 
     if(firstEntry) {
         GM_setValue(databaseKeys.lastSeenCommentID, firstEntry.dataset.fullname);
@@ -1786,12 +1833,13 @@ body {
     gap: 5px 0px;
     grid-auto-flow: row;
     grid-template-areas:
+        "cpp-comment-context"
         "cpp-comment-info"
         "cpp-comment-content"
         "cpp-comment-actions"
         "cpp-comment-buttons";
     font-family: 'Inter';
-    padding: 10px 0 10px 15px;
+    padding: 0 0 10px 15px;
     border-bottom: 1px solid rgb(0 0 0 / 10%);
 }
 .cpp-ghost-comment {
@@ -1799,14 +1847,27 @@ body {
     gap: 5px 0px;
     grid-auto-flow: row;
     grid-template-areas:
+        "cpp-comment-context"
         "cpp-comment-info"
         "cpp-comment-content"
         "cpp-comment-actions"
         "cpp-comment-buttons";
     font-family: 'Inter';
-    padding: 10px 0 10px 15px;
+    padding: 0 0 10px 15px;
     border-bottom: 1px solid rgb(0 0 0 / 10%);
     border: 2.5px solid rgb(255 0 0 / 50%) !important;
+}
+.cpp-comment-context {
+    grid-area: cpp-comment-context;
+    min-height: 5px;
+}
+.cpp-parent-comment .md {
+    color: #969696;
+    background-color: #efefef;
+    border-radius: 2px;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 10px;
 }
 .cpp-comment-info {
     grid-area: cpp-comment-info;
@@ -2001,25 +2062,25 @@ body {
 .cpp-comment-approved {
     border-left: 5px solid #00a905 !important;
 }
-.cpp-comment-approved .md {
+.cpp-comment-approved .cpp-comment-content .md {
     color: #004c02 !important;
 }
 .cpp-comment-reported {
     border-left: 5px solid #a68a00 !important;
 }
-.cpp-comment-reported .md {
+.cpp-comment-reported .cpp-comment-content .md {
     color: #b79900 !important;
 }
 .cpp-comment-removed {
     border-left: 5px solid #870000 !important;
 }
-.cpp-comment-removed .md {
+.cpp-comment-removed .cpp-comment-content .md {
     color: #770c04 !important;
 }
 .cpp-comment-spammed {
     border-left: 5px solid #870000 !important;
 }
-.cpp-comment-spammed .md {
+.cpp-comment-spammed .cpp-comment-content .md {
     color: #770c04 !important;
 }
 .cpp-comment-locked {
@@ -2088,6 +2149,9 @@ body {
 GM_addStyle(`
 .cpp-comment-collapsed {
     height: 20px;
+}
+.cpp-comment-collapsed .cpp-comment-context {
+    display: none !important;
 }
 .cpp-comment-collapsed .cpp-comment-content {
     display: none !important;
@@ -2249,19 +2313,40 @@ GM_addStyle(`
 
 // updated comment effect
 GM_addStyle(`
-.cpp-updated-comment {
-    animation-name: cpp-updated-comment-keyframes;
+.cpp-comment-updated {
+    animation-name: cpp-comment-updated-keyframes;
     animation-duration: 2s;
     animation-iteration-count: 1;
     animation-direction: normal;
     animation-timing-function: ease-out;
 }
-@keyframes cpp-updated-comment-keyframes {
+@keyframes cpp-comment-updated-keyframes {
     0% {
         background-color: rgb(255 255 0 / 25%);
     }
     100% {
         background-color: rgb(255 255 0 / 0%);
+    }
+}
+`);
+
+// comment highlight effect
+GM_addStyle(`
+.cpp-comment-highlight {
+    animation-name: cpp-comment-highlight-keyframes;
+    animation-duration: 2s;
+    animation-iteration-count: 1;
+    animation-direction: normal;
+    animation-timing-function: ease-out;
+}
+@keyframes cpp-comment-highlight-keyframes {
+    0% {
+        background-color: rgb(0 135 210 / 25%);
+        transform: scale(0.97);
+    }
+    100% {
+        background-color: rgb(0 135 210 / 0%);
+        transform: scale(1);
     }
 }
 `);
@@ -2377,6 +2462,10 @@ body {
 }
 .cpp-comment-collapse-btn:hover {
     color: #e4e4e4;
+}
+.cpp-parent-comment .md {
+    color: #858585;
+    background-color: #262626;
 }
 `);
 
