@@ -694,7 +694,7 @@ const commentActions = {
                 }
 
                 // keep content if comment [deleted]
-                if(commentData.author == '[deleted]') {
+                if(oldData && commentData.author == '[deleted]') {
                     const containerId = `cpp-deleted-container_${Date.now()}`;
                     const bodyToggleBtnClass = 'cpp-deleted-toggle-btn';
                     const hiddenBodyClass = 'cpp-deleted-hidden-body';
@@ -1482,7 +1482,9 @@ async function getNewestCommentFullname() {
 
     for(let i = 0; i < attempts; i++) {
         const newestFullname = getCommentElems()[0]?.dataset?.fullname;
-        const updated = await updateComment(newestFullname);
+        const oldCommentObj = globalCommentElems.find(obj => obj.fullname == newestFullname);
+
+        const updated = await updateComment(newestFullname, oldCommentObj.rawData);
 
         const isGhost = getCommentElems()[0]?.dataset?.fullname != newestFullname;
 
