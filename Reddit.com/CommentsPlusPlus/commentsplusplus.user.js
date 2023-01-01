@@ -998,41 +998,8 @@ async function createCommentElem(rawCommentDataObj) {
     const commentContextContainer = document.createElement('div');
     commentContextContainer.classList.add('cpp-comment-context');
 
-    const commentParent = commentDataObj.parent.fullname;
-
-    if(displayCommentContext && commentParent.includes('t1_')) {
-        const rawParentCommentData = await commentActions.fetch(commentParent);
-
-        if(rawParentCommentData) {
-            const commentData = createCommentDataObj(rawParentCommentData);
-
-            const commentContext = document.createElement('div');
-                commentContext.classList.add('cpp-parent-comment');
-                commentContext.innerHTML = commentData.body_html;
-                commentContext.title = `The parent comment of u/${commentDataObj.author.name}'s comment, made by u/${commentData.author.name}. Shown to give context.`;
-
-            commentContext.onclick = () => {
-                const commentGlobalData = globalCommentElems.find(obj => obj.fullname == commentData.fullname);
-
-                if(commentGlobalData) {
-                    const highlightClass = 'cpp-comment-highlight';
-
-                    commentGlobalData.element.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center'
-                    });
-
-                    commentGlobalData.element.classList.add(highlightClass);
-
-                    setTimeout(() => commentGlobalData.element.classList.remove(highlightClass), 3000);
-                } else {
-                    window.open(`${commentData.permalink}`);
-                }
-            };
-
-            commentContextContainer.appendChild(commentContext);
-        }
-    }
+    // Position moved to content container
+    // I'll leave this section for possible future things
 
     commentElem.appendChild(commentContextContainer);
 
@@ -1166,6 +1133,42 @@ async function createCommentElem(rawCommentDataObj) {
         commentViewLink.innerText = 'View comment';
 
     commentContentContainer.appendChild(commentViewLink);
+
+    const commentParent = commentDataObj.parent.fullname;
+
+    if(displayCommentContext && commentParent.includes('t1_')) {
+        const rawParentCommentData = await commentActions.fetch(commentParent);
+
+        if(rawParentCommentData) {
+            const commentData = createCommentDataObj(rawParentCommentData);
+
+            const commentContext = document.createElement('div');
+                commentContext.classList.add('cpp-parent-comment');
+                commentContext.innerHTML = commentData.body_html;
+                commentContext.title = `The parent comment of u/${commentDataObj.author.name}'s comment, made by u/${commentData.author.name}. Shown to give context.`;
+
+            commentContext.onclick = () => {
+                const commentGlobalData = globalCommentElems.find(obj => obj.fullname == commentData.fullname);
+
+                if(commentGlobalData) {
+                    const highlightClass = 'cpp-comment-highlight';
+
+                    commentGlobalData.element.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+
+                    commentGlobalData.element.classList.add(highlightClass);
+
+                    setTimeout(() => commentGlobalData.element.classList.remove(highlightClass), 3000);
+                } else {
+                    window.open(`${commentData.permalink}`);
+                }
+            };
+
+            commentContentContainer.prepend(commentContext);
+        }
+    }
 
     [...commentContentContainer.querySelectorAll('a')].forEach(linkElem => {
         if(!linkElem.href.includes('://preview.redd.it/')) return;
@@ -1867,13 +1870,16 @@ body {
     grid-area: cpp-comment-context;
     min-height: 5px;
 }
+.cpp-parent-comment {
+    width: fit-content;
+}
 .cpp-parent-comment .md {
     color: #969696;
     background-color: #efefef;
     border-radius: 2px;
     padding: 5px;
     cursor: pointer;
-    font-size: 10px;
+    font-size: 12px;
 }
 .cpp-comment-info {
     grid-area: cpp-comment-info;
