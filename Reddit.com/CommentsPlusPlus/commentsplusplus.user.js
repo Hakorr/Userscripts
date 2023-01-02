@@ -143,7 +143,6 @@ const currentSubreddit = r.config.post_site;
 
 const databaseKeys = {
     'seenComments': 'seenComments_r_' + currentSubreddit,
-    'pastComments': 'pastComments_r_' + currentSubreddit,
     'lastSeenCommentID': 'lastSeenCommentID_r_' + currentSubreddit,
     'isLoadingNewComments': 'isLoadingNewComments_r_' + currentSubreddit,
     'liveUpdateActivated': 'liveUpdateActivated_r_' + currentSubreddit,
@@ -1074,7 +1073,7 @@ async function createCommentElem(rawCommentDataObj) {
         commentParentPostLink.classList.add('cpp-comment-parent-link');
         commentParentPostLink.href = commentDataObj.parent.permalink;
         commentParentPostLink.target = '_blank';
-        commentParentPostLink.title = 'Comment parent';
+        commentParentPostLink.title = 'Post the comment was submitted to';
         commentParentPostLink.innerText = commentDataObj.parent.title;
 
     const commentTimestamp = document.createElement('time');
@@ -1146,11 +1145,15 @@ async function createCommentElem(rawCommentDataObj) {
             const commentContext = document.createElement('div');
                 commentContext.classList.add('cpp-parent-comment');
                 commentContext.innerHTML = commentData.body_html;
-                commentContext.title = `The parent comment of u/${commentDataObj.author.name}'s comment, made by u/${commentData.author.name}. Shown to give context.`;
+                commentContext.title = `The comment is a response to this comment made by u/${commentData.author.name}. Shown to give context.`;
 
             commentContext.onclick = () => {
                 const commentGlobalData = globalCommentElems.find(obj => obj.fullname == commentData.fullname);
 
+                window.open(`${commentData.permalink}`);
+
+                /* This is an feature that'd scroll to the comment if it existed on the page
+                 * Disabled for now, saved for future use
                 if(commentGlobalData) {
                     const highlightClass = 'cpp-comment-highlight';
 
@@ -1165,6 +1168,7 @@ async function createCommentElem(rawCommentDataObj) {
                 } else {
                     window.open(`${commentData.permalink}`);
                 }
+                */
             };
 
             commentContentContainer.prepend(commentContext);
@@ -1514,33 +1518,28 @@ async function loadNewComments() {
             const newestCommentFullname = await getNewestCommentFullname();
 
             if(!newestCommentFullname) {
+                toast.error(`Failed to find the newest comment on the page!`, updateRateMs / 2);
+
                 GM_setValue(databaseKeys.isLoadingNewComments, false);
+
                 return;
             }
 
             const commentsJSON = await fetch(commentsBeforeJsonURL(newestCommentFullname, 1), {cache: 'no-store'})
-                .then(res => res.json())
-                .catch(err => toast.error('Failed to update comments!', updateRateMs / 2));
+                .then(res => res.json());
 
-            if(!commentsJSON) {
-                GM_setValue(databaseKeys.isLoadingNewComments, false);
-                return;
-            }
-
+            const dataExists = commentsJSON.data.children.length ? true : false;
             const commentData = commentsJSON.data.children[0]?.data;
 
-            if(commentData) {
-                const isNewComment = !databaseHelpers.array.doesValueExist(databaseKeys.pastComments, commentData.name);
+            if(dataExists && commentData) {
+                await addNewCommentToTable(commentData);
 
-                if(isNewComment) {
-                    await addNewCommentToTable(commentData);
-                    databaseHelpers.array.addValue(databaseKeys.pastComments, commentData.name);
-                    loadOneCommentBefore();
-                } else {
-                    GM_setValue(databaseKeys.isLoadingNewComments, false);
-                }
+                // Move on to the next comment
+                loadOneCommentBefore();
             } else {
                 GM_setValue(databaseKeys.isLoadingNewComments, false);
+
+                return;
             }
         } catch(err) {
             toast.error('Something went wrong while trying to load new comments!', updateRateMs / 2);
@@ -1554,7 +1553,7 @@ async function loadNewComments() {
 }
 
 async function loadOlderComments() {
-    const oldestCommentFullname = [...commentTableElem.querySelectorAll('.cpp-comment')].pop()?.dataset?.fullname;
+    const oldestCommentFullname = getCommentElems().pop()?.dataset?.fullname;
 
     if(oldestCommentFullname) {
         const commentsJSON = await fetch(commentsAfterJsonURL(oldestCommentFullname, loadMoreCommentsAmount), {cache: 'no-store'})
@@ -1644,7 +1643,7 @@ async function isFeedUpToDate() {
 
     if(commentsJSON) {
         const jsonFirstEntry = commentsJSON.data.children[0].data;
-        const newestCommentFullname = [...commentTableElem.querySelectorAll('.cpp-comment')][0]?.dataset?.fullname;
+        const newestCommentFullname = getCommentElems()[0]?.dataset?.fullname;
 
         return newestCommentFullname == jsonFirstEntry.name;
     }
@@ -1654,15 +1653,16 @@ async function initialize() {
     GM_setValue(databaseKeys.isLoadingNewComments, false);
 
     clearCommentTableElem();
-    loadExistingComments();
     addControlPanel();
+    removeRedditUI();
     addLoadNewCommentsBtn();
 
     window.onblur = saveLastSeenComment;
 
+    await loadExistingComments();
+
     addLastSeenCommentMarker();
     updateControlPanel();
-    removeRedditUI();
 
     const feedLoop = setInterval(async () => {
       if(GM_getValue(databaseKeys.liveUpdateActivated)) {
