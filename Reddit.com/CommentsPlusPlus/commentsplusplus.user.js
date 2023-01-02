@@ -460,7 +460,7 @@ async function getCommentData(endpoint, errorMessage) {
         .catch(err => toast.error(errorMessage, 3e3));
 
     if(res?.message && res?.error) {
-        toast.error(`${errorMessage} (${res.error} - ${res.message})`, 1e3);
+        toast.error(`${errorMessage} (${res.error} - ${res.message})`, 5e3);
     } else {
         return res;
     }
