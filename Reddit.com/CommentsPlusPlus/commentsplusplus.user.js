@@ -1142,34 +1142,12 @@ async function createCommentElem(rawCommentDataObj) {
         if(rawParentCommentData) {
             const commentData = createCommentDataObj(rawParentCommentData);
 
-            const commentContext = document.createElement('div');
+            const commentContext = document.createElement('a');
                 commentContext.classList.add('cpp-parent-comment');
+                commentContext.href = commentData.permalink;
+                commentContext.target = '_blank';
                 commentContext.innerHTML = commentData.body_html;
-                commentContext.title = `The comment is a response to this comment made by u/${commentData.author.name}. Shown to give context.`;
-
-            commentContext.onclick = () => {
-                const commentGlobalData = globalCommentElems.find(obj => obj.fullname == commentData.fullname);
-
-                window.open(`${commentData.permalink}`);
-
-                /* This is an feature that'd scroll to the comment if it existed on the page
-                 * Disabled for now, saved for future use
-                if(commentGlobalData) {
-                    const highlightClass = 'cpp-comment-highlight';
-
-                    commentGlobalData.element.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center'
-                    });
-
-                    commentGlobalData.element.classList.add(highlightClass);
-
-                    setTimeout(() => commentGlobalData.element.classList.remove(highlightClass), 3000);
-                } else {
-                    window.open(`${commentData.permalink}`);
-                }
-                */
-            };
+                commentContext.title = `The comment was a response to this comment made by u/${commentData.author.name}. Shown to give context.`;
 
             commentContentContainer.prepend(commentContext);
         }
