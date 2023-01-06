@@ -6,6 +6,23 @@ ChatGPT right at your fingertips, everywhere, no matter the site. Simply highlig
 
 ### [[Install]](https://github.com/Hakorr/Userscripts/raw/main/OpenAI.com/ChatGPTEverywhere/chatgpteverywhere.user.js)
 
+## Tested sites
+
+| Service       | Site content [(?)](## "Any text on the page") | Message box [(?)](## "Textboxes you can write to") |
+|-------------|--------------|-------------|
+| Twitter | ✔️ | ❌ |
+| Reddit | ✔️ | ✔️ |
+| Discord | ✔️ | ❌ |
+| Github  | ✔️ | ✔️ |
+| Gmail  | ✔️ | ✔️ |
+| Outlook  | ✔️ | ✔️ |
+| Protonmail  | ✔️ | ❌ |
+
+#### Legend
+
+✔️ = Rewritable
+❌ = Rewriting does not work
+
 ## Q&A
 
 ### How to install & use?
