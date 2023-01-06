@@ -38,10 +38,6 @@ Some sites might have unique elements and situations which couldn't be tested fo
 
 If your text is replaced by the site, you can manually copy the rewritten text from the GUI. Modern website frameworks like React don't always notice programmically modified textfields, and replace the field's contents with whatever they last had.
 
-## Example Use Case
-
-![](content/twitter_example.gif)
-
 ## Examples of Rewritten "Hello world"
 
 | Applied styles                | Input        | Output                                                                                                                                                                                                                                           |
