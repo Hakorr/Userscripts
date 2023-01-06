@@ -18,7 +18,7 @@
     /*//////////////////////////////////////////
     //////////// [SETTINGS SECTION] ////////////
     \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*/
-  
+
     // Get your API key here: https://beta.openai.com/account/api-keys
     const api_key = '';
 
@@ -284,17 +284,13 @@
     }
 
     function updateElem(elem) {
-        elem.dispatchEvent(new Event('change', {
-            view: window,
-            bubbles: true,
-            cancelable: true
-        }));
-
-        elem.dispatchEvent(new Event('input', {
-            view: window,
-            bubbles: true,
-            cancelable: true
-        }));
+        ['change', 'input'].forEach(eventName => {
+            elem.dispatchEvent(new Event(eventName, {
+                view: window,
+                bubbles: true,
+                cancelable: true
+            }));
+        });
     }
 
     function replaceElemText(elem, text, newText) {
