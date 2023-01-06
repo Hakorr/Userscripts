@@ -11,6 +11,7 @@
 // @grant       GM_notification
 // @version     1.0.0
 // @author      HKR
+// @homepageURL https://github.com/Hakorr/Userscripts/tree/main/Reddit.com/CommentsPlusPlus
 // @description Enables a live-feed for subreddit comments, and many various other things!
 // @run-at      document-load
 // ==/UserScript==
