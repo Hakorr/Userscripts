@@ -468,11 +468,24 @@
         }
     }
 
+    let allowOpen = false;
+
     // Hold for x amount of milliseconds for the GUI to open
-    document.addEventListener('mousedown', e => clearTimeout(mouseHoldTimeout));
-    document.addEventListener('mouseup', e => clearTimeout(mouseHoldTimeout));
+    document.addEventListener('mousedown', e => {
+        clearTimeout(mouseHoldTimeout);
+        allowOpen = true;
+    });
+
+    document.addEventListener('mouseup', e => {
+        clearTimeout(mouseHoldTimeout);
+        allowOpen = false;
+    });
+
     document.addEventListener('selectionchange', e => {
         clearTimeout(mouseHoldTimeout);
-        mouseHoldTimeout = setTimeout(openGui, requiredHoldTimeMs);
+
+        if(allowOpen) {
+            mouseHoldTimeout = setTimeout(openGui, requiredHoldTimeMs);
+        }
     });
 })();
