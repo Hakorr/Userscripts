@@ -8,7 +8,7 @@ ChatGPT right at your fingertips, everywhere, no matter the site. Simply highlig
 
 ## Tested sites
 
-| Service       | Site content [(?)](## "Any text on the page") | Message box [(?)](## "Textboxes you can write to") |
+| Service       | Site content [(?)](## "Any text on the page") | Message box [(?)](## "Text boxes you can write to") |
 |-------------|--------------|-------------|
 | Twitter | ✔️ | ❌ |
 | Reddit | ✔️ | ✔️ |
