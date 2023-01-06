@@ -4,14 +4,14 @@ ChatGPT right at your fingertips, everywhere, no matter the site. Simply highlig
 
 ![](content/ui.png)
 
-### [[Install]](https://github.com/Hakorr/Userscripts/tree/main/OpenAI.com/ChatGPTEverywhere)
+### [[Install]](https://github.com/Hakorr/Userscripts/raw/main/OpenAI.com/ChatGPTEverywhere/chatgpteverywhere.user.js)
 
 ## Q&A
 
 ### How to install & use?
 
 1. Install a [Userscript Manager](https://violentmonkey.github.io/).
-2. Install [ChatGPT Everywhere](https://github.com/Hakorr/Userscripts/tree/main/OpenAI.com/ChatGPTEverywhere).
+2. Install [ChatGPT Everywhere](https://github.com/Hakorr/Userscripts/raw/main/OpenAI.com/ChatGPTEverywhere/chatgpteverywhere.user.js).
 4. Set your [OpenAI API Key](https://beta.openai.com/account/api-keys) on the userscript's settings. The settings are located at the top of the userscript's source code.
 5. Simply highlight any text on a page. Before letting go of your mouse button, hold it for 1 second and a GUI should appear.
 
