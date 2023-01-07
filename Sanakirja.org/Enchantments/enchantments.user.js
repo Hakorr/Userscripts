@@ -9,26 +9,14 @@
 // @run-at      document-load
 // ==/UserScript==
 
-const removeSideHS = setInterval(() => {
-    const elem = document.querySelector('iframe[src="//vg.is.fi/hs-sanakirja/"]')
-    if(typeof elem == "object" && elem != null) {
-        elem.remove();
-        clearInterval(removeSideHS);
-    }
-}, 100);
+['iframe[src="//vg.is.fi/hs-sanakirja/"]', 'iframe[src="https://vg.is.fi/hs-sanakirja/"]', 'iframe[title="SP Consent Message"]'].forEach(query => {
+    const interval = setInterval(() => {
+        const elem = document.querySelector(query);
 
-const removeBottomHS = setInterval(() => {
-    const elem = document.querySelector('iframe[src="https://vg.is.fi/hs-sanakirja/"]')
-    if(typeof elem == "object" && elem != null) {
-        elem.remove();
-        clearInterval(removeBottomHS);
-    }
-}, 100);
+        if(typeof elem == "object" && elem != null) {
+            elem.parentElement.remove();
 
-const removeConsentMessage = setInterval(() => {
-    const elem = document.querySelector('iframe[title="SP Consent Message"]');
-    if(typeof elem == "object" && elem != null) {
-        elem.parentElement.remove();
-        clearInterval(removeConsentMessage);
-    }
-}, 100);
+            clearInterval(interval);
+        }
+    }, 100);
+});
