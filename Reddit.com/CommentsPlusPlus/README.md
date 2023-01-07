@@ -2,7 +2,7 @@
 
 Enables a live-feed for subreddit comments, and various other things!
 
-![](content/example.gif)
+![](content/example-2.gif)
 
 ### [[Install]](https://github.com/Hakorr/Userscripts/raw/main/Reddit.com/CommentsPlusPlus/commentsplusplus.user.js)
 
