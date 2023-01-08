@@ -287,26 +287,28 @@ function simpleSecondsToReadableForm(seconds) {
           ms_Mon = ms_Day * 30,
           ms_Yr = ms_Day * 365;
 
+    const getTimeStr = (prefix, time, suffix) => prefix + time + suffix + `${time == 1 ? '' : 's'} ago`;
+    
     if(seconds < 10)
         return 'just now';
 
     else if (seconds < ms_Min)
-        return Math.round(seconds) + ' seconds ago';
+        return getTimeStr('', Math.round(seconds), ' second');
 
     else if (seconds < ms_Hour)
-        return Math.round(seconds / ms_Min) + ' minutes ago';
+        return getTimeStr('', Math.round(seconds / ms_Min), ' minute');
 
     else if (seconds < ms_Day)
-        return Math.round(seconds / ms_Hour) + ' hours ago';
+        return getTimeStr('', Math.round(seconds / ms_Hour), ' hour');
 
     else if (seconds < ms_Mon)
-        return 'Around ' + Math.round(seconds / ms_Day) + ' days ago';
+        return getTimeStr('Around ', Math.round(seconds / ms_Day), ' day');
 
     else if (seconds < ms_Yr)
-        return 'Around ' + Math.round(seconds / ms_Mon) + ' months ago';
+        return  getTimeStr('Around ', Math.round(seconds / ms_Mon), ' month');
 
     else
-        return 'Around ' + Math.round(seconds / ms_Yr) + ' years ago';
+        return  getTimeStr('Around ', Math.round(seconds / ms_Yr), ' year');
 }
 
 const toast = {
