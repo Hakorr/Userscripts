@@ -9,7 +9,7 @@
 // @run-at      document-load
 // ==/UserScript==
 
-['iframe[src="//vg.is.fi/hs-sanakirja/"]', 'iframe[src="https://vg.is.fi/hs-sanakirja/"]', 'iframe[title="SP Consent Message"]'].forEach(query => {
+['iframe[src="//vg.is.fi/hs-sanakirja/"]', 'iframe[src="https://vg.is.fi/hs-sanakirja/"]', '[id^=sp_message_container]'].forEach(query => {
     const interval = setInterval(() => {
         const elem = document.querySelector(query);
 
