@@ -14,7 +14,7 @@
         const elem = document.querySelector(query);
 
         if(typeof elem == "object" && elem != null) {
-            elem.parentElement.remove();
+            elem.remove();
 
             clearInterval(interval);
         }
