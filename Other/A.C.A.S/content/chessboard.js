@@ -1808,7 +1808,7 @@
 	window['Chessboard'] = constructor
 
 	// support legacy ChessBoard name
-	window['ChessBoard'] = _window['Chessboard']
+	window['ChessBoard'] = window['Chessboard']
 
 	// expose util functions
 	window['Chessboard']['fenToObj'] = fenToObj
