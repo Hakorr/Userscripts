@@ -6151,17 +6151,21 @@ lozBoard.prototype.hashCheck = function (turn) {
     }
   }
 
-  if (this.loHash != loHash)
-    //console.log('*************** LO',this.loHash,loHash);
-
-  if (this.hiHash != hiHash)
-    //console.log('*************** HI',this.hiHash,hiHash);
-
-  if (this.ploHash != ploHash)
-    //console.log('************* PLO',this.ploHash,ploHash);
-
-  if (this.phiHash != phiHash)
-    //console.log('************* PHI',this.phiHash,phiHash);
+  if (this.loHash != loHash) {
+	//console.log('*************** LO',this.loHash,loHash);
+  }
+    
+  if (this.hiHash != hiHash) {
+	//console.log('*************** HI',this.hiHash,hiHash);
+  }
+    
+  if (this.ploHash != ploHash) {
+	//console.log('************* PLO',this.ploHash,ploHash);
+  }
+    
+  if (this.phiHash != phiHash) {
+	//console.log('************* PHI',this.phiHash,phiHash);
+  }
 }
 
 //}}}
@@ -6878,7 +6882,7 @@ lozUCI.prototype.post = function (s) {
     postMessage(s);
 
   else
-    //console.log(s);
+    console.log(s);
 }
 
 //}}}
