@@ -1809,8 +1809,4 @@
 
 	// support legacy ChessBoard name
 	window['ChessBoard'] = window['Chessboard']
-
-	// expose util functions
-	window['Chessboard']['fenToObj'] = fenToObj
-	window['Chessboard']['objToFen'] = objToFen
   })() // end anonymous wrapper
