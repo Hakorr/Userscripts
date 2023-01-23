@@ -1799,18 +1799,18 @@
 	  setInitialState()
 	  initDOM()
 	  addEvents()
-  
-	  // return the widget object
-	  return widget
-	} // end constructor
-  
+   
 	// TODO: do module exports here
 	_window['Chessboard'] = constructor
-  
+
 	// support legacy ChessBoard name
 	_window['ChessBoard'] = _window['Chessboard']
-  
+
 	// expose util functions
 	_window['Chessboard']['fenToObj'] = fenToObj
 	_window['Chessboard']['objToFen'] = objToFen
+		
+	  // return the widget object
+	  return widget
+	} // end constructor
   })() // end anonymous wrapper
