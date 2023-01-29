@@ -548,8 +548,6 @@ function initializeGUI() {
 }
 
 function openGUI() {
-    if(Gui?.document) return;
-
     Interface.log(`Opening GUI!`);
 
     Gui.open(() => {
@@ -659,14 +657,12 @@ async function initialize() {
 
     updatePlayerColor();
 
-    if(!Gui?.document) {
-        initializeGUI();
-    }
+    initializeGUI();
 
     openGUI();
 }
 
-if(typeof GM_registerMenuCommand) {
+if(typeof GM_registerMenuCommand == 'function') {
     const menu_command_id = GM_registerMenuCommand("Open A.C.A.S", e => {
         if(chessBoardElem) {
             initialize();
