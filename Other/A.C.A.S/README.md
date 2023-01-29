@@ -2,7 +2,7 @@
 
 A.C.A.S is an advanced chess assistance system which enhances your chess performance with cutting-edge real-time move analysis. Just install the userscript and you're good to go! No installations needed.
 
-![](content/example.gif)
+![](content/examp.png)
 
 ### [[Install]](https://github.com/Hakorr/Userscripts/raw/main/Other/A.C.A.S/acas.user.js)
 
@@ -19,3 +19,7 @@ Because A.C.A.S is not intended to be used against the hardest bots. A.C.A.S run
 ### Why doesn't it work?
 
 It could be a bug, please make an issue [here](https://github.com/Hakorr/Userscripts/issues).
+
+# Examples
+
+![](content/example.gif)
