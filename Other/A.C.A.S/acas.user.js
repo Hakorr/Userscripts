@@ -536,7 +536,7 @@ function initializeGUI() {
         <div class="card">
             <div class="card-body">
                 <p class="lead">
-                  <b>A.C.A.S</b> <i>(Advanced Chess Assistance System)</i> is an advanced chess assistance system which enhances your chess performance with a cutting-edge real-time move analysis and strategy assistance system.
+                  <b>A.C.A.S</b> <i>(Advanced Chess Assistance System)</i> is an advanced chess assistance system which enhances your chess performance with cutting-edge real-time move analysis.
                 </p>
             </div>
             <div class="card-footer sideways-card">Developers <small>Haka</small></div>
