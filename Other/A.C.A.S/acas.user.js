@@ -3,6 +3,8 @@
 // @namespace   HKR
 // @author      HKR
 // @version     1.0
+// @homepageURL https://github.com/Hakorr/Userscripts/tree/main/Other/A.C.A.S
+// @supportURL  https://github.com/Hakorr/Userscripts/issues/new
 // @match       https://www.chess.com/*
 // @grant       GM_getValue
 // @grant       GM_setValue
