@@ -13,7 +13,7 @@
 // @grant       GM_registerMenuCommand
 // @description Enhance your chess performance with a cutting-edge real-time move analysis and strategy assistance system
 // @require     https://github.com/AugmentedWeb/UserGui/raw/Release-1.0/usergui.js
-// @resource    jquery.js       https://raw.githubusercontent.com/Hakorr/Userscripts/main/Other/A.C.A.S/content/jquery.js
+// @resource    jquery.js       https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js
 // @resource    chessboard.js   https://raw.githubusercontent.com/Hakorr/Userscripts/main/Other/A.C.A.S/content/chessboard.js
 // @resource    chessboard.css  https://raw.githubusercontent.com/Hakorr/Userscripts/main/Other/A.C.A.S/content/chessboard.css
 // @resource    lozza.js        https://raw.githubusercontent.com/Hakorr/Userscripts/main/Other/A.C.A.S/content/lozza.js
