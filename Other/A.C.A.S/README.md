@@ -1,10 +1,16 @@
+
 # [A.C.A.S (Advanced Chess Assistance System)](https://greasyfork.org/en/scripts/459137-a-c-a-s-advanced-chess-assistance-system)
 
 A.C.A.S is an advanced chess assistance system which enhances your chess performance with cutting-edge real-time move analysis. Just install the userscript and you're good to go! No installations needed.
 
+
 ![](content/examp.png)
 
-### [[Install]](https://github.com/Hakorr/Userscripts/raw/main/Other/A.C.A.S/acas.user.js)
+## [[Install]](https://github.com/Hakorr/Userscripts/raw/main/Other/A.C.A.S/acas.user.js)
+
+#### Supported browsers
+
+![](https://cdnjs.cloudflare.com/ajax/libs/browser-logos/73.0.0/chromium/chromium_48x48.png)
 
 # Q&A
 
