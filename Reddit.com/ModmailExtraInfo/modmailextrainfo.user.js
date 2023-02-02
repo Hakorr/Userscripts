@@ -3,7 +3,7 @@
 // @namespace   HKR
 // @match       https://mod.reddit.com/mail/*
 // @grant       none
-// @version     3.7.1
+// @version     3.7.2
 // @author      HKR
 // @description Additional tools and information to Reddit's Modmail
 // @icon        https://www.redditstatic.com/modmail/favicon/favicon-32x32.png
