@@ -545,9 +545,9 @@ function applyCSS(Settings) {
 
 function initializeCore(Settings) {
     /*  About the core
-     *  - it contains functions required for handling different in-page-actions, such as hiding a div
-     *  - references to variables outside the core and the document will not be recognized
-     * */
+      *  - it contains functions required for handling different in-page-actions, such as hiding a div
+      *  - references to variables outside the core and the document will not be recognized
+      * */
     class Core {
         ruleListActivator = "<open-rulelist-dialog>";
 
@@ -735,7 +735,7 @@ async function appendUserInfo(Settings) {
             }
           
             const banStatus = $(".KarmaAndTrophies__BanStatus");
-           
+            
             if(banStatus) {
                 $(".KarmaAndTrophies").insertBefore(getTitleElement("Additional Information"), banStatus);
                 $(".KarmaAndTrophies").insertBefore(userDetails, banStatus);
@@ -752,7 +752,7 @@ async function appendUserInfo(Settings) {
         }
       
         const observer = new MutationObserver(() => {
-            const overview = document.querySelector(".NewInfoBar__overviewContainer");
+            const overview = document.querySelector(".InfoBar__overviewContainer");
             
             if(overview) {
                 observer.disconnect();
@@ -760,7 +760,7 @@ async function appendUserInfo(Settings) {
             }
         });
       
-        observer.observe(document.querySelector(".NewInfoBar"), {
+        observer.observe(document.querySelector(".InfoBar"), {
             attributes: false, characterData: false, childList: true
         });
     }
@@ -1069,7 +1069,7 @@ setInterval (() => {
                 });
             }
 
-            if($(".NewInfoBar") && URLChangeDetectorActive) // user is on modmail "chat" page
+            if($(".InfoBar") && URLChangeDetectorActive) // user is on modmail "chat" page
             {
                 clearInterval(waitForElements);
                 URLChangeDetectorActive = false;
