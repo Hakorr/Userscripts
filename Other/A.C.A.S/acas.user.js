@@ -2,7 +2,7 @@
 // @name        A.C.A.S (Advanced Chess Assistance System)
 // @namespace   HKR
 // @author      HKR
-// @version     1.0
+// @version     1.1
 // @homepageURL https://github.com/Hakorr/Userscripts/tree/main/Other/A.C.A.S
 // @supportURL  https://github.com/Hakorr/Userscripts/issues/new
 // @match       https://www.chess.com/*
@@ -679,6 +679,8 @@ const waitForChessBoard = setInterval(() => {
     if(boardElem && firstPieceElem && chessBoardElem != boardElem) {
         chessBoardElem = boardElem;
 
-        initialize();
+        if(window.location.href != 'https://www.chess.com/play') {
+            initialize();
+        }
     }
 }, 1000);
