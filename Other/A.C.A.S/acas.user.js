@@ -2,7 +2,7 @@
 // @name        A.C.A.S (Advanced Chess Assistance System)
 // @namespace   HKR
 // @author      HKR
-// @version     1.2
+// @version     1.2.1
 // @homepageURL https://github.com/Hakorr/Userscripts/tree/main/Other/A.C.A.S
 // @supportURL  https://github.com/Hakorr/Userscripts/issues/new
 // @match       https://www.chess.com/*
@@ -63,7 +63,7 @@ let lozzaObjectURL = null;
 let chessBoardElem = null;
 let turn = '-';
 let playerColor = null;
-let lastBasicFen = null;
+let lastFen = null;
 
 let uiChessBoard = null;
 
@@ -455,15 +455,15 @@ function removeSiteMoveMarkings() {
     activeSiteMoveHighlights = [];
 }
 
-function updateBestMove(mutationArr, noTurnUpdate) {
+function updateBestMove(mutationArr) {
     const Fen = new FenUtils();
 
-    const currentBasicFen = Fen.getBasicFen();
+    let currentFen = Fen.getFen();
 
-    if(currentBasicFen != lastBasicFen) {
-        lastBasicFen = currentBasicFen;
+    if(currentFen != lastFen) {
+        lastFen = currentFen;
 
-        if(mutationArr && !noTurnUpdate) {
+        if(mutationArr) {
             const attributeMutationArr = mutationArr.filter(m => m.target.classList.contains('piece') && m.attributeName == 'class');
 
             if(attributeMutationArr?.length) {
@@ -473,15 +473,18 @@ function updateBestMove(mutationArr, noTurnUpdate) {
         }
 
         reloadChessEngine();
+
         Interface.stopBestMoveProcessingAnimation();
 
-        const currentFen = Fen.getFen();
+        currentFen = Fen.getFen();
 
         Interface.boardUtils.removeBestMarkings();
 
         removeSiteMoveMarkings();
 
         Interface.boardUtils.updateBoardFen(currentFen);
+
+        console.log('Sending best move request to the engine!');
 
         Interface.log('Sending best move request to the engine!');
         engine.postMessage(`position fen ${currentFen}`);
@@ -502,7 +505,8 @@ function observeNewMoves() {
 
         if(playerColor != lastPlayerColor) {
             Interface.log(`Player color changed from ${lastPlayerColor} to ${playerColor}!`);
-            updateBestMove(mutationArr, true);
+
+            updateBestMove();
         } else {
             updateBestMove(mutationArr);
         }
