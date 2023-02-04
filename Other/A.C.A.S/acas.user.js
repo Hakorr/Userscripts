@@ -484,8 +484,6 @@ function updateBestMove(mutationArr) {
 
         Interface.boardUtils.updateBoardFen(currentFen);
 
-        console.log('Sending best move request to the engine!');
-
         Interface.log('Sending best move request to the engine!');
         engine.postMessage(`position fen ${currentFen}`);
 
