@@ -2,7 +2,7 @@
 // @name        A.C.A.S (Advanced Chess Assistance System)
 // @namespace   HKR
 // @author      HKR
-// @version     1.2.1
+// @version     1.2.2
 // @homepageURL https://github.com/Hakorr/Userscripts/tree/main/Other/A.C.A.S
 // @supportURL  https://github.com/Hakorr/Userscripts/issues/new
 // @match       https://www.chess.com/*
