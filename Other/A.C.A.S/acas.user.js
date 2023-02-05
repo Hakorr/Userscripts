@@ -2,7 +2,7 @@
 // @name        A.C.A.S (Advanced Chess Assistance System)
 // @namespace   HKR
 // @author      HKR
-// @version     1.2.2
+// @version     1.3
 // @homepageURL https://github.com/Hakorr/Userscripts/tree/main/Other/A.C.A.S
 // @supportURL  https://github.com/Hakorr/Userscripts/issues/new
 // @match       https://www.chess.com/*
@@ -47,7 +47,9 @@ const repositoryURL = 'https://github.com/Hakorr/Userscripts/tree/main/Other/A.C
 const dbValues = {
     engineDepthQuery: 'engineDepthQuery',
     displayMovesOnSite: 'displayMovesOnSite',
-    openGuiAutomatically: 'openGuiAutomatically'
+    openGuiAutomatically: 'openGuiAutomatically',
+    subtleMode: 'subtleMode',
+    subtletiness: 'subtletiness'
 };
 
 let Interface = null;
@@ -445,8 +447,14 @@ function markMoveToSite(fromSquare, toSquare, isPlayerTurn) {
         chessBoardElem.prepend(highlightElem);
     }
 
-    highlight(fromSquare, 'background-color: rgb(249 121 255); border: 4px solid rgb(0 0 0 / 50%);');
-    highlight(toSquare, 'background-color: rgb(129 129 129); border: 4px dashed rgb(0 0 0 / 50%);');
+    const defaultFromSquareStyle = 'background-color: rgb(249 121 255); border: 4px solid rgb(0 0 0 / 50%);';
+    const defaultToSquareStyle = 'background-color: rgb(129 129 129); border: 4px dashed rgb(0 0 0 / 50%);';
+
+    const subtleMode = GM_getValue(dbValues.subtleMode);
+    const subtletiness = GM_getValue(dbValues.subtletiness);
+
+    highlight(fromSquare, subtleMode ? `background-color: rgb(0 0 0 / ${subtletiness}%);` : defaultFromSquareStyle);
+    highlight(toSquare, subtleMode ? `background-color: rgb(0 0 0 / ${subtletiness}%);` : defaultToSquareStyle);
 }
 
 function removeSiteMoveMarkings() {
@@ -580,6 +588,11 @@ function addGuiPages() {
     `);
 
     const depth = engineEloArr.findIndex(x => x.data == GM_getValue(dbValues.engineDepthQuery));
+    const subtletiness = GM_getValue(dbValues.subtletiness);
+
+    const displayMovesOnSite = GM_getValue(dbValues.displayMovesOnSite) == true;
+    const openGuiAutomatically = GM_getValue(dbValues.openGuiAutomatically) == true;
+    const subtleMode = GM_getValue(dbValues.subtleMode) == true;
 
     Gui.addPage('Settings', `
     <div class="rendered-form">
@@ -596,21 +609,46 @@ function addGuiPages() {
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Engine Strength</h5>
-                <input type="range" class="form-range" min="0" max="${engineEloArr.length - 1}" value=${depth} id="depth-range">
+                <input type="range" class="form-range" min="0" max="${engineEloArr.length - 1}" value="${depth}" id="depth-range">
             </div>
             <div class="card-footer sideways-card">Elo <small id="elo">${getEloDescription(getCurrentEngineElo())}</small></div>
         </div>
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Visual</h5>
-                <div id="display-moves-on-site-warning" class="alert alert-danger ${GM_getValue(dbValues.displayMovesOnSite) == true ? '' : 'hidden'}">
-                        <strong>Highly risky!</strong> DOM manipulation (moves displayed on site) is easily detectable! Use with caution.
+                <div id="display-moves-on-site-warning" class="alert alert-danger ${displayMovesOnSite ? '' : 'hidden'}">
+                    <strong>Highly risky!</strong> DOM manipulation (moves displayed on site) is easily detectable! Use with caution.
                 </div>
-                <input type="checkbox" id="display-moves-on-site" ${GM_getValue(dbValues.displayMovesOnSite) == true ? 'checked' : ''}>
+                <input type="checkbox" id="display-moves-on-site" ${displayMovesOnSite ? 'checked' : ''}>
                 <label for="display-moves-on-site">Display moves on site</label>
-                <div id="open-gui-automatically-container" class="${GM_getValue(dbValues.displayMovesOnSite) == true ? '' : 'hidden'}">
-                    <input type="checkbox" id="open-gui-automatically" ${GM_getValue(dbValues.openGuiAutomatically) == true ? 'checked' : ''}>
-                    <label for="open-gui-automatically">Open GUI automatically</label>
+                <!-- Display moves on site additional settings -->
+                <div class="card ${displayMovesOnSite ? '' : 'hidden'}" id="display-moves-on-site-additional">
+                    <div class="card-body">
+                        <!-- Open GUI automatically checkbox -->
+                        <div>
+                            <input type="checkbox" id="open-gui-automatically" ${openGuiAutomatically ? 'checked' : ''}>
+                            <label for="open-gui-automatically">Open GUI automatically</label>
+                        </div>
+                        <!-- Subtle mode settinngs -->
+                        <div>
+                            <!-- Subtle mode checkbox -->
+                            <div>
+                                <input type="checkbox" id="subtle-mode" ${subtleMode ? 'checked' : ''}>
+                                <label for="subtle-mode">Subtle mode</label>
+                            </div>
+                            <!-- Subtle mode additional settings -->
+                            <div>
+                                <div class="card ${subtleMode ? '' : 'hidden'}" id="subtletiness-range-container">
+                                    <div class="card-body">
+                                        <!-- Subtletiness range -->
+                                        <h6 class="card-title">Visibility</h6>
+                                        <input type="range" class="form-range" min="1" max="50" value="${subtletiness}" id="subtletiness-range">
+                                    </div>
+                                    <div class="card-footer sideways-card">Percentage <small id="subtletiness-info">${subtletiness}%</small></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -636,6 +674,9 @@ function addGuiPages() {
 function openGUI() {
     Interface.log(`Opening GUI!`);
 
+    const hide = elem => elem.classList.add('hidden');
+    const show = elem => elem.classList.remove('hidden');
+
     Gui.open(() => {
         const depthRangeElem = Gui.document.querySelector('#depth-range');
         const eloElem = Gui.document.querySelector('#elo');
@@ -644,7 +685,13 @@ function openGUI() {
         const displayMovesOnSiteWarningElem = Gui.document.querySelector('#display-moves-on-site-warning');
 
         const openGuiAutomaticallyElem = Gui.document.querySelector('#open-gui-automatically');
-        const openGuiAutomaticallyContainerElem = Gui.document.querySelector('#open-gui-automatically-container');
+        const openGuiAutomaticallyAdditionalElem = Gui.document.querySelector('#display-moves-on-site-additional');
+
+        const subtleModeElem = Gui.document.querySelector('#subtle-mode');
+        const subtletinessRangeContainerElem = Gui.document.querySelector('#subtletiness-range-container');
+        const subtletinessRange = Gui.document.querySelector('#subtletiness-range');
+
+        const subtletinessInfo = Gui.document.querySelector('#subtletiness-info');
 
         depthRangeElem.onchange = () => {
             const depth = depthRangeElem.value;
@@ -664,21 +711,38 @@ function openGUI() {
             if(isChecked) {
                 GM_setValue(dbValues.displayMovesOnSite, true);
 
-                displayMovesOnSiteWarningElem.classList.remove('hidden');
-                openGuiAutomaticallyContainerElem.classList.remove('hidden');
+                show(displayMovesOnSiteWarningElem);
+                show(openGuiAutomaticallyAdditionalElem);
 
                 openGuiAutomaticallyElem.checked = GM_getValue(dbValues.openGuiAutomatically);
             } else {
                 GM_setValue(dbValues.displayMovesOnSite, false);
                 GM_setValue(dbValues.openGuiAutomatically, true);
 
-                displayMovesOnSiteWarningElem.classList.add('hidden');
-                openGuiAutomaticallyContainerElem.classList.add('hidden');
+                hide(displayMovesOnSiteWarningElem);
+                hide(openGuiAutomaticallyAdditionalElem);
             }
         };
 
         openGuiAutomaticallyElem.onchange = () => {
             GM_setValue(dbValues.openGuiAutomatically, openGuiAutomaticallyElem.checked);
+        };
+
+        subtleModeElem.onchange = () => {
+           const isChecked = subtleModeElem.checked;
+
+            if(isChecked) {
+                GM_setValue(dbValues.subtleMode, true);
+                show(subtletinessRangeContainerElem);
+            } else {
+                GM_setValue(dbValues.subtleMode, false);
+                hide(subtletinessRangeContainerElem);
+            }
+        };
+
+        subtletinessRange.onchange = () => {
+            GM_setValue(dbValues.subtletiness, subtletinessRange.value);
+            subtletinessInfo.innerText = `${subtletinessRange.value}%`;
         };
 
         window.onunload = () => {
@@ -755,7 +819,9 @@ function initializeDatabase() {
 
     initValue(dbValues.engineDepthQuery, 'go depth 5');
     initValue(dbValues.displayMovesOnSite, false);
+    initValue(dbValues.subtleMode, false);
     initValue(dbValues.openGuiAutomatically, true);
+    initValue(dbValues.subtletiness, 25);
 
     Interface.log(`Initialized the database!`);
 }
