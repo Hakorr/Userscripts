@@ -100,7 +100,9 @@ const engineEloArr = [
     { elo: 2400, data: 'go depth 8' },
     { elo: 2500, data: 'go depth 9' },
     { elo: 2600, data: 'go depth 10' },
-    { elo: 2900, data: 'go movetime 3000' },
+    { elo: 2700, data: 'go movetime 1500' },
+    { elo: 2800, data: 'go movetime 3000' },
+    { elo: 2900, data: 'go movetime 5000' },
     { elo: 3000, data: 'go movetime 10000' }
 ];
 
@@ -594,7 +596,7 @@ function addGuiPages() {
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Engine Strength</h5>
-                <input type="range" class="form-range" min="0" max="11" value=${depth} id="depth-range">
+                <input type="range" class="form-range" min="0" max="${engineEloArr.length - 1}" value=${depth} id="depth-range">
             </div>
             <div class="card-footer sideways-card">Elo <small id="elo">${getEloDescription(getCurrentEngineElo())}</small></div>
         </div>
