@@ -1,31 +1,26 @@
 
+## This page is in construction, information may be inaccurate! Thank you for you patience :)
+
 # [A.C.A.S (Advanced Chess Assistance System)](https://greasyfork.org/en/scripts/459137-a-c-a-s-advanced-chess-assistance-system)
 
 A.C.A.S is an advanced chess assistance system which enhances your chess performance with cutting-edge real-time move analysis. Just install the userscript and you're good to go! No installations needed.
 
-
 ![](content/examp.png)
-
-## [[Install]](https://github.com/Hakorr/Userscripts/raw/main/Other/A.C.A.S/acas.user.js)
 
 #### Supported browsers
 
-![](https://cdnjs.cloudflare.com/ajax/libs/browser-logos/73.0.0/chromium/chromium_48x48.png)
+To be updated.
 
-# Q&A
+## [[Install]](https://github.com/Hakorr/Userscripts/raw/main/Other/A.C.A.S/acas.user.js)
 
-### Can A.C.A.S beat the hardest bots like Mittens?
-
-Of course, with enough time and attempts. Keep in mind that A.C.A.S uses the Lozza chess engine, which uses JavaScript and runs on your browser. The engine is really slow compared to the best chess engines, so it's not in your best interest to play against Mittens and other very hard bots.
-
-### Why am I losing to the hardest bots?
-
-Because A.C.A.S is not intended to be used against the hardest bots. A.C.A.S runs on your browser, so it's slow and grumpy.
-
-### Why doesn't it work?
+## Why doesn't it work?
 
 It could be a bug, please make an issue [here](https://github.com/Hakorr/Userscripts/issues).
 
-# Examples
+## Examples
 
-![](content/example.gif)
+To be updated.
+
+## Developing
+
+A.C.A.S takes advantage of GM storage, making a "CommLink" to enable communication between windows. The GUI and engine are both completely external and untouchable to the Chess page. This allows WASM multithreading, and fewer restrictions on Web Workers. The GUI and its files can be found [on the docs folder](../../docs/A.C.A.S). The docs folder allows for a short GUI URL.
