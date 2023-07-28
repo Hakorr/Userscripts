@@ -9,7 +9,7 @@
 // @run-at      document-start
 // ==/UserScript==
 
-const dateWords = ['month', 'year'];
+const dateWords = ['day', 'month', 'year'];
 const itemScoreObjArr = [];
 
 function getListItemScore(listItemElem) {
