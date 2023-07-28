@@ -34,7 +34,7 @@ function getListItemScore(listItemElem) {
 
         score = dateNumScore + dateWordScore;
 
-        console.log(listItemElem, dateTextSplit, dateNum, dateWord, dateNumScore, dateWordScore, score);
+        //console.log(listItemElem, dateTextSplit, dateNum, dateWord, dateNumScore, dateWordScore, score);
     }
 
     //itemScoreObjArr.push({ 'itemElem': listItemElem, 'score': score });
