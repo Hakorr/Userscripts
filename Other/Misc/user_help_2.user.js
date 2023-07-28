@@ -13,11 +13,12 @@ const dateWords = ['hour', 'day', 'week', 'month', 'year'];
 const itemScoreObjArr = [];
 
 function getListItemScore(listItemElem) {
+    /*
     const existingScoreObj = itemScoreObjArr.find(scoreObj => scoreObj.itemElem === listItemElem);
 
     if(existingScoreObj) {
         return existingScoreObj.score;
-    }
+    }*/
 
     const dateSpan = listItemElem.querySelectorAll('.inline-metadata-item.ytd-video-meta-block')?.[1];
 
@@ -33,12 +34,11 @@ function getListItemScore(listItemElem) {
 
         score = dateNumScore + dateWordScore;
 
-        console.log(dateTextSplit, dateNum, dateWord, dateNumScore, dateWordScore, score);
+        console.log(listItemElem, dateTextSplit, dateNum, dateWord, dateNumScore, dateWordScore, score);
     }
 
-    itemScoreObjArr.push({ 'itemElem': listItemElem, 'score': score });
-
-    console.log(itemScoreObjArr);
+    //itemScoreObjArr.push({ 'itemElem': listItemElem, 'score': score });
+    //console.log(itemScoreObjArr);
 
     return score;
 }
