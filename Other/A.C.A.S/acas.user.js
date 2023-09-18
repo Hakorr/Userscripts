@@ -865,7 +865,7 @@ if(typeof GM_registerMenuCommand == 'function') {
 }
 
 const waitForChessBoard = setInterval(() => {
-    const boardElem = document.querySelector('chess-board');
+    const boardElem = document.querySelector('wc-chess-board');
     const firstPieceElem = document.querySelector('.piece');
 
     if(boardElem && firstPieceElem && chessBoardElem != boardElem) {
