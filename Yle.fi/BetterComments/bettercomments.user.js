@@ -1,18 +1,22 @@
 // ==UserScript==
-// @name        [Yle] BetterComments
+// @name        BetterComments
 // @match       https://yle.fi/*
 // @grant       none
-// @version     1.0
+// @version     1.1
 // @author      HKR
 // @namespace   HKR
 // @description Makes Yle's article comment section better
 // @run-at      document-load
 // ==/UserScript==
 
-function main(commentsContainerElem) {
-    console.log(commentsContainerElem, commentsContainerElem.childNodes);
+const processedTopComments = [];
 
+function main(commentsContainerElem) {
     [...commentsContainerElem.childNodes].forEach(topCommentElem => {
+        if(processedTopComments.includes(topCommentElem)) return;
+
+        processedTopComments.push(topCommentElem);
+
         const replyCommentContainerElem = topCommentElem.querySelector('ul');
 
         if(!replyCommentContainerElem) return;
@@ -68,8 +72,6 @@ const waitForElemInterval = setInterval(() => {
     const isFullyLoaded = commentsContainerElem?.childNodes?.length > 0;
 
     if(isFullyLoaded) {
-        clearInterval(waitForElemInterval);
-
         main(commentsContainerElem);
     }
 }, 250);
