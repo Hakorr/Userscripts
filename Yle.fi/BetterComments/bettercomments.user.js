@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name        BetterComments
+// @name        [Yle] BetterComments
 // @match       https://yle.fi/*
 // @grant       none
 // @version     1.1
