@@ -14,6 +14,9 @@ function main(commentsContainerElem) {
 
     [...commentsContainerElem.childNodes].forEach(topCommentElem => {
         const replyCommentContainerElem = topCommentElem.querySelector('ul');
+
+        if(!replyCommentContainerElem) return;
+
         const buttonContainerElem = topCommentElem.querySelector('button')?.parentElement;
 
         [...replyCommentContainerElem.childNodes].forEach(replyCommentElem => {
@@ -21,7 +24,7 @@ function main(commentsContainerElem) {
 
             commentElem.style.cssText = `
                 font-size: 14px;
-                background-color: #00000005;
+                background-color: #00b3c726;
             `;
         });
 
