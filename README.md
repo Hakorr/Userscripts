@@ -1,6 +1,6 @@
 # [My userscripts](https://hakorr.github.io/Userscripts/)
 
-> *Clumsy and inelegant, they'll fall apart, but they'll work, and they'll keep working, as long as there's someone around to bodge them again if they break.* - **Tom Scott (The Art of the Bodge)**
+> *"Clumsy, it's inelegant, it'll fall apart, but it'll work, and it'll keep working, as long as there's someone around to bodge it again if it breaks."* - **Tom Scott (The Art of the Bodge: How I Made The Emoji Keyboard)**
 
 **This is why I love userscripts! You shouldn't complain if they're not professionally made :)**
 
