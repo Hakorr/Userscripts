@@ -27,6 +27,8 @@ const webAssemblyMemoryProxy = new Proxy(originalWebAssemblyMemory, {
 WebAssembly.Memory = webAssemblyMemoryProxy;
 
 const waitForScoreInterval = setInterval(() => {
+    if(!memory?.buffer) return;
+    
     const bufferBytes = new Uint8Array(memory.buffer);
 
     const scoreOffset = 18132320;
