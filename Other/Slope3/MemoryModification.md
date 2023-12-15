@@ -1,7 +1,14 @@
 # WASM Memory Modification
 ### A demo of Cheat Engine type memory modification for userscripts targeting WASM applications.
 
-This is the rough method I used to find the offset,
+## How to find WASM memory addresses
+
+Use [Cetus](https://github.com/Qwokka/Cetus) to find the address(s) (aka. offset/index of the memory array).
+
+
+## Find the offset without Cetus
+
+Okay, so you're crazy or nerd enough to find the memory address/offset/index yourself without any tools, okay, okay. Here's my method,
 
 ```js
 // ==UserScript==
