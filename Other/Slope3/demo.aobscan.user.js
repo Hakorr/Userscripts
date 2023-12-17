@@ -100,5 +100,5 @@ setInterval(async () => {
 
     const score = bufferBytes[scoreAddress];
 
-    console.warn(`The score is ${score} with address ${scoreAddress}`);
+    console.warn(`The score is ${score.toString(16)} with address ${scoreAddress}`);
 }, 1000);
