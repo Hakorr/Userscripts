@@ -8,12 +8,11 @@
 // @description Bypasses the 15-min timeout
 // @run-at      document-load
 // ==/UserScript==
-
+ 
 (() => {
     setInterval(() => {
-        blackoutMapForTimeout = () => console.log("Bypassed 15-min timeout!");
         try {
-            dispatcher.userFeatures['map.timeout.mins'] = -1;
+            dispatcher.features['map.timeout.mins'] = 999999999999;
         } catch {
             // nothing
         }
