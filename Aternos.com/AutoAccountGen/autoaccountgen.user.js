@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name        [Aternos] AutoAccountGen Button
+// @name        [GODOFPAPA] AutoAccountGen Button
 // @namespace   HKR
 // @match       https://aternos.org/signup/*
 // @grant       none
@@ -9,7 +9,7 @@
 // ==/UserScript==
 
 //Select a password you want to use
-let defaultPass = "";
+let defaultPass = "Nijman777";
 
 let btn = document.createElement('div');
 btn.innerHTML = `<div id="genAcc" class="btn btn-main btn-large btn-enabled">
