@@ -18,7 +18,7 @@ function modifyConfigString(configStr, key, value) {
 
 function patchNode(node) {
     const changeArr = [
-        ['map.timeout.mins', 0]
+        ['map.timeout.mins', 13140000]
         // room for more changes...
     ];
 
