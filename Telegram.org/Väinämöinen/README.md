@@ -8,6 +8,8 @@
 2. Write your message to the floating Väinämöinen window.
 3. Start, then choose to send (ENTER) or to skip (SPACEBAR) the message.
 
+Väinämöinen remembers the users it has visited, and will refuse to visit the same user twice. To send a "second wave" of messages to the same members, navigate to the "Debug" tab and click the "Clear Data" button.
+
 **NOTE: Do not navigate the Telegram site yourself during this process. Do not spam keybinds or buttons.**
 
 # Additional
