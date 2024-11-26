@@ -32,7 +32,7 @@ function applyDataToItems(modelsArr) {
         const slug = model.slug;
         const properties = model.properties;
 
-        const itemElem = await waitForElement(`a[href*="3dmodels/show/${slug}"]`);
+        const itemElem = await waitForElement(`a[href="/3dmodels/show/${slug}"]`);
         const itemContentElem = itemElem.parentElement.parentElement;
 
         const sizeDisplay = properties?.size_kb
