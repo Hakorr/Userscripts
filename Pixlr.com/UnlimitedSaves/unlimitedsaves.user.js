@@ -3,7 +3,7 @@
 // @namespace   HKR
 // @match       https://pixlr.com/*/*
 // @grant       none
-// @version     1.0
+// @version     1.1
 // @author      HKR
 // @description Bypasses the daily save limit
 // @run-at      document-start
@@ -13,30 +13,60 @@
     const replacementRegex = /\(\)\s*>=\s*3/g;
     const bypassStr = `()=='D'`;
 
-    function patchNode(node) {
-        node?.remove();
+    if (typeof InstallTrigger !== 'undefined') {
+        // Firefox method
+        function patchScript(event) {
+            const script = event.target;
+            const src = script?.src;
 
-        fetch(node.src)
-            .then(res => res.text())
-            .then(text => {
-                text = text.replace(replacementRegex, bypassStr);
+            if (src && src.includes('/dist/')) {
+                event.preventDefault();
 
-                if(!text.includes(bypassStr)) {
-                    alert(`Daily limit bypass failed, the userscript may be outdated!`);
-                }
+                fetch(src)
+                    .then(res => res.text())
+                    .then(text => {
+                        text = text.replace(replacementRegex, bypassStr);
 
-                const newNode = document.createElement('script');
-                      newNode.innerHTML = text;
+                        if (!text.includes(bypassStr)) {
+                            alert(`Daily limit bypass failed, the userscript may be outdated!`);
+                        }
 
-                document.body.appendChild(newNode);
+                        const modifiedScript = document.createElement('script');
+                        modifiedScript.innerHTML = text;
+
+                        script.parentNode.replaceChild(modifiedScript, script);
+                    });
+            }
+        }
+
+        document.addEventListener('beforescriptexecute', patchScript, true);
+    } else {
+        // Chrome method
+        function patchNode(node) {
+            node?.remove();
+
+            fetch(node.src)
+                .then(res => res.text())
+                .then(text => {
+                    text = text.replace(replacementRegex, bypassStr);
+
+                    if (!text.includes(bypassStr)) {
+                        alert(`Daily limit bypass failed, the userscript may be outdated!`);
+                    }
+
+                    const newNode = document.createElement('script');
+                    newNode.innerHTML = text;
+
+                    document.body.appendChild(newNode);
+                });
+        }
+
+        new MutationObserver(mutationsList => {
+            mutationsList.forEach(mutationRecord => {
+                [...mutationRecord.addedNodes]
+                    .filter(node => node.tagName === 'SCRIPT' && node.src?.includes('/dist/'))
+                    .forEach(node => patchNode(node));
             });
+        }).observe(document, { childList: true, subtree: true });
     }
-
-    new MutationObserver(mutationsList => {
-        mutationsList.forEach(mutationRecord => {
-          [...mutationRecord.addedNodes]
-            .filter(node => node.tagName === 'SCRIPT' && node.src?.includes('/dist/'))
-            .forEach(node => patchNode(node));
-        });
-    }).observe(document, { childList: true, subtree: true });
 })();
