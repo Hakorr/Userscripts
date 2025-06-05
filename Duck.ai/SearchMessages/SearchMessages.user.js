@@ -38,7 +38,7 @@
 // @grant       GM_addStyle
 // @namespace   HKR
 // @author      HKR
-// @version     1.0
+// @version     1.1
 // ==/UserScript==
 
 const fuseOptions = {
@@ -195,7 +195,7 @@ function createResultElem(result) {
             mark.textContent = value.slice(start, end+1);
             matchTextElem.appendChild(mark);
 
-            lastIndex = end;
+            lastIndex = end + 1;
         }
 
         if(lastIndex < value.length) {
