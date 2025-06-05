@@ -1,36 +1,36 @@
 // ==UserScript==
-// @name:tr     Duck.AI Mesaj Arama 🔎 (DuckDuckGo’nun Yapay Zekası)
-// @name:pt-BR  Pesquisa de Mensagens Duck.AI 🔎 (IA do DuckDuckGo)
-// @name:fr     Recherche de Messages Duck.AI 🔎 (IA de DuckDuckGo)
-// @name:es     Buscador de mensajes Duck.AI 🔎 (IA de DuckDuckGo)
-// @name:pl     Wyszukiwarka wiadomości Duck.AI 🔎 (AI DuckDuckGo)
-// @name:vi     Tìm kiếm Tin nhắn Duck.AI 🔎 (AI của DuckDuckGo)
-// @name:uk     Пошук повідомлень Duck.AI 🔎 (ШІ від DuckDuckGo)
-// @name:id     Pencarian Pesan Duck.AI 🔎 (AI dari DuckDuckGo)
-// @name:it     Ricerca Messaggi Duck.AI 🔎 (IA di DuckDuckGo)
-// @name:ru     Поиск сообщений Duck.AI 🔎 (ИИ от DuckDuckGo)
-// @name        Duck.AI Search Messages 🔎 (DuckDuckGo's AI)
-// @name:nl     Duck.AI Berichtzoeker 🔎 (AI van DuckDuckGo)
-// @name:de     Duck.AI Nachrichtensuche 🔎 (DuckDuckGo KI)
-// @name:ja     Duck.AI メッセージ検索 🔎（DuckDuckGo の AI)
-// @name:ko     Duck.AI 메시지 검색기 🔎 (DuckDuckGo의 AI)
-// @name:zh-CN  Duck.AI 聊天搜索器 🔎（DuckDuckGo 的 AI)
-// @description:tr Duck.AI sohbetine bir arama çubuğu ekler, mesajlarınızda metin aramanıza olanak tanır!
-// @description Adds a search bar to Duck.AI chat which you can use to search any text from your chats!
-// @description:fr Ajoute une barre de recherche à Duck.AI pour rechercher dans vos messages de chat.
-// @description:ru Добавляет панель поиска в Duck.AI, чтобы искать сообщения в чате. Слава Украини!
-// @description:vi Thêm thanh tìm kiếm vào Duck.AI để bạn có thể tìm trong các đoạn chat của mình!
-// @description:id Tambahkan bilah pencarian ke Duck.AI untuk mencari pesan dalam obrolan Anda!
-// @description:it Aggiunge una barra di ricerca alla chat Duck.AI per cercare tra i messaggi!
-// @description:pl Dodaje pasek wyszukiwania do Duck.AI, umożliwiając przeszukiwanie czatów!
-// @description:uk Додає панель пошуку в Duck.AI для пошуку по вашим чатам! Слава Україні!
-// @description:pt-BR Adiciona uma barra de pesquisa ao Duck.AI para buscar nas conversas!
-// @description:de Fügt Duck.AI eine Suchleiste hinzu, um Nachrichten zu durchsuchen!
-// @description:es Añade una barra de búsqueda a Duck.AI para buscar en los chats.
-// @description:nl Voegt een zoekbalk toe aan Duck.AI om door je chats te zoeken!
-// @description:ja Duck.AI チャットに検索バーを追加し、会話からテキストを検索できます。
-// @description:ko Duck.AI 채팅에 검색창을 추가하여 메시지 내용을 검색할 수 있습니다!
-// @description:zh-CN 为 Duck.AI 聊天添加搜索栏，可用于搜索聊天内容！
+// @name:tr     Duck.AI Sohbet Arama 🔎 (DuckDuckGo’nun Yapay Zekası)
+// @name:fr     Recherche de Chat Duck.AI 🔎 (IA de DuckDuckGo)
+// @name:id     Pencarian Chat Duck.AI 🔎 (AI dari DuckDuckGo)
+// @name:pt-BR  Pesquisa de Chat Duck.AI 🔎 (IA do DuckDuckGo)
+// @name:es     Búsqueda de Chat Duck.AI 🔎 (IA de DuckDuckGo)
+// @name:pl     Wyszukiwarka Czatów Duck.AI 🔎 (AI DuckDuckGo)
+// @name:vi     Tìm kiếm Chat Duck.AI 🔎 (AI của DuckDuckGo)
+// @name:uk     Пошук чатів Duck.AI 🔎 (ШІ від DuckDuckGo)
+// @name:it     Ricerca Chat Duck.AI 🔎 (IA di DuckDuckGo)
+// @name:nl     Duck.AI Chatzoeker 🔎 (AI van DuckDuckGo)
+// @name:ru     Поиск чатов Duck.AI 🔎 (ИИ от DuckDuckGo)
+// @name:ja     Duck.AI チャット検索 🔎（DuckDuckGo の AI)
+// @name        Duck.AI Chat Search 🔎 (DuckDuckGo's AI)
+// @name:ko     Duck.AI 채팅 검색기 🔎 (DuckDuckGo의 AI)
+// @name:zh-CN  Duck.AI 聊天搜索 🔎（DuckDuckGo 的 AI)
+// @name:de     Duck.AI Chatsuche 🔎 (DuckDuckGo KI)
+// @description:it Aggiunge una barra di ricerca alla chat Duck.AI per trovare facilmente i messaggi nelle conversazioni.
+// @description:fr Ajoute une barre de recherche à Duck.AI pour rechercher facilement des messages dans vos discussions.
+// @description:pt-BR Adiciona uma barra de pesquisa ao Duck.AI para facilitar a busca de mensagens nas conversas.
+// @description:tr Duck.AI sohbetine bir arama çubuğu ekler; böylece önceki mesajlarınızı kolayca arayabilirsiniz.
+// @description:id Menambahkan bilah pencarian ke Duck.AI untuk memudahkan pencarian pesan dalam obrolan Anda.
+// @description:pl Dodaje pasek wyszukiwania do Duck.AI, umożliwiając łatwe wyszukiwanie wiadomości w czatach.
+// @description:vi Thêm thanh tìm kiếm vào Duck.AI để bạn dễ dàng tìm lại các tin nhắn trong cuộc trò chuyện.
+// @description:nl Voegt een zoekbalk toe aan Duck.AI waarmee je eenvoudig berichten in je chats kunt zoeken.
+// @description Adds a chat search bar to Duck.AI so you can easily search messages in your conversations.
+// @description:es Añade una barra de búsqueda a Duck.AI para encontrar fácilmente mensajes en tus chats.
+// @description:ru Добавляет строку поиска в Duck.AI, чтобы вы могли легко находить сообщения в чатах.
+// @description:de Fügt Duck.AI eine Suchleiste hinzu, um Nachrichten in Chats einfach zu finden.
+// @description:ja Duck.AI に検索バーを追加し、チャット内のメッセージを簡単に検索できるようにします。
+// @description:uk Додає панель пошуку в Duck.AI, щоб легко знаходити повідомлення у чатах.
+// @description:ko Duck.AI 채팅에 검색창을 추가하여 이전 메시지를 쉽게 찾을 수 있습니다.
+// @description:zh-CN 为 Duck.AI 聊天添加搜索栏，让你轻松搜索聊天中的消息内容。
 // @require     https://cdn.jsdelivr.net/npm/fuse.js@7.1.0
 // @supportURL  https://github.com/Hakorr/Userscripts
 // @match       https://duckduckgo.com/*duckai*
