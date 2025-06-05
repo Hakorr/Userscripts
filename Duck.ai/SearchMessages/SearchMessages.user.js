@@ -136,7 +136,7 @@ function createResultElem(result) {
 
     const resultTitleElem = resultElem.querySelector('.dsu-result-title');
     const matchContainerElem = resultElem.querySelector('.dsu-result-match-container');
-    const truncatedTitle = truncate(item.title, 30).replaceAll('\n', ' ');
+    const truncatedTitle = truncate(item.title, 60).replaceAll('\n', ' ');
 
     resultTitleElem.innerText = `Chat | ${truncatedTitle}`;
 
