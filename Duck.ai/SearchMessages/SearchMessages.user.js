@@ -1,14 +1,44 @@
 // ==UserScript==
-// @name        Duck.ai Search Messages
-// @namespace   HKR
-// @match       https://duckduckgo.com/*duckai*
-// @grant       none
-// @version     1.0
-// @author      HKR
-// @description Adds a search bar to search text from your chats!
+// @name:tr     Duck.AI Mesaj Arama 🔎 (DuckDuckGo’nun Yapay Zekası)
+// @name:pt-BR  Pesquisa de Mensagens Duck.AI 🔎 (IA do DuckDuckGo)
+// @name:fr     Recherche de Messages Duck.AI 🔎 (IA de DuckDuckGo)
+// @name:es     Buscador de mensajes Duck.AI 🔎 (IA de DuckDuckGo)
+// @name:pl     Wyszukiwarka wiadomości Duck.AI 🔎 (AI DuckDuckGo)
+// @name:vi     Tìm kiếm Tin nhắn Duck.AI 🔎 (AI của DuckDuckGo)
+// @name:uk     Пошук повідомлень Duck.AI 🔎 (ШІ від DuckDuckGo)
+// @name:id     Pencarian Pesan Duck.AI 🔎 (AI dari DuckDuckGo)
+// @name:it     Ricerca Messaggi Duck.AI 🔎 (IA di DuckDuckGo)
+// @name:ru     Поиск сообщений Duck.AI 🔎 (ИИ от DuckDuckGo)
+// @name        Duck.AI Search Messages 🔎 (DuckDuckGo's AI)
+// @name:nl     Duck.AI Berichtzoeker 🔎 (AI van DuckDuckGo)
+// @name:de     Duck.AI Nachrichtensuche 🔎 (DuckDuckGo KI)
+// @name:ja     Duck.AI メッセージ検索 🔎（DuckDuckGo の AI)
+// @name:ko     Duck.AI 메시지 검색기 🔎 (DuckDuckGo의 AI)
+// @name:zh-CN  Duck.AI 聊天搜索器 🔎（DuckDuckGo 的 AI)
+// @description:tr Duck.AI sohbetine bir arama çubuğu ekler, mesajlarınızda metin aramanıza olanak tanır!
+// @description Adds a search bar to Duck.AI chat which you can use to search any text from your chats!
+// @description:fr Ajoute une barre de recherche à Duck.AI pour rechercher dans vos messages de chat.
+// @description:ru Добавляет панель поиска в Duck.AI, чтобы искать сообщения в чате. Слава Украини!
+// @description:vi Thêm thanh tìm kiếm vào Duck.AI để bạn có thể tìm trong các đoạn chat của mình!
+// @description:id Tambahkan bilah pencarian ke Duck.AI untuk mencari pesan dalam obrolan Anda!
+// @description:it Aggiunge una barra di ricerca alla chat Duck.AI per cercare tra i messaggi!
+// @description:pl Dodaje pasek wyszukiwania do Duck.AI, umożliwiając przeszukiwanie czatów!
+// @description:uk Додає панель пошуку в Duck.AI для пошуку по вашим чатам! Слава Україні!
+// @description:pt-BR Adiciona uma barra de pesquisa ao Duck.AI para buscar nas conversas!
+// @description:de Fügt Duck.AI eine Suchleiste hinzu, um Nachrichten zu durchsuchen!
+// @description:es Añade una barra de búsqueda a Duck.AI para buscar en los chats.
+// @description:nl Voegt een zoekbalk toe aan Duck.AI om door je chats te zoeken!
+// @description:ko Duck.AI 채팅에 검색창을 추가하여 메시지 내용을 검색할 수 있습니다!
+// @description:ja Duck.AI チャットに検索バーを追加し、会話からテキストを検索できます。
+// @description:zh-CN 为 Duck.AI 聊天添加搜索栏，可用于搜索聊天内容！
 // @require     https://cdn.jsdelivr.net/npm/fuse.js@7.1.0
+// @supportURL  https://github.com/Hakorr/Userscripts
+// @match       https://duckduckgo.com/*duckai*
 // @run-at      document-load
 // @grant       GM_addStyle
+// @namespace   HKR
+// @author      HKR
+// @version     1.0
 // ==/UserScript==
 
 const fuseOptions = {
@@ -44,6 +74,8 @@ function getStoredChats() {
 
 if(!getStoredChats()) return;
 
+const donateLink = `<p class="dsu-donate-link"><a href="https://liberapay.com/Haka/donate"><svg xmlns="http://www.w3.org/2000/svg" width="83" height="30"><rect id="back" fill="#f6c915" x="1" y=".5" width="82" height="29" rx="4"></rect><svg viewBox="0 0 80 80" height="16" width="16" x="7" y="7"><g transform="translate(-78.37-208.06)" fill="#1a171b"><path d="m104.28 271.1c-3.571 0-6.373-.466-8.41-1.396-2.037-.93-3.495-2.199-4.375-3.809-.88-1.609-1.308-3.457-1.282-5.544.025-2.086.313-4.311.868-6.675l9.579-40.05 11.69-1.81-10.484 43.44c-.202.905-.314 1.735-.339 2.489-.026.754.113 1.421.415 1.999.302.579.817 1.044 1.546 1.395.729.353 1.747.579 3.055.679l-2.263 9.278"></path><path d="m146.52 246.14c0 3.671-.604 7.03-1.811 10.07-1.207 3.043-2.879 5.669-5.01 7.881-2.138 2.213-4.702 3.935-7.693 5.167-2.992 1.231-6.248 1.848-9.767 1.848-1.71 0-3.42-.151-5.129-.453l-3.394 13.651h-11.162l12.52-52.19c2.01-.603 4.311-1.143 6.901-1.622 2.589-.477 5.393-.716 8.41-.716 2.815 0 5.242.428 7.278 1.282 2.037.855 3.708 2.024 5.02 3.507 1.307 1.484 2.274 3.219 2.904 5.205.627 1.987.942 4.11.942 6.373m-27.378 15.461c.854.202 1.91.302 3.167.302 1.961 0 3.746-.364 5.355-1.094 1.609-.728 2.979-1.747 4.111-3.055 1.131-1.307 2.01-2.877 2.64-4.714.628-1.835.943-3.858.943-6.071 0-2.161-.479-3.998-1.433-5.506-.956-1.508-2.615-2.263-4.978-2.263-1.61 0-3.118.151-4.525.453l-5.28 21.948"></path></g></svg><text fill="#1a171b" text-anchor="middle" font-family="Helvetica Neue,Helvetica,Arial,sans-serif" font-weight="700" font-size="14" x="50" y="20">Donate</text></svg></a></p>`;
+
 const searchBarElem = document.createElement('input');
       searchBarElem.type = 'text';
       searchBarElem.placeholder = 'Search for messages...';
@@ -52,7 +84,7 @@ const searchBarElem = document.createElement('input');
 
 const containerElem = document.createElement('dialog');
       containerElem.id = 'DuckSearchUserscript';
-      containerElem.innerHTML = `<div class="dsu-result-container"></div>`;
+      containerElem.innerHTML = `${donateLink} <div class="dsu-result-container"></div>`;
       containerElem.prepend(searchBarElem);
       containerElem.addEventListener('click', (event) => {
           if(event.target === containerElem) {
@@ -222,6 +254,7 @@ GM_addStyle(`
     border-bottom-width: 5px;
     border-radius: 5px;
     box-shadow: 0px 0px 12px 0px #000000;
+    position: relative;
 }
 #DuckSearchUserscript::backdrop {
     background: rgb(0 31 255 / 5%);
@@ -247,7 +280,7 @@ GM_addStyle(`
     padding: 20px;
     border-radius: 3px;
     display: flex;
-    gap: 10px;
+    gap: 20px;
     flex-wrap: wrap;
 }
 .dsu-match {
@@ -326,7 +359,7 @@ GM_addStyle(`
     background: #1e0000;
     color: red;
     border: 1px solid #212121;
-    border-radius: 0 0 5px 5px;
+    border-radius: 5px;
 }
 #dsu-open-btn {
     width: fit-content;
@@ -354,5 +387,11 @@ GM_addStyle(`
     background-color: rgb(153 110 237 / 88%) !important;
     box-shadow: 0 0 20px 0px rgb(153 110 237);
     border-radius: 5px;
+}
+.dsu-donate-link {
+    margin-top: 5px;
+    position: absolute;
+    right: 22px;
+    top: 13px;
 }
 `);
