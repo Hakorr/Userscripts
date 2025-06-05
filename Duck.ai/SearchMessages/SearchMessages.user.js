@@ -192,14 +192,14 @@ function createResultElem(result) {
             }
 
             const mark = document.createElement('mark');
-            mark.textContent = value.slice(start, end+1);
+            mark.textContent = value.slice(start, end + 1);
             matchTextElem.appendChild(mark);
 
             lastIndex = end + 1;
         }
 
         if(lastIndex < value.length) {
-            let afterText = value.slice(lastIndex + 1);
+            let afterText = value.slice(lastIndex);
             matchTextElem.appendChild(document.createTextNode(afterText));
         }
 
