@@ -299,6 +299,9 @@ GM_addStyle(`
     width: 100%;
     box-sizing: border-box;
 }
+.dsu-result:first-of-type {
+    margin-top: 20px;
+}
 .dsu-match.title {
     background: rgb(52 64 91);
 }
@@ -342,7 +345,6 @@ GM_addStyle(`
     max-height: 80vh;
     overflow: hidden;
     overflow-y: scroll;
-    margin-top: 20px;
 }
 .dsu-result-title {
     font-weight: 700;
