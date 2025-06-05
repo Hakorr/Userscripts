@@ -1,6 +1,6 @@
 # Duck.AI Chat Search 🔎 (DuckDuckGo's AI)
 
-Adds a search bar to search text from your chats!
+Adds a chat search bar to Duck.AI so you can easily search messages in your conversations.
 
 ## Clean UI, won't disturb your regular usage
 
