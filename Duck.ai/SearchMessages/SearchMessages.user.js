@@ -345,6 +345,7 @@ GM_addStyle(`
     max-height: 80vh;
     overflow: hidden;
     overflow-y: scroll;
+    margin-top: 2px;
 }
 .dsu-result-title {
     font-weight: 700;
