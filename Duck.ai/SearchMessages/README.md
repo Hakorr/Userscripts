@@ -1,4 +1,4 @@
-# Duck.ai Search Messages
+# Duck.AI Chat Search 🔎 (DuckDuckGo's AI)
 
 Adds a search bar to search text from your chats!
 
