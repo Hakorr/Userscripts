@@ -28,8 +28,8 @@
 // @description:de Fügt Duck.AI eine Suchleiste hinzu, um Nachrichten zu durchsuchen!
 // @description:es Añade una barra de búsqueda a Duck.AI para buscar en los chats.
 // @description:nl Voegt een zoekbalk toe aan Duck.AI om door je chats te zoeken!
-// @description:ko Duck.AI 채팅에 검색창을 추가하여 메시지 내용을 검색할 수 있습니다!
 // @description:ja Duck.AI チャットに検索バーを追加し、会話からテキストを検索できます。
+// @description:ko Duck.AI 채팅에 검색창을 추가하여 메시지 내용을 검색할 수 있습니다!
 // @description:zh-CN 为 Duck.AI 聊天添加搜索栏，可用于搜索聊天内容！
 // @require     https://cdn.jsdelivr.net/npm/fuse.js@7.1.0
 // @supportURL  https://github.com/Hakorr/Userscripts
