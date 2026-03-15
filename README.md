@@ -4,4 +4,4 @@
 
 **This is why I love userscripts! You shouldn't complain if they're not professionally made :)**
 
-Join my [Discord server](https://hakorr.github.io/Userscripts/community/invite) for assistance and friendly discussion about userscripts!
+If you find my userscripts useful, consider donating! You can find a Monero QR code on my profile.
